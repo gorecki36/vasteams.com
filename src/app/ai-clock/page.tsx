@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     description:
       "How ready is AI for your marketing role? Live benchmark data mapped to marketing capabilities.",
   },
+  alternates: {
+    canonical: "https://vasteams.com/ai-clock",
+  },
 };
 
 export default function AiClock() {
