@@ -7,7 +7,7 @@ export default function Home() {
       <header className="px-6 md:px-8 pt-12 md:pt-16 pb-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-zinc-100 tracking-wide">
-            Vas Collective
+            VAS<span className="text-amber-400">T</span> <span className="text-zinc-600">//</span>
           </h1>
           <p className="text-sm text-zinc-600 mt-1 tracking-widest uppercase">
             Research, Build, Repeat.

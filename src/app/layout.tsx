@@ -11,15 +11,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://vasteams.com"),
   title: {
-    default: "Vas Collective — Questions Is All We've Got",
+    default: "VAST — Questions Is All We've Got",
     template: "%s — Vas Bakopoulos",
   },
   description:
     "When answers are free, questions are the only advantage left. AI research, interactive data stories, and experiments by Vas Bakopoulos.",
   openGraph: {
     type: "website",
-    siteName: "Vas Collective",
-    title: "Vas Collective — Questions Is All We've Got",
+    siteName: "VAST",
+    title: "VAST — Questions Is All We've Got",
     description:
       "When answers are free, questions are the only advantage left. AI research, interactive data stories, and experiments by Vas Bakopoulos.",
   },
