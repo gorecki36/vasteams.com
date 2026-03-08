@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -8,11 +9,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vas Bakos — Weekend Projects",
-  description: "Weekend projects by Vas Bakos.",
+  metadataBase: new URL("https://vasteams.com"),
+  title: {
+    default: "Vas Collective — Questions Is All We've Got",
+    template: "%s — Vas Bakopoulos",
+  },
+  description:
+    "When answers are free, questions are the only advantage left. AI research, interactive data stories, and experiments by Vas Bakopoulos.",
   openGraph: {
-    title: "Vas Bakos — Weekend Projects",
-    description: "Weekend projects by Vas Bakos.",
+    type: "website",
+    siteName: "Vas Collective",
+    title: "Vas Collective — Questions Is All We've Got",
+    description:
+      "When answers are free, questions are the only advantage left. AI research, interactive data stories, and experiments by Vas Bakopoulos.",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  alternates: {
+    canonical: "https://vasteams.com",
   },
 };
 
@@ -24,6 +39,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geistMono.variable} antialiased bg-black`}>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-MKVDNBTXFW"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-MKVDNBTXFW');
+          `}
+        </Script>
         {children}
       </body>
     </html>
