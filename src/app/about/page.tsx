@@ -100,6 +100,19 @@ export default function AboutPage() {
           </p>
         </div>
 
+        {/* Contact */}
+        <div className="mt-16 pt-12 border-t border-zinc-800">
+          <p className="text-[11px] text-zinc-600 tracking-widest uppercase mb-3">
+            Get in touch
+          </p>
+          <a
+            href="mailto:one@vasteams.com"
+            className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors border-b border-zinc-800 hover:border-emerald-400/50 pb-0.5"
+          >
+            one@vasteams.com
+          </a>
+        </div>
+
         <div className="mt-16">
           <Link
             href="/"
