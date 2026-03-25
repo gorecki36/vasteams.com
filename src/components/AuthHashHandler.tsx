@@ -6,43 +6,53 @@ import { createBrowserClient } from "@supabase/ssr";
 export default function AuthHashHandler() {
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const hash = window.location.hash;
-    if (!hash || hash.length < 2) return;
 
-    // Handle error redirects
-    if (hash.includes("error=")) {
-      window.history.replaceState(null, "", window.location.pathname);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !key) return;
+
+    const supabase = createBrowserClient(url, key);
+
+    // Handle PKCE flow: ?code= parameter
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          window.location.href = "/pulse/baseline";
+        } else {
+          // Code expired or invalid — go to pulse
+          window.location.href = "/pulse";
+        }
+      });
       return;
     }
 
-    if (!hash.includes("access_token")) return;
-
-    try {
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
-
-      if (accessToken && refreshToken) {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        if (!url || !key) return;
-
-        const supabase = createBrowserClient(url, key);
-        supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        }).then(({ error }) => {
-          if (!error) {
-            // Check if there's a stored redirect destination
-            const redirect = sessionStorage.getItem("pulse_redirect") || "/pulse/results";
-            sessionStorage.removeItem("pulse_redirect");
-            window.location.href = redirect;
-          } else {
-            window.history.replaceState(null, "", window.location.pathname);
-          }
-        });
+    // Handle hash fragment flow: #access_token=
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+      try {
+        const hashParams = new URLSearchParams(hash.substring(1));
+        const accessToken = hashParams.get("access_token");
+        const refreshToken = hashParams.get("refresh_token");
+        if (accessToken && refreshToken) {
+          supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          }).then(({ error }) => {
+            if (!error) {
+              window.location.href = "/pulse/baseline";
+            }
+          });
+        }
+      } catch {
+        // ignore
       }
-    } catch {
+      return;
+    }
+
+    // Handle error in hash
+    if (hash && hash.includes("error=")) {
       window.history.replaceState(null, "", window.location.pathname);
     }
   }, []);
