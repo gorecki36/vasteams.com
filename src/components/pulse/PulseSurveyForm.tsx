@@ -20,7 +20,7 @@ export default function PulseSurveyForm({ mode }: Props) {
   const [answers, setAnswers] = useState<Answers>(() =>
     Object.fromEntries(PULSE_QUESTIONS.map((q) => [q.id, 4]))
   );
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "already">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [email, setEmail] = useState<string | null>(null);
 
@@ -31,7 +31,15 @@ export default function PulseSurveyForm({ mode }: Props) {
       return;
     }
     setEmail(saved);
-  }, [router]);
+
+    // Check if already submitted this week
+    fetch(`/api/pulse/check?email=${encodeURIComponent(saved)}&type=${mode}&week_of=${getCurrentWeekMonday()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.exists) setStatus("already");
+      })
+      .catch(() => {});
+  }, [router, mode]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,6 +85,46 @@ export default function PulseSurveyForm({ mode }: Props) {
     return (
       <div className="min-h-screen bg-[#faf9f5] flex items-center justify-center">
         <p className="text-sm text-zinc-500 font-mono">Loading...</p>
+      </div>
+    );
+  }
+
+  if (status === "already") {
+    return (
+      <div className="min-h-screen bg-[#faf9f5] text-zinc-800 flex flex-col font-mono">
+        <div className="px-6 md:px-10 pt-10 pb-4">
+          <Link href="/pulse" className="text-sm text-zinc-500 hover:text-emerald-600 tracking-wide transition-colors">
+            &larr; Back
+          </Link>
+        </div>
+        <main className="flex-1 flex items-center justify-center px-6 md:px-10">
+          <div className="max-w-md w-full text-center">
+            <h1 className="text-2xl font-bold text-zinc-900 mb-4">
+              {isBaseline ? "Baseline already set" : "Already checked in this week"}
+            </h1>
+            <p className="text-base text-zinc-500 mb-6">
+              {isBaseline
+                ? "You've already set your baseline. You can view your results or do a weekly check-in."
+                : "You've already submitted this week. Come back next Monday."}
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/pulse/results"
+                className="bg-zinc-900 rounded-lg px-6 py-3 text-base text-white font-medium hover:bg-zinc-800 transition-colors"
+              >
+                See your results &rarr;
+              </Link>
+              {isBaseline && (
+                <Link
+                  href="/pulse/weekly"
+                  className="bg-white border border-zinc-200 rounded-lg px-6 py-3 text-base text-zinc-700 font-medium hover:border-zinc-400 transition-colors"
+                >
+                  Weekly check-in &rarr;
+                </Link>
+              )}
+            </div>
+          </div>
+        </main>
       </div>
     );
   }

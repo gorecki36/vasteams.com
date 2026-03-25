@@ -4,13 +4,23 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PulseHeroLandscape from "./PulseHeroLandscape";
 
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 export default function PulseLanding() {
   const [email, setEmail] = useState("");
   const [storedEmail, setStoredEmail] = useState<string | null>(null);
+  const [reminderDay, setReminderDay] = useState(1); // Monday default
 
   useEffect(() => {
     const saved = localStorage.getItem("pulse_email");
-    if (saved) setStoredEmail(saved);
+    if (saved) {
+      setStoredEmail(saved);
+      // Load preference
+      fetch(`/api/pulse/preferences?email=${encodeURIComponent(saved)}`)
+        .then((r) => r.json())
+        .then((data) => setReminderDay(data.reminder_day ?? 1))
+        .catch(() => {});
+    }
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -23,6 +33,17 @@ export default function PulseLanding() {
   function handleLogout() {
     localStorage.removeItem("pulse_email");
     setStoredEmail(null);
+  }
+
+  function handleReminderChange(day: number) {
+    setReminderDay(day);
+    if (storedEmail) {
+      fetch("/api/pulse/preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: storedEmail, reminder_day: day }),
+      });
+    }
   }
 
   return (
@@ -133,6 +154,23 @@ export default function PulseLanding() {
                     View &rarr;
                   </span>
                 </Link>
+              </div>
+
+              {/* Reminder preference */}
+              <div className="bg-white border border-zinc-200 rounded-lg p-4 mt-6 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm text-zinc-700 font-medium">Weekly reminder</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">We&apos;ll email you a reminder to check in</p>
+                </div>
+                <select
+                  value={reminderDay}
+                  onChange={(e) => handleReminderChange(Number(e.target.value))}
+                  className="bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-zinc-800 focus:border-emerald-500 focus:outline-none"
+                >
+                  {DAYS.map((day, i) => (
+                    <option key={i} value={i}>{day}</option>
+                  ))}
+                </select>
               </div>
             </>
           ) : (
