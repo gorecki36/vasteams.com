@@ -35,19 +35,32 @@ export default function PulseSurveyForm({ mode }: Props) {
     }
     const supabase = createBrowserSupabaseClient();
 
-    // Check current session
+    // Handle hash tokens first (magic link redirect lands here)
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const params = new URLSearchParams(hash.substring(1));
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        }).then(({ error }) => {
+          if (!error) {
+            window.history.replaceState(null, "", window.location.pathname);
+            setAuthenticated(true);
+          } else {
+            setAuthenticated(false);
+          }
+        });
+        return; // Don't check getUser — setSession will handle it
+      }
+    }
+
+    // No hash — check existing session
     supabase.auth.getUser().then(({ data }) => {
       setAuthenticated(!!data.user);
     });
-
-    // Listen for auth changes (magic link redirect sets session via hash)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        setAuthenticated(true);
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
@@ -60,7 +73,7 @@ export default function PulseSurveyForm({ mode }: Props) {
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/pulse`,
+        emailRedirectTo: `${window.location.origin}/pulse/baseline`,
       },
     });
     if (error) {
