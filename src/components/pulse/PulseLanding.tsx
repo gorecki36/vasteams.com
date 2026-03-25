@@ -69,20 +69,19 @@ export default function PulseLanding() {
             </p>
           </div>
 
-          {/* Two paths */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Three paths */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             {/* Baseline */}
             <Link
               href="/pulse/baseline"
               className="bg-white border border-zinc-200 rounded-lg p-6 hover:border-zinc-400 hover:shadow-sm transition-all group"
             >
               <div className="text-2xl mb-3">1.</div>
-              <h2 className="text-lg font-bold text-zinc-900 mb-2 group-hover:text-emerald-700 transition-colors">
+              <h2 className="text-base font-bold text-zinc-900 mb-2 group-hover:text-emerald-700 transition-colors">
                 Set your baseline
               </h2>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Take this once. How has AI changed your work compared to before
-                you started using it?
+                Take this once. How has AI changed your work so far?
               </p>
               <span className="text-sm text-emerald-600 font-medium">
                 Start &rarr;
@@ -95,15 +94,31 @@ export default function PulseLanding() {
               className="bg-white border border-zinc-200 rounded-lg p-6 hover:border-zinc-400 hover:shadow-sm transition-all group"
             >
               <div className="text-2xl mb-3">2.</div>
-              <h2 className="text-lg font-bold text-zinc-900 mb-2 group-hover:text-emerald-700 transition-colors">
+              <h2 className="text-base font-bold text-zinc-900 mb-2 group-hover:text-emerald-700 transition-colors">
                 Weekly check-in
               </h2>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Take this each week. How did things shift compared to last week?
-                Track your trajectory over time.
+                How did things shift compared to last week?
               </p>
               <span className="text-sm text-emerald-600 font-medium">
                 Check in &rarr;
+              </span>
+            </Link>
+
+            {/* Results */}
+            <Link
+              href="/pulse/results"
+              className="bg-white border border-zinc-200 rounded-lg p-6 hover:border-zinc-400 hover:shadow-sm transition-all group"
+            >
+              <div className="text-2xl mb-3">3.</div>
+              <h2 className="text-base font-bold text-zinc-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                See your results
+              </h2>
+              <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+                Your baseline, trends, and how you compare to others.
+              </p>
+              <span className="text-sm text-emerald-600 font-medium">
+                View &rarr;
               </span>
             </Link>
           </div>

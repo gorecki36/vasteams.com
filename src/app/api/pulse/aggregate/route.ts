@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 
 export async function GET() {
   const supabase = await createServerSupabaseClient();
@@ -11,10 +11,13 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  // Use admin client to read all responses (RLS only allows own data)
+  const admin = createAdminSupabaseClient();
+
+  const { data, error } = await admin
     .from("responses")
     .select(
-      "week_of, q1_substitution, q2_expansion, q3_meaning, q4_efficacy, q5_role_breadth, q6_addiction, q7_progress"
+      "user_id, week_of, q1_substitution, q2_expansion, q3_meaning, q4_efficacy, q5_role_breadth, q6_addiction, q7_progress"
     )
     .order("week_of", { ascending: true });
 
@@ -25,6 +28,7 @@ export async function GET() {
     );
   }
 
+  // Group by week for averages
   const weekMap = new Map<string, { sums: number[]; count: number }>();
 
   for (const row of data ?? []) {
@@ -57,8 +61,30 @@ export async function GET() {
     })
   );
 
+  // Individual dots for quadrant maps — latest response per user, anonymized
+  // Group by user, take their most recent response
+  const userLatest = new Map<string, typeof data[0]>();
+  for (const row of data ?? []) {
+    const existing = userLatest.get(row.user_id);
+    if (!existing || row.week_of > existing.week_of) {
+      userLatest.set(row.user_id, row);
+    }
+  }
+
+  // Return anonymized (no user_id) individual scores
+  const individuals = Array.from(userLatest.values()).map((row) => ({
+    q1: row.q1_substitution,
+    q2: row.q2_expansion,
+    q3: row.q3_meaning,
+    q4: row.q4_efficacy,
+    q5: row.q5_role_breadth,
+    q6: row.q6_addiction,
+    q7: row.q7_progress,
+    isCurrentUser: row.user_id === user.id,
+  }));
+
   return NextResponse.json(
-    { aggregates },
+    { aggregates, individuals },
     {
       headers: {
         "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400",

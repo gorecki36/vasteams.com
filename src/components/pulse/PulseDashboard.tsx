@@ -35,6 +35,7 @@ export default function PulseDashboard({ mode, view }: Props) {
   const [baselineResponse, setBaselineResponse] = useState<ResponseRow | null>(null);
   const [weeklyResponses, setWeeklyResponses] = useState<ResponseRow[]>([]);
   const [aggregates, setAggregates] = useState<AggregateRow[]>([]);
+  const [individuals, setIndividuals] = useState<{ q1: number; q2: number; q3: number; q4: number; q5: number; q6: number; q7: number; isCurrentUser: boolean }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -127,6 +128,7 @@ export default function PulseDashboard({ mode, view }: Props) {
       setBaselineResponse(allResponses.find((r: ResponseRow) => r.type === "baseline") ?? null);
       setWeeklyResponses(allResponses.filter((r: ResponseRow) => r.type === "weekly"));
       setAggregates(aggData.aggregates ?? []);
+      setIndividuals(aggData.individuals ?? []);
       setLoading(false);
     }
 
@@ -159,12 +161,14 @@ export default function PulseDashboard({ mode, view }: Props) {
   const latestScores = latestWeekly ? computeScores(rowToRaw(latestWeekly)) : baselineScores;
   const hasData = baselineResponse !== null || weeklyResponses.length > 0;
 
-  const populationPointsSubExp = aggregates.map((a) => {
-    const s = computeScores({ q1: a.avg_q1, q2: a.avg_q2, q3: a.avg_q3, q4: a.avg_q4, q5: a.avg_q5, q6: a.avg_q6, q7: a.avg_q7 });
+  // Individual dots for quadrant maps (gray for others, highlighted for you)
+  const otherIndividuals = individuals.filter((i) => !i.isCurrentUser);
+  const populationPointsSubExp = otherIndividuals.map((i) => {
+    const s = computeScores({ q1: i.q1, q2: i.q2, q3: i.q3, q4: i.q4, q5: i.q5, q6: i.q6, q7: i.q7 });
     return { x: s.substitution, y: s.expansion };
   });
-  const populationPointsAgencyMeaning = aggregates.map((a) => {
-    const s = computeScores({ q1: a.avg_q1, q2: a.avg_q2, q3: a.avg_q3, q4: a.avg_q4, q5: a.avg_q5, q6: a.avg_q6, q7: a.avg_q7 });
+  const populationPointsAgencyMeaning = otherIndividuals.map((i) => {
+    const s = computeScores({ q1: i.q1, q2: i.q2, q3: i.q3, q4: i.q4, q5: i.q5, q6: i.q6, q7: i.q7 });
     return { x: s.agency, y: s.meaning };
   });
 
