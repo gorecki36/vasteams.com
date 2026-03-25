@@ -63,7 +63,16 @@ export default function PulseLanding() {
               The deeper stuff.
             </p>
             <p className="text-sm text-zinc-500 leading-relaxed">
-              Built on published research: cognitive offloading, epistemic
+              Built on{" "}
+              <a
+                href="https://arxiv.org/pdf/2601.20245"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-zinc-700 transition-colors"
+              >
+                published research
+              </a>
+              : cognitive offloading, epistemic
               curiosity, meaningful work, self-efficacy, role breadth, and work
               addiction. 7 questions.
             </p>
@@ -123,38 +132,6 @@ export default function PulseLanding() {
             </Link>
           </div>
 
-          {/* What you learn */}
-          <div className="bg-white border border-zinc-200 rounded-lg p-6">
-            <h2 className="text-sm text-emerald-600 font-medium tracking-wide uppercase mb-4">
-              What you learn
-            </h2>
-            <div className="space-y-3">
-              <div className="flex gap-3">
-                <span className="text-emerald-600 shrink-0">1.</span>
-                <span className="text-base text-zinc-700">
-                  Whether AI is <strong className="text-zinc-900">substituting</strong> your thinking or <strong className="text-zinc-900">expanding</strong> it
-                </span>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-emerald-600 shrink-0">2.</span>
-                <span className="text-base text-zinc-700">
-                  Your trajectory across 5 dimensions, week over week
-                </span>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-emerald-600 shrink-0">3.</span>
-                <span className="text-base text-zinc-700">
-                  A <strong className="text-zinc-900">Fragile Augmentation</strong> flag if AI helps you function but not grow
-                </span>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-emerald-600 shrink-0">4.</span>
-                <span className="text-base text-zinc-700">
-                  How you compare to everyone else taking this pulse
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
 
