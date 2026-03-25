@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { PULSE_QUESTIONS, BASELINE_SCALE, WEEKLY_SCALE } from "@/lib/pulse-questions";
 import { getCurrentWeekMonday } from "@/lib/pulse-scoring";
-import PulseHeroLandscape from "./PulseHeroLandscape";
 
 type Answers = Record<string, number>;
 
@@ -25,8 +24,6 @@ export default function PulseSurveyForm({ mode }: Props) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-  const [email, setEmail] = useState("");
-  const [loginStatus, setLoginStatus] = useState<"idle" | "loading" | "sent">("idle");
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
@@ -34,55 +31,15 @@ export default function PulseSurveyForm({ mode }: Props) {
       return;
     }
     const supabase = createBrowserSupabaseClient();
-
-    // Handle hash tokens first (magic link redirect lands here)
-    const hash = window.location.hash;
-    if (hash.includes("access_token")) {
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
-      if (accessToken && refreshToken) {
-        supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        }).then(({ error }) => {
-          if (!error) {
-            window.history.replaceState(null, "", window.location.pathname);
-            setAuthenticated(true);
-          } else {
-            setAuthenticated(false);
-          }
-        });
-        return; // Don't check getUser — setSession will handle it
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setAuthenticated(true);
+      } else {
+        // Not authenticated — send to pulse landing to log in
+        router.push("/pulse");
       }
-    }
-
-    // No hash — check existing session
-    supabase.auth.getUser().then(({ data }) => {
-      setAuthenticated(!!data.user);
     });
-  }, []);
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoginStatus("loading");
-    // Store where to go after auth
-    sessionStorage.setItem("pulse_redirect", `/pulse/${mode}`);
-    const supabase = createBrowserSupabaseClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/pulse/baseline`,
-      },
-    });
-    if (error) {
-      setErrorMsg(error.message);
-      setLoginStatus("idle");
-    } else {
-      setLoginStatus("sent");
-    }
-  }
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -150,61 +107,7 @@ export default function PulseSurveyForm({ mode }: Props) {
     );
   }
 
-  if (authenticated === false) {
-    return (
-      <div className="min-h-screen bg-[#faf9f5] text-zinc-800 flex flex-col font-mono">
-        <div className="px-6 md:px-10 pt-10 pb-4">
-          <Link href="/pulse" className="text-sm text-zinc-500 hover:text-emerald-600 tracking-wide transition-colors">
-            &larr; Back
-          </Link>
-        </div>
-        <main className="flex-1 flex items-center justify-center px-6 md:px-10">
-          <div className="max-w-md w-full">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-2">
-              The Pulse
-            </h1>
-            <p className="text-base text-zinc-500 mb-6">
-              Enter your email to get started. No password needed.
-            </p>
-            <div className="mb-6">
-              <PulseHeroLandscape height={180} />
-            </div>
-            {loginStatus === "sent" ? (
-              <div className="border border-emerald-300 bg-emerald-50 rounded-lg p-6">
-                <p className="text-base text-emerald-700 mb-2">Check your email.</p>
-                <p className="text-sm text-zinc-600">
-                  We sent a magic link to <strong className="text-zinc-900">{email}</strong>.
-                  Click it to continue.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} className="space-y-4">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  className="w-full bg-white border border-zinc-300 rounded-lg px-4 py-3.5 text-base text-zinc-800 placeholder-zinc-400 focus:border-emerald-500 focus:outline-none transition-colors"
-                />
-                {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
-                <button
-                  type="submit"
-                  disabled={loginStatus === "loading"}
-                  className="w-full bg-zinc-900 rounded-lg px-6 py-3.5 text-base text-white font-medium hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                >
-                  {loginStatus === "loading" ? "Sending..." : "Send magic link"}
-                </button>
-                <p className="text-xs text-zinc-500 text-center">
-                  We&apos;ll email you a link. No password, no account to remember.
-                </p>
-              </form>
-            )}
-          </div>
-        </main>
-      </div>
-    );
-  }
+  if (authenticated === false) return null; // redirect handled in useEffect
 
   return (
     <div className="min-h-screen bg-[#faf9f5] text-zinc-800 flex flex-col font-mono">
