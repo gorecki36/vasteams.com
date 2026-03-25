@@ -101,22 +101,28 @@ export default function PulseSurveyForm({ mode }: Props) {
       return;
     }
 
-    const res = await fetch("/api/pulse/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    // 409 = already submitted this week — just go to results
-    if (res.status === 409) {
-      router.push(isBaseline ? "/pulse/results" : "/pulse/trends");
+    // Submit directly via Supabase client (no API middleman)
+    const supabase = createBrowserSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setStatus("error");
+      setErrorMsg("Not authenticated. Please sign in again.");
       return;
     }
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    const { error: insertError } = await supabase.from("responses").insert({
+      user_id: user.id,
+      ...body,
+    });
+
+    if (insertError) {
+      // Unique constraint = already submitted this week
+      if (insertError.code === "23505") {
+        router.push(isBaseline ? "/pulse/results" : "/pulse/trends");
+        return;
+      }
       setStatus("error");
-      setErrorMsg(data.error || "Something went wrong.");
+      setErrorMsg(insertError.message || "Something went wrong.");
       return;
     }
 

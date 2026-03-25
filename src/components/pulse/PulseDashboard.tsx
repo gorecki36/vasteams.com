@@ -104,31 +104,40 @@ export default function PulseDashboard({ mode, view }: Props) {
         return;
       }
 
+      // Query Supabase directly from browser client (no API middleman)
       const supabase = createBrowserSupabaseClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/pulse"); return; }
 
-      const endpoint = mode === "admin" ? "/api/pulse/admin" : "/api/pulse/results";
-      const [resultsRes, aggRes] = await Promise.all([
-        fetch(endpoint),
-        fetch("/api/pulse/aggregate"),
-      ]);
+      // Fetch user's own responses
+      const { data: myData, error: myError } = await supabase
+        .from("responses")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("week_of", { ascending: true });
 
-      if (mode === "admin" && resultsRes.status === 403) {
-        setError("Not authorized"); setLoading(false); return;
-      }
-      if (!resultsRes.ok) {
+      if (myError) {
         setError("Failed to load data"); setLoading(false); return;
       }
 
-      const resultsData = await resultsRes.json();
-      const aggData = await aggRes.json();
-      const allResponses = resultsData.responses ?? [];
-
+      const allResponses = myData ?? [];
       setBaselineResponse(allResponses.find((r: ResponseRow) => r.type === "baseline") ?? null);
       setWeeklyResponses(allResponses.filter((r: ResponseRow) => r.type === "weekly"));
-      setAggregates(aggData.aggregates ?? []);
-      setIndividuals(aggData.individuals ?? []);
+
+      // Fetch all responses for population data (RLS allows read own, so use aggregate API for others)
+      // For now, just use own data — population dots will populate as more users join
+      // The aggregate API still works for the trend chart dashed lines
+      try {
+        const aggRes = await fetch("/api/pulse/aggregate");
+        if (aggRes.ok) {
+          const aggData = await aggRes.json();
+          setAggregates(aggData.aggregates ?? []);
+          setIndividuals(aggData.individuals ?? []);
+        }
+      } catch {
+        // Aggregate data is optional — don't block on it
+      }
+
       setLoading(false);
     }
 
