@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthHashHandler from "@/components/AuthHashHandler";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -51,6 +52,7 @@ export default function RootLayout({
             gtag('config', 'G-MKVDNBTXFW');
           `}
         </Script>
+        <AuthHashHandler />
         {children}
       </body>
     </html>

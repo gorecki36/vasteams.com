@@ -9,6 +9,12 @@ interface Props {
   role: RoleDefinition | null;
 }
 
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
 const WEIGHT_STYLES: Record<CapabilityWeight, { label: string; className: string }> = {
   high: { label: "Core", className: "text-emerald-400 border-emerald-500/40" },
   medium: { label: "Useful", className: "text-zinc-400 border-zinc-600" },
@@ -57,7 +63,7 @@ function CapabilityCard({
         isHighlight
           ? "border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.08)]"
           : "border-zinc-800"
-      } ${dimmed ? "opacity-50" : ""}`}
+      } ${dimmed ? "opacity-70" : ""}`}
     >
       <div className="flex items-baseline justify-between gap-2">
         <div className="flex items-baseline gap-2 min-w-0">
@@ -93,6 +99,11 @@ function CapabilityCard({
           {cap.bestModel} leads
         </span>
       </div>
+      {cap.scoreDate && (
+        <p className="text-[9px] font-mono text-zinc-700 mt-2">
+          Score from {formatDate(cap.scoreDate)}
+        </p>
+      )}
     </div>
   );
 }

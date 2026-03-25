@@ -53,6 +53,44 @@ body {
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
+/* Light slider for pulse pages */
+.slider-light {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #d4d4d8;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.slider-light::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #18181b;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.slider-light::-webkit-slider-thumb:hover {
+  background: #27272a;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+}
+
+.slider-light::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #18181b;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;

@@ -9,6 +9,7 @@ import {
   type RawModelBenchmarks,
   type BenchmarkId,
   type CapabilityScore,
+  type HistoryPoint,
 } from "@/lib/ai-benchmarks";
 
 // Cache with TTL
@@ -61,6 +62,7 @@ async function fetchArtificialAnalysis(): Promise<RawModelBenchmarks[]> {
       return {
         name: (m.name ?? "Unknown") as string,
         provider: (creator.name ?? "") as string,
+        releaseDate: (m.release_date ?? undefined) as string | undefined,
         benchmarks: {
           // Prompt-level benchmarks
           mmlu_pro: pct(e.mmlu_pro),
@@ -78,11 +80,77 @@ async function fetchArtificialAnalysis(): Promise<RawModelBenchmarks[]> {
     });
 }
 
+/**
+ * Sourced pre-API historical anchors (before AA API coverage ~Dec 2024).
+ * Only benchmarks that existed at each date are included.
+ *
+ * Sources:
+ *   GPQA Diamond — arXiv:2311.12022, OpenAI simple-evals, Anthropic model cards
+ *   MMLU-Pro — arXiv:2406.01574 (original paper), PricePerToken/Artificial Analysis
+ *   LiveCodeBench — arXiv:2403.07974
+ *   SciCode — arXiv:2407.13168
+ */
+const HISTORICAL_ANCHORS: HistoryPoint[] = [
+  // GPT-4 — only GPQA existed (published Nov 2023, but GPT-4 retro-tested in paper)
+  { date: "2023-03-14", benchmarks: { gpqa: 39 }, benchmarkCount: 1 },
+  // GPT-4 Turbo — GPQA improved; MMLU-Pro retro-tested in Jun 2024 paper
+  { date: "2023-11-06", benchmarks: { gpqa: 42, mmlu_pro: 64 }, benchmarkCount: 2 },
+  // Claude 3 Opus — LiveCodeBench now published
+  { date: "2024-03-04", benchmarks: { mmlu_pro: 69, gpqa: 50, livecodebench: 37 }, benchmarkCount: 3 },
+  // GPT-4o — MMLU-Pro paper published with retro scores
+  { date: "2024-05-13", benchmarks: { mmlu_pro: 73, gpqa: 50, livecodebench: 40 }, benchmarkCount: 3 },
+  // Claude 3.5 Sonnet + SciCode published (subproblem rate — comparable to other benchmarks)
+  { date: "2024-06-20", benchmarks: { mmlu_pro: 73, gpqa: 59, livecodebench: 49, scicode: 26 }, benchmarkCount: 4 },
+  // o1-preview — big GPQA jump
+  { date: "2024-09-12", benchmarks: { mmlu_pro: 73, gpqa: 73, livecodebench: 55, scicode: 26 }, benchmarkCount: 4 },
+  // Claude 3.5 Sonnet v2
+  { date: "2024-10-22", benchmarks: { mmlu_pro: 77, gpqa: 73, livecodebench: 60, scicode: 26 }, benchmarkCount: 4 },
+];
+
+// --- Compute cumulative best-per-benchmark at each release date ---
+function computeHistory(models: RawModelBenchmarks[]): HistoryPoint[] {
+  // Only models with a release date
+  const dated = models
+    .filter((m) => m.releaseDate)
+    .sort((a, b) => a.releaseDate!.localeCompare(b.releaseDate!));
+
+  if (dated.length === 0) return HISTORICAL_ANCHORS;
+
+  const running: Partial<Record<BenchmarkId, number>> = {};
+  const livePoints: HistoryPoint[] = [];
+  const benchmarkIds = ALL_CAPABILITIES.map((c) => c.benchmark);
+
+  for (const model of dated) {
+    let changed = false;
+    for (const bid of benchmarkIds) {
+      const val = model.benchmarks[bid];
+      if (val != null && val > (running[bid] ?? 0)) {
+        running[bid] = val;
+        changed = true;
+      }
+    }
+    if (changed) {
+      const snapshot = { ...running };
+      livePoints.push({
+        date: model.releaseDate!,
+        benchmarks: snapshot,
+        benchmarkCount: Object.keys(snapshot).length,
+      });
+    }
+  }
+
+  // Prepend historical anchors that predate the earliest live point
+  const earliestLive = livePoints[0]?.date ?? "9999-99-99";
+  const preAnchors = HISTORICAL_ANCHORS.filter((a) => a.date < earliestLive);
+
+  return [...preAnchors, ...livePoints];
+}
+
 // --- Compute best scores across all models ---
 function computeAllScores(models: RawModelBenchmarks[]): BenchmarkData {
   function buildLayer(capabilities: typeof ALL_CAPABILITIES): CapabilityScore[] {
     return capabilities.map((cap) => {
-      const { score, model } = bestScoreForBenchmark(models, cap.benchmark);
+      const { score, model, releaseDate } = bestScoreForBenchmark(models, cap.benchmark);
       return {
         id: cap.id,
         name: cap.name,
@@ -93,6 +161,7 @@ function computeAllScores(models: RawModelBenchmarks[]): BenchmarkData {
         benchmark: BENCHMARK_DISPLAY[cap.benchmark],
         whatItTests: cap.whatItTests,
         marketingApplication: cap.marketingApplication,
+        scoreDate: releaseDate,
       };
     });
   }
@@ -129,6 +198,7 @@ function computeAllScores(models: RawModelBenchmarks[]): BenchmarkData {
     bestOverall: { name: bestOverallName, score: Math.round(bestOverallScore) },
     updatedAt: new Date().toISOString(),
     sources: ["Artificial Analysis"],
+    history: computeHistory(models),
   };
 }
 

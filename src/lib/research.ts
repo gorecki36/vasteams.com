@@ -142,7 +142,7 @@ export const RESEARCH: ResearchItem[] = [
     id: "actual-possibility-ai-alc",
     title: "The Actual Possibility of AI as Told by the Marketers from MMA's AI Leadership Coalition",
     description:
-      "Video featuring marketers from MMA's AI Leadership Coalition (ALC) on what AI is actually delivering in marketing today — beyond the hype, from the people running it.",
+      "Live demo of AI-generated personas research — compressing consumer insights from three months to three prompts. Demo starts at 14:30.",
     date: "2024-01-01",
     type: "talk",
     href: "https://www.youtube.com/watch?v=L6idxPVABdY",
