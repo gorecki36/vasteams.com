@@ -231,50 +231,48 @@ export default function PulseSurveyForm({ mode }: Props) {
                 </p>
               </div>
 
-              <div className="flex items-center gap-4 mt-4 pl-7">
-                <span className="text-xs text-zinc-500 shrink-0 whitespace-nowrap">
-                  {scale[1]}
-                </span>
-                <div className="flex-1 relative">
-                  <input
-                    type="range"
-                    min={1}
-                    max={7}
-                    step={1}
-                    value={answers[q.id]}
-                    onChange={(e) =>
-                      setAnswers((prev) => ({
-                        ...prev,
-                        [q.id]: Number(e.target.value),
-                      }))
-                    }
-                    className="slider-light w-full"
-                  />
-                  <div className="flex justify-between px-[2px] -mt-1">
-                    {[1, 2, 3, 4, 5, 6, 7].map((v) => (
-                      <div
-                        key={v}
-                        className={`w-px h-1.5 ${
-                          v === 4 ? "bg-zinc-400" : "bg-zinc-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
+              <div className="mt-4">
+                {/* Value label */}
+                <div className="text-center mb-2">
+                  <span
+                    className={`text-sm font-medium ${
+                      answers[q.id] === 4
+                        ? "text-zinc-400"
+                        : answers[q.id] > 4
+                          ? "text-emerald-600"
+                          : "text-amber-600"
+                    }`}
+                  >
+                    {scale[answers[q.id]]}
+                  </span>
                 </div>
-                <span className="text-xs text-zinc-500 shrink-0 whitespace-nowrap text-right">
-                  {scale[7]}
-                </span>
-                <span
-                  className={`text-sm font-medium shrink-0 w-28 text-right whitespace-nowrap ${
-                    answers[q.id] === 4
-                      ? "text-zinc-400"
-                      : answers[q.id] > 4
-                        ? "text-emerald-600"
-                        : "text-amber-600"
-                  }`}
-                >
-                  {scale[answers[q.id]]}
-                </span>
+                {/* Slider */}
+                <input
+                  type="range"
+                  min={1}
+                  max={7}
+                  step={1}
+                  value={answers[q.id]}
+                  onChange={(e) =>
+                    setAnswers((prev) => ({
+                      ...prev,
+                      [q.id]: Number(e.target.value),
+                    }))
+                  }
+                  className="slider-light w-full"
+                />
+                {/* Scale labels */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-zinc-500">
+                    {scale[1]}
+                  </span>
+                  <span className="text-xs text-zinc-400">
+                    |
+                  </span>
+                  <span className="text-xs text-zinc-500">
+                    {scale[7]}
+                  </span>
+                </div>
               </div>
             </div>
           ))}
