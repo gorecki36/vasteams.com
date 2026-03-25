@@ -14,15 +14,15 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
-    id: "ai-investment",
-    title: "The AI Investment Economy",
+    id: "pulse",
+    title: "The Pulse",
     description:
-      "Where the money actually flows. 6-layer infrastructure stack, historical cycle comparison, and the bottlenecks money can't solve quickly.",
-    href: "/ai-investment",
+      "Is AI making you sharper or just faster? Weekly 45-second check-in tracking how AI shapes your thinking, meaning, and growth at work.",
+    href: "/pulse",
     status: "live",
-    tags: ["AI", "investment", "data story"],
-    icon: "◈",
-    iconClass: "text-4xl text-amber-400",
+    tags: ["AI", "research", "self-assessment"],
+    icon: "◉",
+    iconClass: "text-4xl text-cyan-400",
   },
   {
     id: "ai-clock",
@@ -36,6 +36,17 @@ export const PROJECTS: Project[] = [
     iconClass: "text-4xl text-red-400",
   },
   {
+    id: "ai-investment",
+    title: "The AI Investment Economy",
+    description:
+      "Where the money actually flows. 6-layer infrastructure stack, historical cycle comparison, and the bottlenecks money can't solve quickly.",
+    href: "/ai-investment",
+    status: "live",
+    tags: ["AI", "investment", "data story"],
+    icon: "◈",
+    iconClass: "text-4xl text-amber-400",
+  },
+  {
     id: "matrix-moment",
     title: "The Matrix Moment",
     description:
@@ -45,16 +56,5 @@ export const PROJECTS: Project[] = [
     tags: ["simulation", "AI", "futures"],
     icon: "//",
     iconClass: "text-3xl font-mono text-emerald-500 font-bold",
-  },
-  {
-    id: "pulse",
-    title: "The Pulse",
-    description:
-      "Is AI making you sharper or just faster? Weekly 45-second check-in tracking how AI shapes your thinking, meaning, and growth at work.",
-    href: "/pulse",
-    status: "live",
-    tags: ["AI", "research", "self-assessment"],
-    icon: "◉",
-    iconClass: "text-4xl text-cyan-400",
   },
 ];
