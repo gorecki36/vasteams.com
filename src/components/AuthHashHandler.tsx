@@ -9,9 +9,8 @@ export default function AuthHashHandler() {
     const hash = window.location.hash;
     if (!hash || hash.length < 2) return;
 
-    // Handle error redirects (expired/used links)
+    // Handle error redirects
     if (hash.includes("error=")) {
-      // Clear the hash silently
       window.history.replaceState(null, "", window.location.pathname);
       return;
     }
@@ -33,9 +32,11 @@ export default function AuthHashHandler() {
           access_token: accessToken,
           refresh_token: refreshToken,
         }).then(({ error }) => {
-          // Clear hash and redirect
           if (!error) {
-            window.location.href = "/pulse/results";
+            // Check if there's a stored redirect destination
+            const redirect = sessionStorage.getItem("pulse_redirect") || "/pulse/results";
+            sessionStorage.removeItem("pulse_redirect");
+            window.location.href = redirect;
           } else {
             window.history.replaceState(null, "", window.location.pathname);
           }

@@ -54,6 +54,8 @@ export default function PulseSurveyForm({ mode }: Props) {
     e.preventDefault();
     if (!email.trim()) return;
     setLoginStatus("loading");
+    // Store where to go after auth
+    sessionStorage.setItem("pulse_redirect", `/pulse/${mode}`);
     const supabase = createBrowserSupabaseClient();
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
