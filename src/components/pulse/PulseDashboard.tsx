@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { computeScores, rowToRaw } from "@/lib/pulse-scoring";
 import PulseBaselineChart from "./PulseBaselineChart";
 import PulseTrendCards from "./PulseTrendCards";
@@ -104,38 +103,27 @@ export default function PulseDashboard({ mode, view }: Props) {
         return;
       }
 
-      // Query Supabase directly from browser client (no API middleman)
-      const supabase = createBrowserSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/pulse"); return; }
+      const email = localStorage.getItem("pulse_email");
+      if (!email) { router.push("/pulse"); return; }
 
-      // Fetch user's own responses
-      const { data: myData, error: myError } = await supabase
-        .from("responses")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("week_of", { ascending: true });
+      const [resultsRes, aggRes] = await Promise.all([
+        fetch(`/api/pulse/results?email=${encodeURIComponent(email)}`),
+        fetch(`/api/pulse/aggregate?email=${encodeURIComponent(email)}`),
+      ]);
 
-      if (myError) {
+      if (!resultsRes.ok) {
         setError("Failed to load data"); setLoading(false); return;
       }
 
-      const allResponses = myData ?? [];
+      const resultsData = await resultsRes.json();
+      const allResponses = resultsData.responses ?? [];
       setBaselineResponse(allResponses.find((r: ResponseRow) => r.type === "baseline") ?? null);
       setWeeklyResponses(allResponses.filter((r: ResponseRow) => r.type === "weekly"));
 
-      // Fetch all responses for population data (RLS allows read own, so use aggregate API for others)
-      // For now, just use own data — population dots will populate as more users join
-      // The aggregate API still works for the trend chart dashed lines
-      try {
-        const aggRes = await fetch("/api/pulse/aggregate");
-        if (aggRes.ok) {
-          const aggData = await aggRes.json();
-          setAggregates(aggData.aggregates ?? []);
-          setIndividuals(aggData.individuals ?? []);
-        }
-      } catch {
-        // Aggregate data is optional — don't block on it
+      if (aggRes.ok) {
+        const aggData = await aggRes.json();
+        setAggregates(aggData.aggregates ?? []);
+        setIndividuals(aggData.individuals ?? []);
       }
 
       setLoading(false);

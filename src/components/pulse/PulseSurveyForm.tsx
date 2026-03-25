@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { PULSE_QUESTIONS, BASELINE_SCALE, WEEKLY_SCALE } from "@/lib/pulse-questions";
 import { getCurrentWeekMonday } from "@/lib/pulse-scoring";
 
@@ -23,30 +22,25 @@ export default function PulseSurveyForm({ mode }: Props) {
   );
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      setAuthenticated(true);
+    const saved = localStorage.getItem("pulse_email");
+    if (!saved) {
+      router.push("/pulse");
       return;
     }
-    const supabase = createBrowserSupabaseClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setAuthenticated(true);
-      } else {
-        // Not authenticated — send to pulse landing to log in
-        router.push("/pulse");
-      }
-    });
+    setEmail(saved);
   }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!email) return;
     setStatus("loading");
     setErrorMsg("");
 
     const body = {
+      email,
       week_of: getCurrentWeekMonday(),
       type: mode,
       q1_substitution: answers.q1,
@@ -58,56 +52,34 @@ export default function PulseSurveyForm({ mode }: Props) {
       q7_progress: answers.q7,
     };
 
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      const key = isBaseline ? "pulse_demo_baseline" : "pulse_demo_history";
-      if (isBaseline) {
-        sessionStorage.setItem(key, JSON.stringify(body));
-      } else {
-        const existing = JSON.parse(sessionStorage.getItem(key) || "[]");
-        existing.push(body);
-        sessionStorage.setItem(key, JSON.stringify(existing));
-      }
+    const res = await fetch("/api/pulse/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (res.status === 409) {
       router.push(isBaseline ? "/pulse/results" : "/pulse/trends");
       return;
     }
 
-    // Submit directly via Supabase client (no API middleman)
-    const supabase = createBrowserSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
       setStatus("error");
-      setErrorMsg("Not authenticated. Please sign in again.");
-      return;
-    }
-
-    const { error: insertError } = await supabase.from("responses").insert({
-      user_id: user.id,
-      ...body,
-    });
-
-    if (insertError) {
-      // Unique constraint = already submitted this week
-      if (insertError.code === "23505") {
-        router.push(isBaseline ? "/pulse/results" : "/pulse/trends");
-        return;
-      }
-      setStatus("error");
-      setErrorMsg(insertError.message || "Something went wrong.");
+      setErrorMsg(data.error || "Something went wrong.");
       return;
     }
 
     router.push(isBaseline ? "/pulse/results" : "/pulse/trends");
   }
 
-  if (authenticated === null) {
+  if (!email) {
     return (
       <div className="min-h-screen bg-[#faf9f5] flex items-center justify-center">
         <p className="text-sm text-zinc-500 font-mono">Loading...</p>
       </div>
     );
   }
-
-  if (authenticated === false) return null; // redirect handled in useEffect
 
   return (
     <div className="min-h-screen bg-[#faf9f5] text-zinc-800 flex flex-col font-mono">
@@ -156,13 +128,11 @@ export default function PulseSurveyForm({ mode }: Props) {
               </div>
 
               <div className="mt-4">
-                {/* Scale labels above slider */}
                 <div className="flex justify-between mb-1">
                   <span className="text-xs text-zinc-400">{scale[1]}</span>
                   <span className="text-xs text-zinc-400">{scale[4]}</span>
                   <span className="text-xs text-zinc-400">{scale[7]}</span>
                 </div>
-                {/* Slider */}
                 <input
                   type="range"
                   min={1}
@@ -177,7 +147,6 @@ export default function PulseSurveyForm({ mode }: Props) {
                   }
                   className="slider-light w-full"
                 />
-                {/* Current value */}
                 <div className="text-center mt-1">
                   <span
                     className={`text-sm font-medium ${
