@@ -48,7 +48,7 @@ export default function PulseLanding() {
             The Pulse
           </h1>
           <p className="text-lg text-zinc-500 mb-6">
-            Is AI making you sharper or just faster?
+            Is AI making me sharper or just faster?
           </p>
 
           {/* Hero landscape */}
