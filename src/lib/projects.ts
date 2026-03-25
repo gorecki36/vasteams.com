@@ -57,15 +57,4 @@ export const PROJECTS: Project[] = [
     icon: "◉",
     iconClass: "text-4xl text-cyan-400",
   },
-  {
-    id: "retirement",
-    title: "Retirement Timing Optimizer",
-    description:
-      "Two curves intersect: your financial runway vs your life expectancy. Find the age where you maximize quality of time without running out of money.",
-    href: "/retirement",
-    status: "live",
-    tags: ["finance", "simulation", "Bayesian"],
-    icon: "⏳",
-    iconClass: "text-4xl",
-  },
 ];
