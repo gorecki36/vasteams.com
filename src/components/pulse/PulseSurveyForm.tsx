@@ -232,19 +232,11 @@ export default function PulseSurveyForm({ mode }: Props) {
               </div>
 
               <div className="mt-4">
-                {/* Value label */}
-                <div className="text-center mb-2">
-                  <span
-                    className={`text-sm font-medium ${
-                      answers[q.id] === 4
-                        ? "text-zinc-400"
-                        : answers[q.id] > 4
-                          ? "text-emerald-600"
-                          : "text-amber-600"
-                    }`}
-                  >
-                    {scale[answers[q.id]]}
-                  </span>
+                {/* Scale labels above slider */}
+                <div className="flex justify-between mb-1">
+                  <span className="text-xs text-zinc-400">{scale[1]}</span>
+                  <span className="text-xs text-zinc-400">{scale[4]}</span>
+                  <span className="text-xs text-zinc-400">{scale[7]}</span>
                 </div>
                 {/* Slider */}
                 <input
@@ -261,16 +253,18 @@ export default function PulseSurveyForm({ mode }: Props) {
                   }
                   className="slider-light w-full"
                 />
-                {/* Scale labels */}
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-zinc-500">
-                    {scale[1]}
-                  </span>
-                  <span className="text-xs text-zinc-400">
-                    |
-                  </span>
-                  <span className="text-xs text-zinc-500">
-                    {scale[7]}
+                {/* Current value */}
+                <div className="text-center mt-1">
+                  <span
+                    className={`text-sm font-medium ${
+                      answers[q.id] === 4
+                        ? "text-zinc-400"
+                        : answers[q.id] > 4
+                          ? "text-emerald-600"
+                          : "text-amber-600"
+                    }`}
+                  >
+                    {scale[answers[q.id]]}
                   </span>
                 </div>
               </div>
