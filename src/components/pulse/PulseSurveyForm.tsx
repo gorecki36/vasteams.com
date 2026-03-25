@@ -73,7 +73,7 @@ export default function PulseSurveyForm({ mode }: Props) {
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/pulse/baseline`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/pulse/baseline`,
       },
     });
     if (error) {
