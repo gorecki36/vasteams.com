@@ -184,23 +184,23 @@ export default function PulseDashboard({ mode, view }: Props) {
 
         {/* Tab navigation */}
         {hasData && mode === "personal" && (
-          <div className="flex gap-1 mt-4">
+          <div className="flex gap-2 mt-4">
             <Link
               href="/pulse/results"
-              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+              className={`px-5 py-2.5 text-sm rounded-lg border transition-colors ${
                 activeView === "baseline"
-                  ? "bg-white border border-zinc-200 text-zinc-900 font-medium"
-                  : "text-zinc-500 hover:text-zinc-700"
+                  ? "bg-zinc-900 border-zinc-900 text-white font-medium"
+                  : "bg-white border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800"
               }`}
             >
               Baseline
             </Link>
             <Link
               href="/pulse/trends"
-              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+              className={`px-5 py-2.5 text-sm rounded-lg border transition-colors ${
                 activeView === "trends"
-                  ? "bg-white border border-zinc-200 text-zinc-900 font-medium"
-                  : "text-zinc-500 hover:text-zinc-700"
+                  ? "bg-zinc-900 border-zinc-900 text-white font-medium"
+                  : "bg-white border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800"
               }`}
             >
               Weekly Trends
