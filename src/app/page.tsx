@@ -1,6 +1,37 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+
+const NAV_LINKS = [
+  { href: "/research", label: "Research" },
+  { href: "/work", label: "Work" },
+  { href: "https://marketingembeddings.com", label: "Newsletter", external: true },
+  { href: "/projects", label: "Builds" },
+  { href: "/about", label: "About" },
+];
+
+function NavLink({ href, label, external, className }: {
+  href: string; label: string; external?: boolean; className?: string;
+}) {
+  const cls = className ?? "text-sm tracking-widest uppercase hover:text-gold transition-colors";
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={{ color: "#525252" }}>
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={cls} style={{ color: "#525252" }}>
+      {label}
+    </Link>
+  );
+}
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div
       className="min-h-screen flex flex-col overflow-hidden"
@@ -10,7 +41,7 @@ export default function Home() {
       }}
     >
       {/* Header */}
-      <header className="px-5 md:px-10 pt-6 md:pt-8 flex items-center justify-between relative z-10">
+      <header className="px-5 md:px-10 pt-6 md:pt-8 flex items-center justify-between relative z-20">
         <div>
           <span
             className="text-2xl md:text-3xl font-bold tracking-widest"
@@ -29,38 +60,60 @@ export default function Home() {
             Research, Build, Repeat.
           </p>
         </div>
-        <nav className="flex items-center gap-4 md:gap-6 flex-wrap justify-end">
-          {[
-            { href: "/research", label: "Research" },
-            { href: "/work", label: "Work" },
-            { href: "https://marketingembeddings.com", label: "Newsletter", external: true },
-            { href: "/projects", label: "Builds" },
-            { href: "/about", label: "About" },
-          ].map((link) =>
-            "external" in link ? (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs md:text-sm tracking-widest uppercase hover:text-gold transition-colors"
-                style={{ color: "#525252" }}
-              >
-                {link.label}
-              </a>
-            ) : (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-xs md:text-sm tracking-widest uppercase hover:text-gold transition-colors"
-                style={{ color: "#525252" }}
-              >
-                {link.label}
-              </Link>
-            )
-          )}
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-6">
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.label} {...link} />
+          ))}
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span
+            className="block w-5 h-px transition-all duration-300"
+            style={{
+              background: "#888",
+              transform: menuOpen ? "rotate(45deg) translateY(4px)" : "none",
+            }}
+          />
+          <span
+            className="block w-5 h-px transition-all duration-300"
+            style={{
+              background: "#888",
+              opacity: menuOpen ? 0 : 1,
+            }}
+          />
+          <span
+            className="block w-5 h-px transition-all duration-300"
+            style={{
+              background: "#888",
+              transform: menuOpen ? "rotate(-45deg) translateY(-4px)" : "none",
+            }}
+          />
+        </button>
       </header>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-10 flex flex-col items-center justify-center gap-8"
+          style={{ background: "rgba(10, 10, 10, 0.97)" }}
+          onClick={() => setMenuOpen(false)}
+        >
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.label}
+              {...link}
+              className="text-lg tracking-widest uppercase hover:text-gold transition-colors"
+            />
+          ))}
+        </div>
+      )}
 
       {/* Hero */}
       <main className="flex-1 flex items-center px-5 md:px-10 relative">
