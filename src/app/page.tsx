@@ -29,38 +29,36 @@ export default function Home() {
             Research, Build, Repeat.
           </p>
         </div>
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="flex items-center gap-4 md:gap-6 flex-wrap justify-end">
           {[
             { href: "/research", label: "Research" },
             { href: "/work", label: "Work" },
+            { href: "https://marketingembeddings.com", label: "Newsletter", external: true },
             { href: "/projects", label: "Builds" },
             { href: "/about", label: "About" },
-          ].map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-sm tracking-widest uppercase hover:text-gold transition-colors"
-              style={{ color: "#525252" }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        {/* Mobile nav */}
-        <nav className="flex md:hidden items-center gap-4">
-          {[
-            { href: "/projects", label: "Builds" },
-            { href: "/about", label: "About" },
-          ].map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-xs tracking-widest uppercase hover:text-gold transition-colors"
-              style={{ color: "#525252" }}
-            >
-              {link.label}
-            </Link>
-          ))}
+          ].map((link) =>
+            "external" in link ? (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs md:text-sm tracking-widest uppercase hover:text-gold transition-colors"
+                style={{ color: "#525252" }}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-xs md:text-sm tracking-widest uppercase hover:text-gold transition-colors"
+                style={{ color: "#525252" }}
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
       </header>
 
