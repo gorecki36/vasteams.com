@@ -38,13 +38,13 @@ function ResearchRow({ item }: { item: ResearchItem }) {
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block py-5 border-b border-zinc-800/50 hover:border-emerald-500/30 transition-colors"
+      className="group block py-5 border-b border-zinc-800/50 hover:border-gold/30 transition-colors"
     >
       <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
         <span className="text-[11px] text-zinc-600 tracking-widest uppercase shrink-0 w-28">
           {formatDate(item.date)}
         </span>
-        <span className="flex-1 text-sm text-zinc-300 group-hover:text-emerald-400 transition-colors">
+        <span className="flex-1 text-sm text-zinc-300 group-hover:text-gold transition-colors">
           {item.title}
         </span>
         <span className="flex items-center gap-3 shrink-0">
@@ -72,14 +72,14 @@ export default function ResearchPage() {
       <header className="px-6 md:px-8 pt-10 pb-8 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link
           href="/"
-          className="text-xs text-zinc-600 hover:text-emerald-400 tracking-widest uppercase transition-colors"
+          className="text-xs text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
         >
           &larr; Home
         </Link>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link
             href="/work"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Work
           </Link>
@@ -87,19 +87,19 @@ export default function ResearchPage() {
             href="https://marketingembeddings.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Marketing Embeddings
           </a>
           <Link
             href="/projects"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Quick Builds
           </Link>
           <Link
             href="/about"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             About
           </Link>

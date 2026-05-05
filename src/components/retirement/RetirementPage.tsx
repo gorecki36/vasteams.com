@@ -50,14 +50,14 @@ export default function RetirementPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link
             href="/projects"
-            className="text-[11px] font-mono text-zinc-500 hover:text-emerald-400 transition-colors"
+            className="text-[11px] font-mono text-zinc-500 hover:text-gold transition-colors"
           >
             ← back
           </Link>
           {phase !== "input" && (
             <button
               onClick={handleReset}
-              className="text-[11px] font-mono text-zinc-500 hover:text-emerald-400 transition-colors"
+              className="text-[11px] font-mono text-zinc-500 hover:text-gold transition-colors"
             >
               Start over
             </button>
@@ -108,7 +108,7 @@ export default function RetirementPage() {
             <div className="pt-8 border-t border-zinc-900">
               <button
                 onClick={handleReset}
-                className="w-full py-3 text-sm font-mono uppercase tracking-widest border border-zinc-800 text-zinc-500 hover:text-emerald-400 hover:border-emerald-500/50 transition-all"
+                className="w-full py-3 text-sm font-mono uppercase tracking-widest border border-zinc-800 text-zinc-500 hover:text-gold hover:border-gold/50 transition-all"
               >
                 Try Different Inputs
               </button>
@@ -129,7 +129,7 @@ export default function RetirementPage() {
             Built by{" "}
             <Link
               href="/"
-              className="text-zinc-600 hover:text-emerald-400 transition-colors"
+              className="text-zinc-600 hover:text-gold transition-colors"
             >
               Vas Bakopoulos
             </Link>

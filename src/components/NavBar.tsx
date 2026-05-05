@@ -29,7 +29,7 @@ export default function NavBar({ searchParams = "" }: Props) {
             &larr;
           </Link>
           <Link href="/matrix-moment" className="group">
-            <h1 className="text-lg font-mono tracking-widest text-emerald-400 uppercase group-hover:text-emerald-300 transition-colors">
+            <h1 className="text-lg font-mono tracking-widest text-gold uppercase group-hover:text-gold/80 transition-colors">
               The Matrix Moment
             </h1>
             <p className="text-xs text-zinc-600 font-mono mt-1">
@@ -55,7 +55,7 @@ export default function NavBar({ searchParams = "" }: Props) {
                   href={href}
                   className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest transition-colors ${
                     isActive
-                      ? "text-emerald-400 border border-emerald-500/40 bg-emerald-500/10"
+                      ? "text-gold border border-gold/40 bg-gold/10"
                       : "text-zinc-500 border border-zinc-800 hover:border-zinc-600 hover:text-zinc-400"
                   }`}
                 >

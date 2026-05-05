@@ -8,7 +8,7 @@ function ProjectCard({ project }: { project: Project }) {
     <div
       className={`group border border-zinc-800 transition-all duration-300 ${
         isLive
-          ? "hover:border-emerald-500/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)] hover:scale-[1.01]"
+          ? "hover:border-gold/40 hover:shadow-[0_0_30px_rgba(212,160,23,0.08)] hover:scale-[1.01]"
           : "opacity-50"
       }`}
     >
@@ -16,7 +16,7 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="aspect-video bg-zinc-900/50 flex items-center justify-center border-b border-zinc-800">
         {isLive ? (
           <div className="text-center">
-            <div className={project.iconClass ?? "text-3xl font-mono text-emerald-500/20 font-bold"}>
+            <div className={project.iconClass ?? "text-3xl font-mono text-gold/20 font-bold"}>
               {project.icon ?? "//"}
             </div>
             <div className="text-[10px] font-mono text-zinc-400 mt-1 tracking-widest uppercase">
@@ -32,7 +32,7 @@ function ProjectCard({ project }: { project: Project }) {
 
       {/* Info */}
       <div className="p-5">
-        <h2 className="font-mono text-sm uppercase tracking-widest text-emerald-400 mb-2">
+        <h2 className="font-mono text-sm uppercase tracking-widest text-gold mb-2">
           {project.title}
         </h2>
         <p className="text-sm text-zinc-500 font-mono leading-relaxed mb-4">
@@ -41,7 +41,7 @@ function ProjectCard({ project }: { project: Project }) {
         {isLive && (
           <Link
             href={project.href}
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 hover:text-gold transition-colors"
           >
             Enter <span>&rarr;</span>
           </Link>
@@ -68,7 +68,7 @@ export default function PortfolioHome() {
       <div className="px-8 pt-10 pb-4">
         <Link
           href="/"
-          className="text-xs font-mono text-zinc-600 hover:text-emerald-400 tracking-widest uppercase transition-colors"
+          className="text-xs font-mono text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
         >
           &larr; Home
         </Link>

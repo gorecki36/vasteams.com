@@ -17,20 +17,20 @@ export default function AboutPage() {
       <header className="px-6 md:px-8 pt-10 pb-8 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link
           href="/"
-          className="text-xs text-zinc-600 hover:text-emerald-400 tracking-widest uppercase transition-colors"
+          className="text-xs text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
         >
           &larr; Back
         </Link>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link
             href="/research"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Research
           </Link>
           <Link
             href="/work"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Work
           </Link>
@@ -38,13 +38,13 @@ export default function AboutPage() {
             href="https://marketingembeddings.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Marketing Embeddings
           </a>
           <Link
             href="/projects"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Quick Builds
           </Link>
@@ -64,7 +64,7 @@ export default function AboutPage() {
               href="https://www.linkedin.com/in/vbakopoulos/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="text-gold hover:text-gold/80 transition-colors"
             >
               Vas
             </a>
@@ -73,7 +73,7 @@ export default function AboutPage() {
               href="https://mmaglobal.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="text-gold hover:text-gold/80 transition-colors"
             >
               MMA
             </a>
@@ -91,7 +91,7 @@ export default function AboutPage() {
               href="https://marketingembeddings.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="text-gold hover:text-gold/80 transition-colors"
             >
               Marketing Embeddings
             </a>
@@ -107,7 +107,7 @@ export default function AboutPage() {
           </p>
           <a
             href="mailto:one@vasteams.com"
-            className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors border-b border-zinc-800 hover:border-emerald-400/50 pb-0.5"
+            className="text-sm text-zinc-400 hover:text-gold transition-colors border-b border-zinc-800 hover:border-gold/50 pb-0.5"
           >
             one@vasteams.com
           </a>
@@ -116,7 +116,7 @@ export default function AboutPage() {
         <div className="mt-16">
           <Link
             href="/"
-            className="text-xs text-zinc-600 hover:text-emerald-400 tracking-widest uppercase transition-colors"
+            className="text-xs text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
           >
             &larr; Home
           </Link>

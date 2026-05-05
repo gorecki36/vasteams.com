@@ -22,14 +22,14 @@ function WorkCard({ item }: { item: WorkItem }) {
           {item.year}
         </span>
       </div>
-      <p className="text-[11px] text-emerald-500/70 tracking-widest uppercase mb-3">
+      <p className="text-[11px] text-gold/70 tracking-widest uppercase mb-3">
         {item.role}
       </p>
       <p className="text-sm text-zinc-500 leading-relaxed">
         {item.description}
       </p>
       {item.href && (
-        <span className="inline-block mt-4 text-xs text-zinc-600 group-hover:text-emerald-400 tracking-widest uppercase transition-colors">
+        <span className="inline-block mt-4 text-xs text-zinc-600 group-hover:text-gold tracking-widest uppercase transition-colors">
           View &rarr;
         </span>
       )}
@@ -42,7 +42,7 @@ function WorkCard({ item }: { item: WorkItem }) {
         href={item.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group block border border-zinc-800 p-6 hover:border-emerald-500/30 transition-colors"
+        className="group block border border-zinc-800 p-6 hover:border-gold/30 transition-colors"
       >
         {content}
       </a>
@@ -63,14 +63,14 @@ export default function WorkPage() {
       <header className="px-6 md:px-8 pt-10 pb-8 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link
           href="/"
-          className="text-xs text-zinc-600 hover:text-emerald-400 tracking-widest uppercase transition-colors"
+          className="text-xs text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
         >
           &larr; Home
         </Link>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link
             href="/research"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Research
           </Link>
@@ -78,19 +78,19 @@ export default function WorkPage() {
             href="https://marketingembeddings.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Marketing Embeddings
           </a>
           <Link
             href="/projects"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             Quick Builds
           </Link>
           <Link
             href="/about"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors"
+            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
           >
             About
           </Link>
