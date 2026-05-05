@@ -221,15 +221,7 @@ export default function Home() {
             vas
           </Link>
         </p>
-        <a
-          href="https://marketingembeddings.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[11px] tracking-wide hover:text-neutral-400 transition-colors"
-          style={{ color: "#3A3A3A" }}
-        >
-          Marketing Embeddings
-        </a>
+        <span />
       </footer>
     </div>
   );
