@@ -71,7 +71,7 @@ export default function Home() {
             </h1>
 
             <p
-              className="mt-6 md:mt-8 max-w-md"
+              className="mt-6 md:mt-8 whitespace-nowrap"
               style={{
                 fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
                 color: "#666666",
