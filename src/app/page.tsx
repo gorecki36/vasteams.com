@@ -10,10 +10,10 @@ export default function Home() {
       }}
     >
       {/* Header */}
-      <header className="px-6 md:px-10 pt-8 flex items-center justify-between relative z-10">
+      <header className="px-5 md:px-10 pt-6 md:pt-8 flex items-center justify-between relative z-10">
         <div>
           <span
-            className="text-xl font-bold tracking-widest"
+            className="text-2xl md:text-3xl font-bold tracking-widest"
             style={{
               color: "#E5E5E5",
               fontFamily: "var(--font-geist-mono), monospace",
@@ -23,16 +23,32 @@ export default function Home() {
             <span style={{ color: "#3A3A3A" }}>//</span>
           </span>
           <p
-            className="text-[10px] tracking-[0.25em] uppercase mt-0.5"
+            className="text-[11px] md:text-xs tracking-[0.25em] uppercase mt-1"
             style={{ color: "#525252" }}
           >
             Research, Build, Repeat.
           </p>
         </div>
-        <nav className="flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6">
           {[
             { href: "/research", label: "Research" },
             { href: "/work", label: "Work" },
+            { href: "/projects", label: "Builds" },
+            { href: "/about", label: "About" },
+          ].map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-sm tracking-widest uppercase hover:text-gold transition-colors"
+              style={{ color: "#525252" }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        {/* Mobile nav */}
+        <nav className="flex md:hidden items-center gap-4">
+          {[
             { href: "/projects", label: "Builds" },
             { href: "/about", label: "About" },
           ].map((link) => (
@@ -49,13 +65,13 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex items-center px-6 md:px-10 relative">
-        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-0">
+      <main className="flex-1 flex items-center px-5 md:px-10 relative">
+        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-12 md:gap-0">
           {/* Left: type */}
           <div className="flex-1 md:pr-8">
             <h1
               style={{
-                fontSize: "clamp(3rem, 9vw, 7.5rem)",
+                fontSize: "clamp(3.5rem, 10vw, 9rem)",
                 lineHeight: 1.05,
                 fontWeight: 200,
                 color: "#E5E5E5",
@@ -71,21 +87,20 @@ export default function Home() {
             </h1>
 
             <p
-              className="mt-6 md:mt-8 whitespace-nowrap"
+              className="mt-6 md:mt-8"
               style={{
-                fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
+                fontSize: "clamp(0.95rem, 1.8vw, 1.2rem)",
                 color: "#666666",
                 lineHeight: 1.7,
                 fontWeight: 300,
               }}
             >
-              When answers are free, questions are
-              the only advantage left.
+              When answers are free, questions are the only advantage left.
             </p>
           </div>
 
           {/* Right: black omega with gold halo */}
-          <div className="flex-shrink-0 relative flex items-center justify-center">
+          <div className="w-full md:w-auto flex-shrink-0 relative flex items-center justify-center md:justify-end">
             {/* Outer halo: wide, soft gold bloom */}
             <div
               className="absolute blur-[120px] opacity-25"
@@ -134,7 +149,7 @@ export default function Home() {
             <span
               className="relative select-none"
               style={{
-                fontSize: "clamp(12rem, 30vw, 24rem)",
+                fontSize: "clamp(14rem, 35vw, 28rem)",
                 lineHeight: 0.85,
                 fontWeight: 200,
                 color: "#000000",
@@ -148,7 +163,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="px-6 md:px-10 py-6 flex items-center justify-between relative z-10">
+      <footer className="px-5 md:px-10 py-6 flex items-center justify-between relative z-10">
         <p className="text-[11px] tracking-wide" style={{ color: "#3A3A3A" }}>
           built by{" "}
           <Link href="/about" className="hover:text-neutral-400 transition-colors" style={{ color: "#3A3A3A" }}>
