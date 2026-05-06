@@ -7,9 +7,22 @@ export interface ResearchItem {
   partner?: string;
   href: string;
   external?: boolean;
+  image?: string;
 }
 
 export const RESEARCH: ResearchItem[] = [
+  {
+    id: "built-to-report-not-drive",
+    title: "Built to Report, Not to Drive: What Separates the Top 30% of Marketers",
+    description:
+      "MMA and Marketbridge research finds most marketing analytics systems explain performance but don't improve it. Only 30% of marketers consistently use data to drive strategic decisions.",
+    date: "2026-04-08",
+    type: "webinar",
+    partner: "Marketbridge",
+    href: "https://mmaglobal.com/webinars/built-report-not-drive-what-separates-top-30-marketers",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/s20260408a94123am-20260408.jpg?itok=YY4XS2bn",
+  },
   {
     id: "brand-marketing-accountability",
     title: "The State of Brand Marketing Accountability",
@@ -20,6 +33,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "Wpromote",
     href: "https://mmaglobal.com/webinars/state-brand-marketing-accountability",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/webinarsd-20230512_12.png?itok=4i1m5I4K",
   },
   {
     id: "state-of-performance",
@@ -31,6 +45,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "Adobe",
     href: "https://mmaglobal.com/webinars/state-performance-marketing",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/webinarsd-20230512_12.png?itok=4i1m5I4K",
   },
   {
     id: "state-of-personalization",
@@ -42,6 +57,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "EY / Monks",
     href: "https://mmaglobal.com/webinar-state-personalization-november-4-2025",
     external: true,
+    image: "https://mmaglobal.com/files/styles/medium/public/features/mma-education-decoding-ai-1_-_78_2.png?itok=I0YLnw3A",
   },
   {
     id: "state-of-consumer-ai",
@@ -53,6 +69,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "Kantar",
     href: "https://mmaglobal.com/webinars/state-consumer-ai",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/webinarsd-20230512_6.png?itok=-6TbE-Np",
   },
   {
     id: "state-of-video-ctv-2025",
@@ -64,6 +81,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "Teads",
     href: "https://mmaglobal.com/news/new-study-teads-and-mma-reveals-video-most-essential-marketing-tactic",
     external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/s20250916a125305_am-20250916_0.jpg?itok=GJzD5UeO",
   },
   {
     id: "cmo-summit-2025",
@@ -84,6 +102,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "report",
     href: "https://mmaglobal.com/consortium-for-ai-personalization",
     external: true,
+    image: "https://www.mmaglobal.com/files/upload/group2327-20230803.png",
   },
   {
     id: "ai-operating-model-bcg",
@@ -95,6 +114,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "BCG",
     href: "https://mmaglobal.com/ai-driven-operating-model",
     external: true,
+    image: "https://mmaglobal.com/files/logos/bcg_monogram_cmyk_green_002-1.png",
   },
   {
     id: "breakthroughs-audience-strategy",
@@ -106,6 +126,7 @@ export const RESEARCH: ResearchItem[] = [
     partner: "TransUnion",
     href: "https://www.mmaglobal.com/webinars/breakthroughs-audience-strategy-debunking-short-and-long-term-myth-marketing",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/mmawebinarseriesrevsolution-20230510_0_0.png?itok=9u6bUMQu",
   },
   {
     id: "brandnomics",
@@ -116,6 +137,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://www.mmaglobal.com/webinars/revolution-series-revolutionizing-brand-marketing",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/mmawebinarseriesrevsolution-20230510_0.png?itok=_shmxBTt",
   },
   {
     id: "state-of-mta-2024",
@@ -126,6 +148,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://www.mmaglobal.com/webinars/state-multi-touch-attribution-2024",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/default_images/mma-webinars-20221014.jpg?itok=nMZUhHWJ",
   },
   {
     id: "brand-as-performance-initiative",
@@ -137,12 +160,13 @@ export const RESEARCH: ResearchItem[] = [
     partner: "TransUnion",
     href: "https://mmaglobal.com/brand-as-performance-research-initiative",
     external: true,
+    image: "https://mmaglobal.com/files/upload/bap-sidebar-min.jpg",
   },
   {
     id: "actual-possibility-ai-alc",
     title: "The Actual Possibility of AI as Told by the Marketers from MMA's AI Leadership Coalition",
     description:
-      "Live demo of AI-generated personas research — compressing consumer insights from three months to three prompts. Demo starts at 14:30.",
+      "Live demo of AI-generated personas research — compressing consumer insights from three months to three prompts.",
     date: "2024-01-01",
     type: "talk",
     href: "https://www.youtube.com/watch?v=L6idxPVABdY",
@@ -168,6 +192,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/measurement-bridging-finance-marketing-gap",
     external: true,
+    image: "https://mmaglobal.com/files/styles/large/public/mmagreatdebatesmeasurement-20230510_0.png?itok=giwEUxWT",
   },
   {
     id: "state-of-gen-ai-2023",

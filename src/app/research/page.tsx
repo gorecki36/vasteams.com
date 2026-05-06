@@ -38,29 +38,41 @@ function ResearchRow({ item }: { item: ResearchItem }) {
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block py-5 border-b border-zinc-800/50 hover:border-gold/30 transition-colors"
+      className="group flex gap-5 py-5 border-b border-zinc-800/50 hover:border-gold/30 transition-colors"
     >
-      <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
-        <span className="text-[11px] text-zinc-600 tracking-widest uppercase shrink-0 w-28">
-          {formatDate(item.date)}
-        </span>
-        <span className="flex-1 text-sm text-zinc-300 group-hover:text-gold transition-colors">
-          {item.title}
-        </span>
-        <span className="flex items-center gap-3 shrink-0">
-          {item.partner && (
-            <span className="text-[10px] text-zinc-600 tracking-widest uppercase">
-              {item.partner}
-            </span>
-          )}
-          <span className="text-[10px] text-zinc-700 tracking-widest uppercase border border-zinc-800 px-2 py-0.5">
-            {TYPE_LABELS[item.type]}
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
+          <span className="text-[11px] text-zinc-600 tracking-widest uppercase shrink-0 w-28">
+            {formatDate(item.date)}
           </span>
-        </span>
+          <span className="flex-1 text-sm text-zinc-300 group-hover:text-gold transition-colors">
+            {item.title}
+          </span>
+          <span className="flex items-center gap-3 shrink-0">
+            {item.partner && (
+              <span className="text-[10px] text-zinc-600 tracking-widest uppercase">
+                {item.partner}
+              </span>
+            )}
+            <span className="text-[10px] text-zinc-700 tracking-widest uppercase border border-zinc-800 px-2 py-0.5">
+              {TYPE_LABELS[item.type]}
+            </span>
+          </span>
+        </div>
+        <p className="text-xs text-zinc-600 leading-relaxed mt-2 sm:ml-34 sm:pl-6 max-w-2xl">
+          {item.description}
+        </p>
       </div>
-      <p className="text-xs text-zinc-600 leading-relaxed mt-2 sm:ml-34 sm:pl-6 max-w-2xl">
-        {item.description}
-      </p>
+      {item.image && (
+        <div className="shrink-0 w-28 h-20 overflow-hidden rounded-sm bg-zinc-900 hidden sm:block">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={item.image}
+            alt=""
+            className="w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+          />
+        </div>
+      )}
     </a>
   );
 }
