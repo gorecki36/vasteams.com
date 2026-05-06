@@ -18,9 +18,11 @@ function WorkCard({ item }: { item: WorkItem }) {
         <h2 className="text-sm font-bold text-zinc-100 tracking-wide">
           {item.title}
         </h2>
-        <span className="text-[10px] text-zinc-700 tracking-widest uppercase">
-          {item.year}
-        </span>
+        {item.year && (
+          <span className="text-[10px] text-zinc-700 tracking-widest uppercase">
+            {item.year}
+          </span>
+        )}
       </div>
       <p className="text-[11px] text-gold/70 tracking-widest uppercase mb-3">
         {item.role}

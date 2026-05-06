@@ -3,14 +3,14 @@ export interface WorkItem {
   title: string;
   description: string;
   role: string;
-  year: string;
+  year?: string;
   href?: string;
 }
 
 export const WORK: WorkItem[] = [
   {
     id: "possible",
-    title: "POSSIBLE",
+    title: "POSSIBLE Marketing Event",
     description:
       "Built the positioning for POSSIBLE from scratch. Over three years it became the major industry event for marketing. Launched by MMA Global, later acquired by Hive.",
     role: "Positioning & Brand Strategy",
@@ -25,5 +25,13 @@ export const WORK: WorkItem[] = [
     role: "Repositioning & Identity",
     year: "2025",
     href: "https://mmaglobal.com/",
+  },
+  {
+    id: "mbriyo",
+    title: "Mbriyo Ventures",
+    description:
+      "Co-founded Mbriyo, a vertical AI investor and incubator, and developed its brand and positioning.",
+    role: "Co-founder & Venture Partner",
+    href: "https://mbriyo.ventures",
   },
 ];
