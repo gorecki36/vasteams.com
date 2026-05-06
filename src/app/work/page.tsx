@@ -5,7 +5,7 @@ import { WORK, type WorkItem } from "@/lib/work";
 export const metadata: Metadata = {
   title: "Brand Strategy & Positioning Work",
   description:
-    "Positioning, creative direction, and brand strategy by Vas Bakopoulos. Including POSSIBLE event and the MMA Global rebrand.",
+    "Positioning, marketing, and brand strategy by Vas Bakopoulos. Including POSSIBLE event, the MMA Global rebrand, and Mbriyo Ventures.",
   alternates: {
     canonical: "https://vasteams.com/work",
   },
@@ -105,7 +105,7 @@ export default function WorkPage() {
           Work
         </h1>
         <p className="text-sm text-zinc-500 leading-relaxed mb-12">
-          Positioning, creative direction, and brand strategy.
+          Positioning, marketing, and brand strategy.
         </p>
 
         <div className="flex flex-col gap-4">
