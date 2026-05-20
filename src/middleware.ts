@@ -37,5 +37,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/pulse/:path*", "/api/pulse/:path*", "/auth/:path*"],
+  matcher: ["/pulse/:path*", "/api/pulse/:path*", "/auth/:path*"],
 };
