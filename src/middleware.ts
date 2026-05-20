@@ -30,8 +30,16 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session — this is the whole point of the middleware
-  await supabase.auth.getUser();
+  // Refresh session — fail open if Supabase is slow/down so the page still loads
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    await supabase.auth.getUser();
+    clearTimeout(timeout);
+  } catch {
+    // Supabase unreachable or slow — let the request through without auth
+    return NextResponse.next({ request });
+  }
 
   return supabaseResponse;
 }
