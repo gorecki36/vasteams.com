@@ -17,28 +17,38 @@ import { computeReadinessFromBenchmarks } from "@/lib/roles";
 interface Props {
   history: HistoryPoint[];
   role: RoleDefinition | null;
+  technicalShare?: number; // 0-100 — if provided, multiplies readiness to get exposure
 }
 
 interface ChartPoint {
   date: string;
   label: string;
+  exposure: number;
   readiness: number;
   benchmarkCount: number;
 }
 
-export default function ReadinessTimeline({ history, role }: Props) {
+export default function ReadinessTimeline({ history, role, technicalShare }: Props) {
+  const shareMult = technicalShare != null ? technicalShare / 100 : 1;
+  const showingExposure = technicalShare != null;
+
   const chartData = useMemo(() => {
     if (!role || history.length === 0) return [];
-    return history.map((point): ChartPoint => ({
-      date: point.date,
-      label: new Date(point.date + "T00:00:00").toLocaleDateString("en-US", {
-        month: "short",
-        year: "2-digit",
-      }),
-      readiness: computeReadinessFromBenchmarks(role, point.benchmarks),
-      benchmarkCount: point.benchmarkCount,
-    }));
-  }, [history, role]);
+    return history.map((point): ChartPoint => {
+      const readiness = computeReadinessFromBenchmarks(role, point.benchmarks);
+      const exposure = Math.round(readiness * shareMult);
+      return {
+        date: point.date,
+        label: new Date(point.date + "T00:00:00").toLocaleDateString("en-US", {
+          month: "short",
+          year: "2-digit",
+        }),
+        readiness,
+        exposure,
+        benchmarkCount: point.benchmarkCount,
+      };
+    });
+  }, [history, role, shareMult]);
 
   if (chartData.length === 0) return null;
 
@@ -47,7 +57,7 @@ export default function ReadinessTimeline({ history, role }: Props) {
   return (
     <div className="border border-zinc-800 bg-zinc-900/30 p-4 mb-6">
       <h3 className="text-[11px] font-mono text-zinc-500 uppercase tracking-widest mb-4">
-        Readiness over time
+        {showingExposure ? "Career Exposure over time" : "Readiness over time"}
         {role && (
           <span className="text-zinc-600"> / {role.shortName}</span>
         )}
@@ -85,8 +95,13 @@ export default function ReadinessTimeline({ history, role }: Props) {
                 >
                   <div className="text-zinc-400">{d.label}</div>
                   <div className="text-emerald-400 font-bold mt-0.5">
-                    {d.readiness}% readiness
+                    {showingExposure ? `${d.exposure}% exposure` : `${d.readiness}% readiness`}
                   </div>
+                  {showingExposure && (
+                    <div className="text-zinc-600 mt-0.5">
+                      {d.readiness}% readiness × {technicalShare}% tech share
+                    </div>
+                  )}
                   <div className={`mt-0.5 ${partial ? "text-amber-500/70" : "text-zinc-600"}`}>
                     {d.benchmarkCount}/{BENCHMARK_COUNT} benchmarks
                     {partial && " (extrapolated)"}
@@ -97,7 +112,7 @@ export default function ReadinessTimeline({ history, role }: Props) {
           />
           <Area
             type="stepAfter"
-            dataKey="readiness"
+            dataKey={showingExposure ? "exposure" : "readiness"}
             stroke="#34d399"
             strokeWidth={1.5}
             fill="url(#emeraldGradient)"
