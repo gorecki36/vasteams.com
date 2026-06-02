@@ -99,7 +99,8 @@ const SOURCES = [
   { id: 16, label: 'IDC FutureScape 2026 / FinOps for AI', cite: 'IDC FutureScape 2026: by 2027, G1000 organizations will face up to 30% rise in underestimated AI infrastructure costs. FinOps mandate expands to cover AI consumption. Citi posts "FinOps Analytics Architect (Agentic AI Expertise)" role, April 2026.' },
   { id: 17, label: '2026 AI data-center capex aggregate (Fortune, March 2026)', cite: 'Collective 2026 AI data-center investment across Meta, Google, Amazon, OpenAI, Anthropic and others projected at $630B–$700B, a 62% jump from 2025. Total AI-related data-center capex expected to reach $5.2T by 2030. Fortune, March 2026.' },
   { id: 18, label: 'Meta Hyperion (Bloomberg / The Next Web, 2026)', cite: 'Meta\'s Hyperion data center campus in Richland Parish, Louisiana: planned investment >$200B per Bloomberg, $27B Blue Owl-financed joint venture, 5 GW compute capacity, 10 gas-fired plants. Meta 2026 capex guidance: $125B–$145B, ~2× 2025. Bloomberg and The Next Web, 2026.' },
-  { id: 19, label: 'xAI Colossus 2 (Introl Blog / January 2026)', cite: 'xAI Colossus 2 Memphis facility: 555,000 NVIDIA GPUs at ~$18B, 2 GW total capacity, targeting 1M GPUs. Industry-wide lead times of 18–24 months on transformers and high-voltage switchgear. NVIDIA "token factory" framing at GTC 2026.' },
+  { id: 19, label: 'xAI Colossus 2 (Introl Blog / January 2026)', cite: 'xAI Colossus 2 Memphis facility: 555,000 NVIDIA GPUs at ~$18B, 2 GW total capacity, targeting 1M GPUs. Industry-wide lead times of 18 to 24 months on transformers and high-voltage switchgear. NVIDIA "token factory" framing at GTC 2026.' },
+  { id: 20, label: 'How People Use ChatGPT (Chatterji et al., NBER #34255, Sept 2025)', cite: 'Chatterji, Cunningham, Deming, Hitzig, Ong, Shan, Wadman. "How People Use ChatGPT" (NBER Working Paper #34255, also published by OpenAI). Aggregate ChatGPT messages grew from 451M/day (June 2024) to 2.63B/day (June 2025), a 5.8× message growth against ~3.2× user growth, implying messages per active user roughly doubled. Within fixed cohorts: Q1 2023 cohort +40% over two years; Q4 2024 cohort nearly 2× in under a year. https://www.nber.org/papers/w34255' },
 ];
 
 // Phase definitions
@@ -599,7 +600,7 @@ function Evidence() {
           lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
         }}>
           One variable is falling.<br />
-          The other four are rising.
+          The other three are rising.
         </h2>
         <p style={{
           fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
@@ -607,8 +608,8 @@ function Evidence() {
         }}>
           The headline narrative is that AI gets cheaper every year. The data
           confirms one piece of that. Price per token does fall, sharply.
-          But it's only one of five variables that determine total cost. The
-          other four are all rising, and rising faster than price is falling.
+          But it's only one of four variables that determine total cost. The
+          other three are all rising, and rising faster than price is falling.
           Here's what each one is doing.
         </p>
       </div>
@@ -626,7 +627,7 @@ function Evidence() {
             <span style={{
               fontFamily: FF_MONO, fontSize: 10, color: C.muted,
               letterSpacing: '0.15em',
-            }}>Variable 1 of 5</span>
+            }}>Variable 1 of 4</span>
           </div>
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
@@ -688,7 +689,7 @@ function Evidence() {
         color: C.ink, letterSpacing: '-0.015em',
         margin: '40px 0 24px', maxWidth: 700, lineHeight: 1.3,
       }}>
-        But these four variables are all rising, and together they overwhelm the price fall.
+        But these three variables are all rising, and together they overwhelm the price fall.
       </h3>
 
       {/* 2×2 grid of rising findings */}
@@ -725,8 +726,12 @@ function Evidence() {
             fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
             color: C.inkSoft, marginTop: 14, marginBottom: 16,
           }}>
-            Reasoning workloads use 25× the tokens of chat; agentic loops use 200×
-            or more. As tools auto-escalate, the same task quietly costs more<Cite n={[10, 11]} />.
+            Reasoning workloads use about 25× the tokens of a chat turn; agentic
+            loops 200× or more<Cite n={[10, 11]} />. And users are choosing those
+            heavier modes more often: Anthropic's Economic Index shows directive
+            task delegation, where the user hands off a task and lets the model
+            run, rising from 27% to 39% in eight months<Cite n={8} />. Every step
+            toward delegation moves the average task into a heavier tier.
           </p>
           {/* Mini bar chart */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
@@ -777,27 +782,30 @@ function Evidence() {
             fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
             color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
             fontVariationSettings: '"opsz" 96', marginTop: 6,
-          }}>+44%</div>
+          }}>~2×</div>
           <div style={{
             fontFamily: FF_MONO, fontSize: 10, color: C.muted,
             letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
-          }}>Directive delegation, 8-month window</div>
+          }}>Messages per active user, 12-month change</div>
           <p style={{
             fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
             color: C.inkSoft, marginTop: 14, marginBottom: 16,
           }}>
-            Anthropic's Economic Index shows directive task delegation rising from
-            27% to 39% in eight months<Cite n={8} />. Gartner forecasts AI agent
-            spending growing 4.4× from $86B to $376B between 2025 and 2027<Cite n={9} />.
+            OpenAI's own usage study finds messages per active ChatGPT user roughly
+            doubled between mid-2024 and mid-2025. Within fixed signup cohorts,
+            newer users (late 2024) nearly doubled their daily messages in under
+            a year; the original 2023 cohort sent about 40% more messages per day
+            two years in<Cite n={20} />. Same users, more requests.
           </p>
-          {/* Mini visual: 27 → 39 */}
+          {/* Mini visual: messages/day per active user, 2024 → 2025 */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: 14, marginTop: 8,
             padding: '10px 14px', background: C.paperSoft, borderRadius: 3,
           }}>
             <span style={{
-              fontFamily: FF_DISPLAY, fontSize: 22, color: C.muted, fontWeight: 500,
-            }}>27%</span>
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+            }}>Jun '24</span>
             <span style={{ flex: 1, height: 2, background: C.ochre, position: 'relative' }}>
               <span style={{
                 position: 'absolute', right: -6, top: -4,
@@ -808,87 +816,16 @@ function Evidence() {
               }} />
             </span>
             <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+            }}>Jun '25</span>
+            <span style={{
               fontFamily: FF_DISPLAY, fontSize: 22, color: C.ox, fontWeight: 500,
-            }}>39%</span>
+              marginLeft: 4,
+            }}>~2×</span>
           </div>
         </div>
 
-        {/* Users with seats — and the seat price is rising too */}
-        <div style={{
-          padding: 28, background: C.paper,
-          border: `1px solid ${C.hair}`, borderRadius: 4,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-            <Tag color={C.ox} bg={C.paper} size={10}>↑ Rising</Tag>
-            <span style={{
-              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
-              letterSpacing: '0.15em',
-            }}>Variable 4</span>
-          </div>
-          <div style={{
-            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
-            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
-          }}>Seats and seat prices</div>
-          <div style={{
-            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
-            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
-            fontVariationSettings: '"opsz" 96', marginTop: 6,
-          }}>+17%</div>
-          <div style={{
-            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
-            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
-          }}>Copilot Business · July 2026 hike
-          </div>
-          <p style={{
-            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
-            color: C.inkSoft, marginTop: 14, marginBottom: 16,
-          }}>
-            Microsoft 365 Copilot now spans three tiers: Business $18 to $21, Pro $20,
-            Enterprise $30/user/month<Cite n={7} />. Adoption climbs (50 seats becomes
-            5,000) while the seat price itself rises. Even the "flat" layer of the
-            stack isn't flat.
-          </p>
-          {/* Three-tier visual */}
-          <div style={{
-            display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8,
-          }}>
-            {[
-              { label: 'Business', value: 18, after: 21, color: C.sage },
-              { label: 'Pro', value: 20, after: 20, color: C.ochre },
-              { label: 'Enterprise', value: 30, after: 30, color: C.ox },
-            ].map((t) => (
-              <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{
-                  fontFamily: FF_MONO, fontSize: 10, color: C.muted, width: 80,
-                }}>{t.label}</span>
-                <div style={{
-                  flex: 1, height: 10, background: C.hairSoft,
-                  borderRadius: 1, overflow: 'hidden', position: 'relative',
-                }}>
-                  <div style={{
-                    width: `${(t.value / 30) * 100}%`, height: '100%',
-                    background: t.color, opacity: 0.55,
-                  }} />
-                  {t.after > t.value && (
-                    <div style={{
-                      position: 'absolute', top: 0,
-                      left: `${(t.value / 30) * 100}%`,
-                      width: `${((t.after - t.value) / 30) * 100}%`,
-                      height: '100%',
-                      background: t.color,
-                      borderLeft: `1px dashed ${C.paper}`,
-                    }} />
-                  )}
-                </div>
-                <span style={{
-                  fontFamily: FF_MONO, fontSize: 10, color: t.color, fontWeight: 500, width: 56,
-                }}>
-                  ${t.value}{t.after > t.value && <span style={{ color: C.ox }}>→${t.after}</span>}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Governance overhead */}
         <div style={{
@@ -900,7 +837,7 @@ function Evidence() {
             <span style={{
               fontFamily: FF_MONO, fontSize: 10, color: C.muted,
               letterSpacing: '0.15em',
-            }}>Variable 5</span>
+            }}>Variable 4</span>
           </div>
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
@@ -1062,7 +999,7 @@ function Evidence() {
             This capex has to be paid back, and the labs are already raising prices
             on flagship models to do it (GPT-5.5, Claude Opus, Gemini 3.5 Flash all
             up YoY). <strong style={{ color: C.ink }}>(2)</strong> Even at falling
-            per-token prices, the four other variables are still rising. Agentic
+            per-token prices, the three other variables are still rising. Agentic
             workloads will absorb every efficiency gain and ask for more.{' '}
             <strong style={{ color: C.ink }}>(3)</strong> Power, transformers, and
             land are the new bottlenecks. Even with $700B committed, hyperscalers
@@ -1088,7 +1025,7 @@ function Evidence() {
           fontVariationSettings: '"opsz" 36',
         }}>
           Even granting the bull case, that $700B in 2026 capex keeps token prices
-          falling, the other four variables are rising fast enough that total enterprise
+          falling, the other three variables are rising fast enough that total enterprise
           spend keeps climbing. Price is the <em style={{ color: C.ochreSoft }}>smallest
           moving variable</em> in the system, in either direction.
         </p>
