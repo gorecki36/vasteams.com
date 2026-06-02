@@ -78,45 +78,6 @@ const COST_LAYERS = [
   { key: 'governance', name: 'Governance', color: '#7A1F2B', desc: 'Evals, audit, review, security, vendor management. New category. Grows with stakes.' },
 ];
 
-// News events anchored to the timeline. Drives event markers on the chart.
-const EVENTS = [
-  {
-    year: '2023',
-    label: 'GPT-4 turbo cuts prices 3×',
-    body: 'OpenAI announces GPT-4 Turbo at $10/M input. The "tokens always get cheaper" narrative crystallizes.',
-    tone: 'down',
-  },
-  {
-    year: '2024',
-    label: 'Copilot becomes the default seat',
-    body: 'Microsoft 365 Copilot ships broadly at $30/user/month. Enterprise AI begins to look like SaaS — predictable, seat-priced.',
-    tone: 'flat',
-  },
-  {
-    year: '2025',
-    label: 'Claude Code arrives. Tokenmaxxing begins.',
-    body: 'Anthropic launches Claude Code. Inside Meta, Amazon, and Microsoft, internal leaderboards rank engineers by token consumption. Agentic workloads explode.',
-    tone: 'up',
-  },
-  {
-    year: '2026',
-    label: 'Microsoft cancels. Uber burns through.',
-    body: 'Microsoft cancels Claude Code licenses in its Experiences & Devices division (June 30, 2026 deadline). Uber reports burning through its 2026 token budget in four months. CFOs notice. Fortune declares tokenmaxxing dead.',
-    tone: 'up', anchor: true,
-  },
-  {
-    year: '2027',
-    label: 'Inference becomes the constraint',
-    body: 'Hyperscalers report $280B+ in 2026 AI infrastructure capex. Token throughput becomes the binding constraint — not algorithm quality. NVIDIA reframes data centers as "token factories."',
-    tone: 'up',
-  },
-  {
-    year: '2028',
-    label: 'Token rationing inside the enterprise',
-    body: 'Companies begin issuing daily token credits to employees. FinOps teams expand mandate to AI. The "AI Cost Engineer" appears in job postings.',
-    tone: 'governance',
-  },
-];
 
 // Sources — visible references
 const SOURCES = [
@@ -361,7 +322,7 @@ function ThreePhases() {
 
   return (
     <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="05">The Three Phases</Eyebrow>
+      <Eyebrow num="04">The Three Phases</Eyebrow>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
@@ -526,7 +487,7 @@ function ThreePhases() {
 function CostFormula() {
   return (
     <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="02">The Real Cost Formula</Eyebrow>
+      <Eyebrow num="01">The Real Cost Formula</Eyebrow>
 
       <h2 style={{
         fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
@@ -539,6 +500,22 @@ function CostFormula() {
       <p style={{
         fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
         color: C.inkSoft, marginTop: 24, maxWidth: 720,
+      }}>
+        Three things happened in the last six months. Uber burned through
+        its entire 2026 token budget in four months<Cite n={13} />. Meta
+        dismantled its internal tokenmaxxing leaderboard after Amazon
+        employees were caught running unnecessary AI agents to inflate
+        usage numbers tied to performance reviews<Cite n={14} />. NVIDIA
+        started calling its facilities token factories instead of data
+        centers, with inference framed as the binding constraint on
+        AI deployment<Cite n={15} />. The pattern is the same in all three.
+        AI cost has stopped looking like SaaS, and the people who sign
+        the checks have started to notice.
+      </p>
+
+      <p style={{
+        fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+        color: C.inkSoft, marginTop: 20, maxWidth: 720,
       }}>
         Most analysis treats AI like pure API consumption. Most enterprises buy it like SaaS<Cite n={7} />.
         The truth is both, layered. Seat licenses absorb the cost of chat work. Consumption
@@ -611,7 +588,7 @@ function Evidence() {
 
   return (
     <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="03">The Evidence</Eyebrow>
+      <Eyebrow num="02">The Evidence</Eyebrow>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
@@ -1121,148 +1098,12 @@ function Evidence() {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// §01 The Trajectory — news-anchored macro picture, no charts
+// REMOVED: §01 The Trajectory (news-anchored timeline).
+// Key anchors (Uber budget burnout, tokenmaxxing era ending, NVIDIA
+// token factories) folded into the opening of §01 The Cost Formula.
+// Speculative 2027/2028 entries dropped: misdated 2026 events
+// presented as forecast, and unsourced speculation.
 // ─────────────────────────────────────────────────────────────────
-function ExpansionTrajectory() {
-  return (
-    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="01">The Trajectory</Eyebrow>
-
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
-        marginBottom: 56,
-      }} className="trajectory-intro">
-        <h2 style={{
-          fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
-          lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
-        }}>
-          Enterprise AI economics, in headlines.
-        </h2>
-        <p style={{
-          fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
-          color: C.inkSoft, margin: 0, maxWidth: 540,
-        }}>
-          Before the math, the news. Each year of the AI buildout has been
-          punctuated by a headline that shifted what enterprises thought they
-          were buying. Cheaper tokens, then default seats, then leaderboards
-          ranking engineers by consumption, then the first public budget blowups,
-          then a buildout race with hundreds of billions in commitments. The
-          rest of this paper is an attempt to read what these headlines, taken
-          together, are actually saying.
-        </p>
-      </div>
-
-      {/* News events anchored to the timeline */}
-      <ol style={{
-        margin: 0, padding: 0, listStyle: 'none',
-      }}>
-        {EVENTS.map((e) => {
-          const toneColor =
-            e.tone === 'down' ? C.sage :
-            e.tone === 'up' ? C.ox :
-            e.tone === 'governance' ? C.ochre :
-            C.muted;
-          return (
-            <li
-              key={e.year}
-              style={{
-                padding: '22px 0',
-                borderTop: `1px solid ${C.hair}`,
-                display: 'grid',
-                gridTemplateColumns: '90px 1fr',
-                gap: 32,
-                alignItems: 'baseline',
-                background: e.anchor ? C.paperSoft : 'transparent',
-                paddingLeft: e.anchor ? 20 : 0,
-                paddingRight: e.anchor ? 20 : 0,
-                marginLeft: e.anchor ? -20 : 0,
-                marginRight: e.anchor ? -20 : 0,
-              }}
-            >
-              <div style={{
-                fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
-                color: e.anchor ? C.ox : C.ink, letterSpacing: '-0.02em',
-                lineHeight: 1, display: 'flex', alignItems: 'baseline', gap: 8,
-              }}>
-                {e.year}
-                <span style={{
-                  width: 10, height: 10, background: toneColor, borderRadius: 5,
-                  display: 'inline-block',
-                }} />
-              </div>
-              <div>
-                <div style={{
-                  fontFamily: FF_DISPLAY, fontSize: 20, fontWeight: 500,
-                  color: C.ink, letterSpacing: '-0.01em', marginBottom: 6,
-                }}>
-                  {e.label}
-                  {e.anchor && (
-                    <span style={{
-                      marginLeft: 10, fontFamily: FF_MONO, fontSize: 10,
-                      color: C.ox, letterSpacing: '0.14em', textTransform: 'uppercase',
-                      fontWeight: 600, fontStyle: 'normal',
-                    }}>· now</span>
-                  )}
-                </div>
-                <div style={{
-                  fontFamily: FF_BODY, fontSize: 14.5, color: C.inkSoft,
-                  lineHeight: 1.6, maxWidth: 760,
-                }}>{e.body}</div>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-
-      <div style={{
-        marginTop: 24, display: 'flex', gap: 24, flexWrap: 'wrap',
-        fontFamily: FF_MONO, fontSize: 10, color: C.muted,
-        letterSpacing: '0.12em', textTransform: 'uppercase',
-      }}>
-        <span><span style={{
-          display: 'inline-block', width: 8, height: 8, background: C.sage,
-          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
-        }} />Prices fall</span>
-        <span><span style={{
-          display: 'inline-block', width: 8, height: 8, background: C.ox,
-          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
-        }} />Costs rise</span>
-        <span><span style={{
-          display: 'inline-block', width: 8, height: 8, background: C.ochre,
-          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
-        }} />Governance arrives</span>
-      </div>
-
-      <p style={{
-        marginTop: 28, fontFamily: FF_MONO, fontSize: 11,
-        color: C.muted, lineHeight: 1.6, fontStyle: 'italic',
-      }}>
-        Sources: The Verge<Cite n={12} />, Fortune<Cite n={14} />, TechRadar<Cite n={12} />,
-        NVIDIA GTC 2026<Cite n={15} />, IDC FutureScape 2026<Cite n={16} />.
-      </p>
-
-      {/* Handoff to formula */}
-      <div style={{
-        marginTop: 56, padding: '28px 32px',
-        background: C.ink, color: C.paper, borderRadius: 4,
-      }}>
-        <div style={{
-          fontFamily: FF_MONO, fontSize: 10, color: C.paperSoft,
-          letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 10,
-        }}>What these headlines have in common</div>
-        <p style={{
-          fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.5,
-          color: C.paper, margin: 0, maxWidth: 880,
-          fontVariationSettings: '"opsz" 36',
-        }}>
-          Each of these stories is the same underlying math, surfacing in
-          different parts of the enterprise. The next section sets out
-          that math.
-        </p>
-      </div>
-    </section>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────
 // §04 The Cost Stack — chart + layers + two motions, after the math
@@ -1319,7 +1160,7 @@ function CostStack() {
 
   return (
     <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="04">The Cost Stack</Eyebrow>
+      <Eyebrow num="03">The Cost Stack</Eyebrow>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
@@ -1645,7 +1486,7 @@ function CostEngineer() {
 
   return (
     <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="06">The Moving Constraint</Eyebrow>
+      <Eyebrow num="05">The Moving Constraint</Eyebrow>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
@@ -1789,7 +1630,7 @@ function CostEngineer() {
 function Sources() {
   return (
     <section style={{ padding: '80px 0 40px', borderTop: `1px solid ${C.hair}` }}>
-      <Eyebrow num="07">Sources & Method</Eyebrow>
+      <Eyebrow num="06">Sources & Method</Eyebrow>
 
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 64,
@@ -1959,7 +1800,6 @@ function App() {
         padding: '0 clamp(20px, 4vw, 56px)',
       }}>
         <Hero />
-        <ExpansionTrajectory />
         <CostFormula />
         <Evidence />
         <CostStack />
