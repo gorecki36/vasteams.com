@@ -116,7 +116,7 @@ const PHASES = [
   },
   {
     n: 3, name: 'Disciplined Value Realization', years: '2027+',
-    body: 'The organization starts choosing what AI should do and at what cost. Cheaper models handle routine work; agents are budgeted; outputs are evaluated for business impact, not just accuracy. Total spend still grows — but in proportion to the revenue or outcomes it creates, because every increment is now intentional.',
+    body: 'The organization starts choosing what AI should do and at what cost. Cheaper models handle routine work; agents are budgeted; outputs are evaluated for business impact, not just accuracy. Total spend still grows, but in proportion to the revenue or outcomes it creates, because every increment is now intentional.',
     cost: 'Rises with revenue', value: 'Measurable', tint: C.ochre,
   },
 ];
@@ -167,19 +167,19 @@ const Cite = ({ n }) => {
 
 const Eyebrow = ({ children, num }) => (
   <div style={{
-    display: 'flex', alignItems: 'baseline', gap: 16,
-    marginBottom: 24, paddingBottom: 12,
+    display: 'flex', alignItems: 'baseline', gap: 18,
+    marginBottom: 32, paddingBottom: 16,
     borderBottom: `1px solid ${C.hair}`,
   }}>
     {num && (
       <span style={{
-        fontFamily: FF_MONO, fontSize: 11, color: C.muted,
-        letterSpacing: '0.15em',
+        fontFamily: FF_MONO, fontSize: 15, color: C.ox,
+        letterSpacing: '0.14em', fontWeight: 500,
       }}>§ {num}</span>
     )}
     <span style={{
-      fontFamily: FF_MONO, fontSize: 11, color: C.ink,
-      letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500,
+      fontFamily: FF_MONO, fontSize: 15, color: C.ink,
+      letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
     }}>{children}</span>
   </div>
 );
@@ -233,10 +233,10 @@ function Hero() {
       <p style={{
         fontFamily: FF_DISPLAY, fontWeight: 400, fontStyle: 'italic',
         fontSize: 'clamp(20px, 2.3vw, 28px)', lineHeight: 1.35,
-        color: C.inkSoft, maxWidth: 820, marginTop: 32,
+        color: C.inkSoft, marginTop: 32,
         fontVariationSettings: '"opsz" 36',
       }}>
-        How AI costs are changing inside the enterprise — and why the
+        How AI costs are changing inside the enterprise, and why the
         headline that prices keep falling tells only part of the story.
       </p>
 
@@ -260,14 +260,14 @@ function Hero() {
         <Stat
           value="31×"
           label="Modeled total cost increase"
-          sub="100-person marketing org, 2023 → 2026 — even with per-token prices falling roughly 90% over the period."
+          sub="100-person marketing org, 2023 to 2026, even with per-token prices falling roughly 90% over the period."
           color={C.ink} big cite={[4, 5, 6]}
         />
       </div>
 
       <p style={{
         fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.55,
-        color: C.ink, marginTop: 80, maxWidth: 760,
+        color: C.ink, marginTop: 80, textAlign: 'justify',
         fontVariationSettings: '"opsz" 36',
       }}>
         Token prices are falling. Hyperscaler capex is rising. Enterprise AI
@@ -344,10 +344,10 @@ function ThreePhases() {
           }}>
             §04 shows what cost does <em>by default</em>: it keeps compounding as
             the AI footprint expands. Underneath that trajectory sits an
-            organizational shape — three phases every company moves through.
+            organizational shape: three phases every company moves through.
             Phase 2 is where most companies are stuck<Cite n={[1, 3]} />: usage
             scales faster than measurement, and cost outruns realized value.
-            Phase 3 isn't a different cost curve baked into the world — it's
+            Phase 3 isn't a different cost curve baked into the world. It's
             what happens when an organization decides to intervene.
           </p>
 
@@ -420,7 +420,7 @@ function ThreePhases() {
           }}>
             Phase 1: enthusiasm runs ahead of reality. Phase 2: cost overshoots
             both perceived and realized value. Phase 3: cost still grows, but
-            in proportion to the revenue or outcomes it creates — because the
+            in proportion to the revenue or outcomes it creates, because the
             organization has started choosing what AI should do, rather than
             letting every workload run on the default model.
           </p>
@@ -498,8 +498,8 @@ function CostFormula() {
       </h2>
 
       <p style={{
-        fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
-        color: C.inkSoft, marginTop: 24, maxWidth: 720,
+        fontFamily: FF_BODY, fontSize: 17, lineHeight: 1.7,
+        color: C.inkSoft, marginTop: 28, textAlign: 'justify',
       }}>
         Three things happened in the last six months. Uber burned through
         its entire 2026 token budget in four months<Cite n={13} />. Meta
@@ -514,8 +514,8 @@ function CostFormula() {
       </p>
 
       <p style={{
-        fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
-        color: C.inkSoft, marginTop: 20, maxWidth: 720,
+        fontFamily: FF_BODY, fontSize: 17, lineHeight: 1.7,
+        color: C.inkSoft, marginTop: 24, textAlign: 'justify',
       }}>
         Most analysis treats AI like pure API consumption. Most enterprises buy it like SaaS<Cite n={7} />.
         The truth is both, layered. Seat licenses absorb the cost of chat work. Consumption
@@ -606,7 +606,7 @@ function Evidence() {
           color: C.inkSoft, margin: 0, maxWidth: 540,
         }}>
           The headline narrative is that AI gets cheaper every year. The data
-          confirms one piece of that — price per token does fall, sharply.
+          confirms one piece of that. Price per token does fall, sharply.
           But it's only one of five variables that determine total cost. The
           other four are all rising, and rising faster than price is falling.
           Here's what each one is doing.
@@ -688,7 +688,7 @@ function Evidence() {
         color: C.ink, letterSpacing: '-0.015em',
         margin: '40px 0 24px', maxWidth: 700, lineHeight: 1.3,
       }}>
-        But these four variables are all rising — and together they overwhelm the price fall.
+        But these four variables are all rising, and together they overwhelm the price fall.
       </h3>
 
       {/* 2×2 grid of rising findings */}
@@ -828,7 +828,7 @@ function Evidence() {
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
             color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
-          }}>Seats — and seat prices</div>
+          }}>Seats and seat prices</div>
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
             color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
@@ -843,7 +843,7 @@ function Evidence() {
             fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
             color: C.inkSoft, marginTop: 14, marginBottom: 16,
           }}>
-            Microsoft 365 Copilot now spans three tiers — Business $18→$21, Pro $20,
+            Microsoft 365 Copilot now spans three tiers: Business $18 to $21, Pro $20,
             Enterprise $30/user/month<Cite n={7} />. Adoption climbs (50 seats becomes
             5,000) while the seat price itself rises. Even the "flat" layer of the
             stack isn't flat.
@@ -921,7 +921,7 @@ function Evidence() {
           }}>
             MIT finds 95% of GenAI pilots show no P&L impact<Cite n={1} />; BCG finds
             60% of firms report no benefit, only 5% see value at scale<Cite n={3} />.
-            Closing that gap requires evals, audit, review, security — none of
+            Closing that gap requires evals, audit, review, security. None of
             which existed as line items two years ago.
           </p>
           <div style={{
@@ -1053,22 +1053,22 @@ function Evidence() {
             letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 12,
           }}>The nuance</div>
           <p style={{
-            fontFamily: FF_BODY, fontSize: 14.5, lineHeight: 1.65,
-            color: C.inkSoft, margin: 0, maxWidth: 820,
+            fontFamily: FF_BODY, fontSize: 17, lineHeight: 1.7,
+            color: C.inkSoft, margin: 0, textAlign: 'justify',
           }}>
-            If this much compute comes online, per-token prices probably keep falling
-            — possibly faster than they have been. But three reasons the bull case
-            doesn't dissolve the thesis: <strong style={{ color: C.ink }}>(1)</strong>{' '}
-            this capex has to be paid back, and the labs are already raising prices
+            If this much compute comes online, per-token prices probably keep falling,
+            possibly faster than they have been. But three reasons the bull case
+            doesn't dissolve the thesis. <strong style={{ color: C.ink }}>(1)</strong>{' '}
+            This capex has to be paid back, and the labs are already raising prices
             on flagship models to do it (GPT-5.5, Claude Opus, Gemini 3.5 Flash all
             up YoY). <strong style={{ color: C.ink }}>(2)</strong> Even at falling
-            per-token prices, the four other variables are still rising — agentic
+            per-token prices, the four other variables are still rising. Agentic
             workloads will absorb every efficiency gain and ask for more.{' '}
             <strong style={{ color: C.ink }}>(3)</strong> Power, transformers, and
             land are the new bottlenecks. Even with $700B committed, hyperscalers
-            report lead times of 18–24 months on critical infrastructure
+            report lead times of 18 to 24 months on critical infrastructure
             components<Cite n={19} />. The race may be between supply expansion and
-            demand expansion — and demand is winning so far.
+            demand expansion, and demand is winning so far.
           </p>
         </div>
       </div>
@@ -1087,8 +1087,8 @@ function Evidence() {
           color: C.paper, margin: 0, maxWidth: 880,
           fontVariationSettings: '"opsz" 36',
         }}>
-          Even granting the bull case — that $700B in 2026 capex keeps token prices
-          falling — the other four variables are rising fast enough that total enterprise
+          Even granting the bull case, that $700B in 2026 capex keeps token prices
+          falling, the other four variables are rising fast enough that total enterprise
           spend keeps climbing. Price is the <em style={{ color: C.ochreSoft }}>smallest
           moving variable</em> in the system, in either direction.
         </p>
@@ -1400,7 +1400,7 @@ function CostStack() {
               fontFamily: FF_BODY, fontSize: 14, lineHeight: 1.6,
               color: C.paperSoft, margin: 0,
             }}>
-              The surface area of AI use grows year over year — from one
+              The surface area of AI use grows year over year, from one
               person's editor, to team workflows, to internal automation,
               to vendor replacement, to customer-facing product.
             </p>
@@ -1454,7 +1454,7 @@ function CostEngineer() {
       constraint: 'Relevance at scale',
       sub: 'Windows expanded. The question became what to put in them.',
       did: 'RAG pipelines, system prompts, tool definitions, agent harnesses, memory and state. The discipline that turned LLMs into systems that know your business.',
-      faded: 'Still essential — but no longer the binding constraint. Most teams now have at least one person who does this competently.',
+      faded: 'Still essential, but no longer the binding constraint. Most teams now have at least one person who does this competently.',
       color: C.ochre,
       status: 'recent',
     },
@@ -1478,7 +1478,7 @@ function CostEngineer() {
       constraint: 'Agency without alignment',
       sub: 'When AI can act, the hard question becomes what should it act on.',
       did: 'Defining what autonomous systems are optimizing for, who decides, how conflicting goals resolve, how goals update as the world changes, how multi-agent systems share or contest objectives across organizational boundaries.',
-      faded: 'Not yet a discipline. A direction. After all — we need to know what we are building toward and put it as a clear goal.',
+      faded: 'Not yet a discipline. A direction. After all, we need to know what we are building toward and put it as a clear goal.',
       color: C.muted,
       status: 'next',
     },
@@ -1506,7 +1506,7 @@ function CostEngineer() {
           Every era of AI engineering has been defined by what was scarce. When
           context was tiny, prompt craft was the whole game. When windows expanded,
           the work moved to what you put in them. Now that context and quality are
-          mostly solved, the binding constraint is the bill — and the discipline
+          mostly solved, the binding constraint is the bill, and the discipline
           that emerges to manage it is what we're calling cost engineering.
           What's next is the question worth watching.
         </p>
@@ -1610,7 +1610,7 @@ function CostEngineer() {
           The discipline that runs AI well shifts as the binding constraint
           shifts. The current constraint is cost. The next one is likely to
           be the harder question of <em style={{ color: C.ochreSoft }}>what
-          we're building toward</em> — and how to write that down clearly
+          we're building toward</em>, and how to write that down clearly
           enough for an autonomous system to act on it.
         </p>
         <div style={{
@@ -1649,7 +1649,7 @@ function Sources() {
             A working paper, not a report. Numbers in the simulator are illustrative;
             the frameworks (three phases, two cost models, three task tiers, EICI) are
             the contribution. Sources are public and citable. Tier weights are
-            practitioner estimates triangulated from published benchmarks — they are
+            practitioner estimates triangulated from published benchmarks. They are
             directional, not definitive.
           </p>
           <p style={{
