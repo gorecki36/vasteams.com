@@ -14,6 +14,17 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    id: "ai-economics",
+    title: "The Economics of Enterprise AI",
+    description:
+      "Where AI spend is heading from 2023 to 2030. The value realization gap, three cost phases, and what disciplined intervention looks like.",
+    href: "/ai-economics.html",
+    status: "live",
+    tags: ["AI", "economics", "data story"],
+    icon: "↗",
+    iconClass: "text-4xl text-gold",
+  },
+  {
     id: "pulse",
     title: "The Pulse",
     description:

@@ -84,11 +84,16 @@ export default function PortfolioHome() {
         </p>
       </header>
 
-      {/* Grid */}
+      {/* Grid: featured pair on row 1, three across on row 2 */}
       <main className="flex-1 px-8 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl">
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 max-w-6xl">
+          {PROJECTS.map((project, idx) => (
+            <div
+              key={project.id}
+              className={idx < 2 ? "lg:col-span-3" : "lg:col-span-2"}
+            >
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       </main>

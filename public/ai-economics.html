@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Economics of Enterprise AI · Marketing Embeddings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #F2EDE3; }
+  body { font-family: "IBM Plex Sans", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script crossorigin src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react" data-type="module">
+const { useState, useMemo } = React;
+const {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Area, Legend,
+} = Recharts;
+
+
+// ─────────────────────────────────────────────────────────────────
+// Design tokens — editorial, warm, research-grade
+// ─────────────────────────────────────────────────────────────────
+const C = {
+  paper: '#F2EDE3',
+  paperSoft: '#EAE4D6',
+  ink: '#15110D',
+  inkSoft: '#3A332C',
+  muted: '#6B5F52',
+  hair: 'rgba(21,17,13,0.12)',
+  hairSoft: 'rgba(21,17,13,0.06)',
+  ox: '#7A1F2B',
+  oxSoft: '#B8525D',
+  sage: '#2D4A40',
+  sageSoft: '#5B7A6E',
+  ochre: '#B8853A',
+  ochreSoft: '#D9B17E',
+};
+
+const FONTS_LINK = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap';
+
+const FF_DISPLAY = '"Fraunces", "Times New Roman", serif';
+const FF_BODY = '"IBM Plex Sans", system-ui, sans-serif';
+const FF_MONO = '"IBM Plex Mono", "SFMono-Regular", monospace';
+
+// ─────────────────────────────────────────────────────────────────
+// Data
+// ─────────────────────────────────────────────────────────────────
+
+// Modeled cost trajectory for a 100-person marketing org. Costs in $K annual.
+// 2023-2026 anchored to observable enterprise spend; 2027-2030 is modeled trend
+// assuming AI footprint continues to expand without explicit cost intervention.
+// Phase 3 / disciplined intervention shown separately in §05.
+const TRAJECTORY = [
+  { year: '2023', seat: 4,  usage: 5,   governance: 0,   total: 9,    stage: 'Personal productivity',  note: 'Early adopters. Mostly ChatGPT/Copilot pilots.' },
+  { year: '2024', seat: 14, usage: 24,  governance: 2,   total: 40,   stage: 'Team workflows',         note: 'Copilot rolls out. Reasoning use grows.' },
+  { year: '2025', seat: 26, usage: 80,  governance: 6,   total: 112,  stage: 'Internal automation',    note: 'Scheduled workflows. First agents arrive.' },
+  { year: '2026', seat: 36, usage: 215, governance: 32,  total: 283,  stage: 'Vendor replacement',     note: 'AI replaces some SaaS tools. Bills surprise CFOs.', anchor: true },
+  { year: '2027', seat: 42, usage: 380, governance: 70,  total: 492,  stage: 'Always-on agents',       note: 'Autonomous workflows compound.' },
+  { year: '2028', seat: 48, usage: 620, governance: 130, total: 798,  stage: 'Customer-facing AI',     note: 'AI in support, sales, onboarding.' },
+  { year: '2029', seat: 52, usage: 920, governance: 215, total: 1187, stage: 'AI in product',          note: 'Tokens enter COGS. Margin question opens.' },
+  { year: '2030', seat: 56, usage: 1280, governance: 320, total: 1656, stage: 'AI-native operations',   note: 'AI is the default tool, not a special one.' },
+];
+
+const COST_LAYERS = [
+  { key: 'seat',       name: 'Access',     color: '#2D4A40', desc: 'Seat licenses. SaaS-like. Predictable, falling as a share of total.' },
+  { key: 'usage',      name: 'Usage',      color: '#B8853A', desc: 'API consumption across all task tiers. Cloud-like. Compounds with adoption.' },
+  { key: 'governance', name: 'Governance', color: '#7A1F2B', desc: 'Evals, audit, review, security, vendor management. New category. Grows with stakes.' },
+];
+
+// News events anchored to the timeline. Drives event markers on the chart.
+const EVENTS = [
+  {
+    year: '2023',
+    label: 'GPT-4 turbo cuts prices 3×',
+    body: 'OpenAI announces GPT-4 Turbo at $10/M input. The "tokens always get cheaper" narrative crystallizes.',
+    tone: 'down',
+  },
+  {
+    year: '2024',
+    label: 'Copilot becomes the default seat',
+    body: 'Microsoft 365 Copilot ships broadly at $30/user/month. Enterprise AI begins to look like SaaS — predictable, seat-priced.',
+    tone: 'flat',
+  },
+  {
+    year: '2025',
+    label: 'Claude Code arrives. Tokenmaxxing begins.',
+    body: 'Anthropic launches Claude Code. Inside Meta, Amazon, and Microsoft, internal leaderboards rank engineers by token consumption. Agentic workloads explode.',
+    tone: 'up',
+  },
+  {
+    year: '2026',
+    label: 'Microsoft cancels. Uber burns through.',
+    body: 'Microsoft cancels Claude Code licenses in its Experiences & Devices division (June 30, 2026 deadline). Uber reports burning through its 2026 token budget in four months. CFOs notice. Fortune declares tokenmaxxing dead.',
+    tone: 'up', anchor: true,
+  },
+  {
+    year: '2027',
+    label: 'Inference becomes the constraint',
+    body: 'Hyperscalers report $280B+ in 2026 AI infrastructure capex. Token throughput becomes the binding constraint — not algorithm quality. NVIDIA reframes data centers as "token factories."',
+    tone: 'up',
+  },
+  {
+    year: '2028',
+    label: 'Token rationing inside the enterprise',
+    body: 'Companies begin issuing daily token credits to employees. FinOps teams expand mandate to AI. The "AI Cost Engineer" appears in job postings.',
+    tone: 'governance',
+  },
+];
+
+// Sources — visible references
+const SOURCES = [
+  { id: 1, label: 'MIT GenAI Divide (2025)', cite: 'MIT Media Lab. State of AI in Business 2025: The GenAI Divide. ~95% of enterprise GenAI pilots show little or no measurable P&L impact.' },
+  { id: 2, label: 'SAS / Coleman Parkes (2025)', cite: 'SAS and Coleman Parkes Research. AI in Marketing Survey 2025. 93% of CMOs and 83% of marketing teams report clear ROI from GenAI.' },
+  { id: 3, label: 'BCG AI at Scale (2025)', cite: 'Boston Consulting Group. AI at Scale Survey, n = 1,250+ global firms. 5% achieving measurable AI value at scale; 60% report little or no benefit.' },
+  { id: 4, label: 'Epoch AI / Artificial Analysis', cite: 'Epoch AI and Artificial Analysis benchmark tracking. Price for a given benchmark capability has fallen roughly 5×–10× per year for frontier models; algorithmic efficiency improving ~3× per year.' },
+  { id: 5, label: 'OpenAI Public Pricing (2026)', cite: 'OpenAI API pricing page. GPT-5.5: $5 input / $30 output per 1M tokens. GPT-5.4: $2.50 / $15. GPT-5.4 mini: $0.75 / $4.50. Tools priced separately: web search $10 per 1,000 calls.' },
+  { id: 6, label: 'Anthropic Public Pricing (2026)', cite: 'Anthropic API pricing page. Claude Sonnet 4.6: $3 input / $15 output per 1M tokens. Haiku 4.5: $1 / $5. Batch processing cuts prices by 50%.' },
+  { id: 7, label: 'Microsoft 365 Copilot Pricing (verified June 2026)', cite: 'Microsoft 365 Copilot tiered pricing as of June 2026: Copilot Business $18/user/month (promotional, rising to $21 on July 1, 2026), Copilot Pro $20/user/month, Copilot Enterprise $30/user/month. Source: Microsoft official pricing pages, March–April 2026.' },
+  { id: 8, label: 'Anthropic Economic Index', cite: 'Anthropic. Economic Index research on Claude usage. Directive task delegation rose from 27% to 39% over eight months; earlier patterns showed 43% automation / 57% augmentation.' },
+  { id: 9, label: 'Gartner AI Agent Forecast', cite: 'Gartner. AI agent spending forecast: $86.4B (2025) growing to $376.3B by 2027, with enterprise AI investment additive to IT budgets.' },
+  { id: 10, label: 'Barclays Reasoning Workload Estimate', cite: 'Barclays Research. Reasoning workloads consume roughly 25× the tokens of standard chatbot interactions.' },
+  { id: 11, label: 'AgencyBench / Agentic Studies', cite: 'AgencyBench and related agentic benchmarking. Agentic tasks typically consume ~1M tokens with dozens of tool calls; extreme cases reach 10M+.' },
+  { id: 12, label: 'Microsoft cancels Claude Code (The Verge / TechRadar, May 2026)', cite: 'Microsoft cancels most internal Claude Code licenses across its Experiences & Devices division by June 30, 2026; engineers redirected to GitHub Copilot CLI. Reported by Tom Warren (The Verge) and TechRadar, May 2026.' },
+  { id: 13, label: 'Uber 2026 token budget burnout (Fortune, May 2026)', cite: 'Uber reports burning through its entire 2026 token budget in four months due to high Claude Code usage. Fortune, May 2026.' },
+  { id: 14, label: 'Tokenmaxxing era ends (Fortune, May 2026)', cite: 'Meta dismantles internal tokenmaxxing leaderboard. Amazon employees reported running unnecessary AI agents to inflate usage stats tied to performance reviews. "Tokenmaxxing is over." Fortune, May 28, 2026.' },
+  { id: 15, label: 'NVIDIA: data centers become token factories (GTC 2026)', cite: 'Jensen Huang at GTC 2026: AI infrastructure is evolving from data centers into "token factories"; inference demand could grow by million-fold over two years. Hyperscaler 2026 AI infrastructure capex exceeds $280B.' },
+  { id: 16, label: 'IDC FutureScape 2026 / FinOps for AI', cite: 'IDC FutureScape 2026: by 2027, G1000 organizations will face up to 30% rise in underestimated AI infrastructure costs. FinOps mandate expands to cover AI consumption. Citi posts "FinOps Analytics Architect (Agentic AI Expertise)" role, April 2026.' },
+  { id: 17, label: '2026 AI data-center capex aggregate (Fortune, March 2026)', cite: 'Collective 2026 AI data-center investment across Meta, Google, Amazon, OpenAI, Anthropic and others projected at $630B–$700B, a 62% jump from 2025. Total AI-related data-center capex expected to reach $5.2T by 2030. Fortune, March 2026.' },
+  { id: 18, label: 'Meta Hyperion (Bloomberg / The Next Web, 2026)', cite: 'Meta\'s Hyperion data center campus in Richland Parish, Louisiana: planned investment >$200B per Bloomberg, $27B Blue Owl-financed joint venture, 5 GW compute capacity, 10 gas-fired plants. Meta 2026 capex guidance: $125B–$145B, ~2× 2025. Bloomberg and The Next Web, 2026.' },
+  { id: 19, label: 'xAI Colossus 2 (Introl Blog / January 2026)', cite: 'xAI Colossus 2 Memphis facility: 555,000 NVIDIA GPUs at ~$18B, 2 GW total capacity, targeting 1M GPUs. Industry-wide lead times of 18–24 months on transformers and high-voltage switchgear. NVIDIA "token factory" framing at GTC 2026.' },
+];
+
+// Phase definitions
+const PHASES = [
+  {
+    n: 1, name: 'Cheap Experimentation', years: '2023–2024',
+    body: 'AI feels free because cost is hidden in subscriptions. Output is option value: drafts, summaries, learning. Spend looks low, value looks promising.',
+    cost: 'Low', value: 'Speculative', tint: C.sage,
+  },
+  {
+    n: 2, name: 'Scaling Shock', years: '2025–2027', tag: 'Valley of Death',
+    body: 'Usage expands faster than governance, measurement, or workflow redesign. Output rises, spend rises faster, realized value lags. CFO scrutiny intensifies.',
+    cost: 'Rising sharply', value: 'Uneven', tint: C.ox,
+  },
+  {
+    n: 3, name: 'Disciplined Value Realization', years: '2027+',
+    body: 'The organization starts choosing what AI should do and at what cost. Cheaper models handle routine work; agents are budgeted; outputs are evaluated for business impact, not just accuracy. Total spend still grows — but in proportion to the revenue or outcomes it creates, because every increment is now intentional.',
+    cost: 'Rises with revenue', value: 'Measurable', tint: C.ochre,
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────
+// Utility components
+// ─────────────────────────────────────────────────────────────────
+
+const Hairline = ({ vertical = false, style = {} }) => (
+  <div style={{
+    background: C.hair,
+    ...(vertical ? { width: 1, height: '100%' } : { height: 1, width: '100%' }),
+    ...style,
+  }} />
+);
+
+const Tag = ({ children, color = C.ink, bg = 'transparent', size = 11 }) => (
+  <span style={{
+    fontFamily: FF_MONO, fontSize: size, letterSpacing: '0.08em',
+    textTransform: 'uppercase', color, background: bg,
+    padding: bg === 'transparent' ? 0 : '3px 8px',
+    border: bg === 'transparent' ? 'none' : `1px solid ${color}`,
+    borderRadius: 2, display: 'inline-block',
+  }}>{children}</span>
+);
+
+// Inline citation marker that links to Sources section
+const Cite = ({ n }) => {
+  const arr = Array.isArray(n) ? n : [n];
+  return (
+    <sup style={{
+      fontFamily: FF_MONO, fontSize: 9, fontWeight: 600,
+      letterSpacing: '0.02em', color: C.ox,
+      marginLeft: 2, verticalAlign: 'super', lineHeight: 0,
+    }}>
+      {arr.map((x, i) => (
+        <span key={x}>
+          <a href={`#src-${x}`} style={{
+            color: C.ox, textDecoration: 'none',
+            borderBottom: `1px solid ${C.oxSoft}`, paddingBottom: 1,
+          }}>{x}</a>
+          {i < arr.length - 1 && <span style={{ color: C.muted }}>,</span>}
+        </span>
+      ))}
+    </sup>
+  );
+};
+
+const Eyebrow = ({ children, num }) => (
+  <div style={{
+    display: 'flex', alignItems: 'baseline', gap: 16,
+    marginBottom: 24, paddingBottom: 12,
+    borderBottom: `1px solid ${C.hair}`,
+  }}>
+    {num && (
+      <span style={{
+        fontFamily: FF_MONO, fontSize: 11, color: C.muted,
+        letterSpacing: '0.15em',
+      }}>§ {num}</span>
+    )}
+    <span style={{
+      fontFamily: FF_MONO, fontSize: 11, color: C.ink,
+      letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500,
+    }}>{children}</span>
+  </div>
+);
+
+const Stat = ({ value, label, sub, color = C.ink, big = false, cite }) => (
+  <div>
+    <div style={{
+      fontFamily: FF_DISPLAY, fontWeight: 500,
+      fontSize: big ? 88 : 56, lineHeight: 0.95,
+      color, letterSpacing: '-0.03em',
+      fontVariationSettings: '"opsz" 144',
+    }}>{value}{cite && <Cite n={cite} />}</div>
+    <div style={{
+      fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+      letterSpacing: '0.15em', textTransform: 'uppercase',
+      marginTop: 12, lineHeight: 1.4,
+    }}>{label}</div>
+    {sub && (
+      <div style={{
+        fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+        marginTop: 8, lineHeight: 1.5, maxWidth: 280,
+      }}>{sub}</div>
+    )}
+  </div>
+);
+
+// ─────────────────────────────────────────────────────────────────
+// Hero
+// ─────────────────────────────────────────────────────────────────
+function Hero() {
+  return (
+    <section style={{ padding: '80px 0 60px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 56 }}>
+        <Tag color={C.ox} bg={C.paper} size={10}>Marketing Embeddings · Working Paper</Tag>
+        <Hairline style={{ flex: 1 }} />
+        <span style={{ fontFamily: FF_MONO, fontSize: 10, color: C.muted, letterSpacing: '0.15em' }}>
+          DRAFT · v0.1
+        </span>
+      </div>
+
+      <h1 style={{
+        fontFamily: FF_DISPLAY, fontWeight: 500,
+        fontSize: 'clamp(48px, 7.5vw, 112px)',
+        lineHeight: 0.92, color: C.ink, letterSpacing: '-0.035em',
+        margin: 0, fontVariationSettings: '"opsz" 144',
+      }}>
+        The Economics of<br />
+        <em style={{ fontStyle: 'italic', color: C.ox, fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>Enterprise</em> AI
+      </h1>
+
+      <p style={{
+        fontFamily: FF_DISPLAY, fontWeight: 400, fontStyle: 'italic',
+        fontSize: 'clamp(20px, 2.3vw, 28px)', lineHeight: 1.35,
+        color: C.inkSoft, maxWidth: 820, marginTop: 32,
+        fontVariationSettings: '"opsz" 36',
+      }}>
+        How AI costs are changing inside the enterprise — and why the
+        headline that prices keep falling tells only part of the story.
+      </p>
+
+      <div style={{
+        marginTop: 72, display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: 48, alignItems: 'start',
+      }}>
+        <Stat
+          value="10×"
+          label="Per-token price decline"
+          sub="Annual decline in price for a given benchmark capability since 2022."
+          color={C.sage} big cite={4}
+        />
+        <Stat
+          value="$700B"
+          label="2026 AI infrastructure capex"
+          sub="Aggregate spend across Meta, Google, Amazon, OpenAI, Anthropic and others. 62% jump from 2025."
+          color={C.ox} big cite={17}
+        />
+        <Stat
+          value="31×"
+          label="Modeled total cost increase"
+          sub="100-person marketing org, 2023 → 2026 — even with per-token prices falling roughly 90% over the period."
+          color={C.ink} big cite={[4, 5, 6]}
+        />
+      </div>
+
+      <p style={{
+        fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.55,
+        color: C.ink, marginTop: 80, maxWidth: 760,
+        fontVariationSettings: '"opsz" 36',
+      }}>
+        Token prices are falling. Hyperscaler capex is rising. Enterprise AI
+        bills are growing faster than either. This paper sets out what is
+        actually moving in the cost equation, and what those motions mean
+        for the discipline of running AI inside a company.
+      </p>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// The Three Phases
+// ─────────────────────────────────────────────────────────────────
+function ThreePhases() {
+  const [hover, setHover] = useState(1);
+
+  // Three-line curve: Cost always rises (slowing in P3), Realized value lags then catches up,
+  // Perceived value peaks in P1 (enthusiasm), dips in P2 (disillusionment), converges in P3.
+  const curveData = Array.from({ length: 60 }, (_, i) => {
+    const t = i / 59;
+
+    let cost;
+    if (t < 0.3) {
+      cost = 5 + (t / 0.3) * 10;                              // 5 → 15
+    } else if (t < 0.7) {
+      cost = 15 + Math.pow((t - 0.3) / 0.4, 1.4) * 60;        // 15 → 75 (steep)
+    } else {
+      cost = 75 + ((t - 0.7) / 0.3) * 25;                     // 75 → 100 (still rising, slower)
+    }
+
+    let realized;
+    if (t < 0.3) {
+      realized = 3 + (t / 0.3) * 7;                           // 3 → 10
+    } else if (t < 0.7) {
+      realized = 10 + ((t - 0.3) / 0.4) * 20;                 // 10 → 30 (slow)
+    } else {
+      realized = 30 + Math.pow((t - 0.7) / 0.3, 0.75) * 65;   // 30 → 95 (catches up)
+    }
+
+    let perceived;
+    if (t < 0.3) {
+      perceived = 30 + (t / 0.3) * 30;                        // 30 → 60 (enthusiasm)
+    } else if (t < 0.7) {
+      perceived = 60 - ((t - 0.3) / 0.4) * 25;                // 60 → 35 (disillusionment)
+    } else {
+      perceived = 35 + ((t - 0.7) / 0.3) * 55;                // 35 → 90 (converges with realized)
+    }
+
+    return { t: i, cost, realized, perceived };
+  });
+
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="05">The Three Phases</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
+        alignItems: 'start',
+      }} className="phases-grid">
+
+        <div>
+          <h2 style={{
+            fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+            lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em',
+            margin: 0, fontVariationSettings: '"opsz" 96',
+          }}>
+            Every enterprise moves through<br />three phases. Most are stuck<br />in the second.
+          </h2>
+
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+            color: C.inkSoft, marginTop: 28, maxWidth: 500,
+          }}>
+            §04 shows what cost does <em>by default</em>: it keeps compounding as
+            the AI footprint expands. Underneath that trajectory sits an
+            organizational shape — three phases every company moves through.
+            Phase 2 is where most companies are stuck<Cite n={[1, 3]} />: usage
+            scales faster than measurement, and cost outruns realized value.
+            Phase 3 isn't a different cost curve baked into the world — it's
+            what happens when an organization decides to intervene.
+          </p>
+
+          <div style={{ marginTop: 40, height: 320 }}>
+            <ResponsiveContainer>
+              <ComposedChart data={curveData} margin={{ top: 10, right: 20, bottom: 30, left: 0 }}>
+                <defs>
+                  <linearGradient id="costGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={C.ox} stopOpacity={0.18} />
+                    <stop offset="100%" stopColor={C.ox} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke={C.hairSoft} vertical={false} />
+                <XAxis dataKey="t" hide />
+                <YAxis hide domain={[0, 110]} />
+                <ReferenceLine x={18} stroke={C.hair} strokeDasharray="3 3" />
+                <ReferenceLine x={42} stroke={C.hair} strokeDasharray="3 3" />
+                <Area
+                  type="monotone" dataKey="cost"
+                  stroke="none" fill="url(#costGrad)"
+                />
+                <Line
+                  type="monotone" dataKey="cost" stroke={C.ox}
+                  strokeWidth={2.5} dot={false} name="Cost"
+                />
+                <Line
+                  type="monotone" dataKey="realized" stroke={C.sage}
+                  strokeWidth={2.5} dot={false} name="Realized value"
+                />
+                <Line
+                  type="monotone" dataKey="perceived" stroke={C.ochre}
+                  strokeWidth={1.5} dot={false} name="Perceived value"
+                  strokeDasharray="4 4"
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+            <div style={{
+              display: 'flex', justifyContent: 'space-around', marginTop: -20,
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+            }}>
+              <span>Phase 1</span>
+              <span>Phase 2 · Valley</span>
+              <span>Phase 3</span>
+            </div>
+          </div>
+
+          <div style={{
+            display: 'flex', gap: 20, marginTop: 16, flexWrap: 'wrap',
+            fontFamily: FF_MONO, fontSize: 11, color: C.inkSoft,
+          }}>
+            <span><span style={{
+              display: 'inline-block', width: 14, height: 2,
+              background: C.ox, marginRight: 8, verticalAlign: 'middle',
+            }} />Cost</span>
+            <span><span style={{
+              display: 'inline-block', width: 14, height: 2,
+              background: C.sage, marginRight: 8, verticalAlign: 'middle',
+            }} />Realized value</span>
+            <span><span style={{
+              display: 'inline-block', width: 14, height: 2,
+              background: C.ochre, marginRight: 8, verticalAlign: 'middle',
+              borderTop: `2px dashed ${C.ochre}`, borderBottom: 'none',
+            }} />Perceived value</span>
+          </div>
+
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13, color: C.muted,
+            marginTop: 20, lineHeight: 1.6, fontStyle: 'italic',
+          }}>
+            Phase 1: enthusiasm runs ahead of reality. Phase 2: cost overshoots
+            both perceived and realized value. Phase 3: cost still grows, but
+            in proportion to the revenue or outcomes it creates — because the
+            organization has started choosing what AI should do, rather than
+            letting every workload run on the default model.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {PHASES.map((p) => {
+            const active = hover === p.n;
+            return (
+              <div
+                key={p.n}
+                onMouseEnter={() => setHover(p.n)}
+                style={{
+                  padding: '28px 0',
+                  borderTop: `1px solid ${C.hair}`,
+                  borderBottom: p.n === 3 ? `1px solid ${C.hair}` : 'none',
+                  cursor: 'pointer',
+                  opacity: active ? 1 : 0.55,
+                  transition: 'opacity 0.25s ease',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 12 }}>
+                  <span style={{
+                    fontFamily: FF_DISPLAY, fontSize: 48, fontWeight: 500,
+                    color: p.tint, letterSpacing: '-0.03em',
+                    fontVariationSettings: '"opsz" 96',
+                  }}>0{p.n}</span>
+                  <div>
+                    <div style={{
+                      fontFamily: FF_DISPLAY, fontSize: 24, fontWeight: 500,
+                      color: C.ink, letterSpacing: '-0.015em',
+                    }}>{p.name}</div>
+                    <div style={{
+                      fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+                      letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 4,
+                    }}>
+                      {p.years}{p.tag && <span style={{ color: C.ox }}> · {p.tag}</span>}
+                    </div>
+                  </div>
+                </div>
+                <p style={{
+                  fontFamily: FF_BODY, fontSize: 14.5, lineHeight: 1.6,
+                  color: C.inkSoft, margin: '0 0 12px 64px',
+                }}>{p.body}</p>
+                <div style={{
+                  marginLeft: 64, display: 'flex', gap: 24,
+                  fontFamily: FF_MONO, fontSize: 11, color: C.muted,
+                }}>
+                  <span>Cost: <span style={{ color: C.ink }}>{p.cost}</span></span>
+                  <span>Value: <span style={{ color: C.ink }}>{p.value}</span></span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// The Cost Formula
+// ─────────────────────────────────────────────────────────────────
+function CostFormula() {
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="02">The Real Cost Formula</Eyebrow>
+
+      <h2 style={{
+        fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+        lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em',
+        margin: 0, maxWidth: 900,
+      }}>
+        Enterprise AI has two economic models, not one.
+      </h2>
+
+      <p style={{
+        fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+        color: C.inkSoft, marginTop: 24, maxWidth: 720,
+      }}>
+        Most analysis treats AI like pure API consumption. Most enterprises buy it like SaaS<Cite n={7} />.
+        The truth is both, layered. Seat licenses absorb the cost of chat work. Consumption
+        billing<Cite n={[5, 6]} /> absorbs the cost of agentic work. The first is predictable. The second is
+        where the surprises live.
+      </p>
+
+      {/* Formula block */}
+      <div style={{
+        marginTop: 48, padding: '40px 48px',
+        background: C.paperSoft,
+        border: `1px solid ${C.hair}`,
+        borderRadius: 4,
+        fontFamily: FF_MONO, fontSize: 18,
+        color: C.ink, letterSpacing: '0.02em',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+          <span style={{ color: C.ox, fontWeight: 500 }}>Total AI Cost</span>
+          <span style={{ color: C.muted }}>=</span>
+          <span style={{ color: C.sage }}>Seat Cost</span>
+          <span style={{ color: C.muted }}>+</span>
+          <span style={{ color: C.ochre }}>Usage Cost</span>
+        </div>
+        <div style={{ marginTop: 24, paddingTop: 24, borderTop: `1px solid ${C.hair}` }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap', fontSize: 15 }}>
+            <span style={{ color: C.ochre }}>Usage Cost</span>
+            <span style={{ color: C.muted }}>=</span>
+            <span>Σ ( Price/Token</span>
+            <span style={{ color: C.muted }}>×</span>
+            <span>Tokens/Task</span>
+            <span style={{ color: C.muted }}>×</span>
+            <span>Tasks )</span>
+            <span style={{ color: C.muted, marginLeft: 8 }}>for each tier</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Handoff to matrix */}
+      <p style={{
+        marginTop: 48, fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.55,
+        color: C.ink, maxWidth: 760, fontStyle: 'italic',
+        fontVariationSettings: '"opsz" 36',
+      }}>
+        But cost is only half the story. The same dollar can produce wildly different
+        value depending on where in the business AI is actually doing the work.
+      </p>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// The Evidence — what real data says about each formula variable
+// ─────────────────────────────────────────────────────────────────
+function Evidence() {
+  // Real-ish price trajectory across flagship/mini models
+  const priceData = [
+    { year: '2022', label: 'GPT-4', price: 30 },
+    { year: '2023', label: 'GPT-4 Turbo', price: 15 },
+    { year: '2024', label: 'GPT-4o', price: 5 },
+    { year: '2025', label: 'GPT-5.4', price: 2.5 },
+    { year: '2026', label: 'Mini blended', price: 1.5 },
+  ];
+
+  // Tier multipliers
+  const tierBars = [
+    { tier: 'Chat', value: 1, label: '1×', color: C.sage },
+    { tier: 'Reasoning', value: 25, label: '25×', color: C.ochre },
+    { tier: 'Agentic', value: 200, label: '200×', color: C.ox },
+  ];
+
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="03">The Evidence</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
+        marginBottom: 56,
+      }} className="evidence-intro">
+        <h2 style={{
+          fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+          lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
+        }}>
+          One variable is falling.<br />
+          The other four are rising.
+        </h2>
+        <p style={{
+          fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+          color: C.inkSoft, margin: 0, maxWidth: 540,
+        }}>
+          The headline narrative is that AI gets cheaper every year. The data
+          confirms one piece of that — price per token does fall, sharply.
+          But it's only one of five variables that determine total cost. The
+          other four are all rising, and rising faster than price is falling.
+          Here's what each one is doing.
+        </p>
+      </div>
+
+      {/* Hero finding: the only thing actually falling */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 48,
+        padding: 36, background: C.paperSoft,
+        border: `1px solid ${C.hair}`, borderRadius: 4,
+        alignItems: 'center', marginBottom: 32,
+      }} className="hero-finding">
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <Tag color={C.sage} bg={C.paper} size={10}>↓ Falling</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 1 of 5</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 8,
+          }}>Price per token</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 64, fontWeight: 500,
+            color: C.sage, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96',
+          }}>5–10×</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 8,
+          }}>Annual decline since 2022</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 14, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 16, marginBottom: 0,
+          }}>
+            For a given benchmark capability, frontier model prices have fallen 5–10×
+            per year. This is the chart every vendor shows<Cite n={4} />.
+          </p>
+        </div>
+        <div style={{ height: 220 }}>
+          <ResponsiveContainer>
+            <LineChart data={priceData} margin={{ top: 20, right: 24, bottom: 28, left: 0 }}>
+              <CartesianGrid stroke={C.hairSoft} vertical={false} />
+              <XAxis
+                dataKey="year"
+                tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }}
+                axisLine={{ stroke: C.hair }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `$${v}`}
+                width={45}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: C.paper, border: `1px solid ${C.ink}`,
+                  borderRadius: 2, fontFamily: FF_MONO, fontSize: 11,
+                }}
+                formatter={(v, n, p) => [`$${v}/M tokens`, p.payload.label]}
+              />
+              <Line
+                type="monotone" dataKey="price" stroke={C.sage}
+                strokeWidth={2.5} dot={{ fill: C.sage, r: 5 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Section header for the four rising things */}
+      <h3 style={{
+        fontFamily: FF_DISPLAY, fontSize: 24, fontWeight: 500,
+        color: C.ink, letterSpacing: '-0.015em',
+        margin: '40px 0 24px', maxWidth: 700, lineHeight: 1.3,
+      }}>
+        But these four variables are all rising — and together they overwhelm the price fall.
+      </h3>
+
+      {/* 2×2 grid of rising findings */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24,
+      }} className="evidence-grid">
+
+        {/* Tokens per task */}
+        <div style={{
+          padding: 28, background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Tag color={C.ox} bg={C.paper} size={10}>↑ Rising</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 2</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
+          }}>Tokens per task</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96', marginTop: 6,
+          }}>200×</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
+          }}>Agentic vs chat for same outcome</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 14, marginBottom: 16,
+          }}>
+            Reasoning workloads use 25× the tokens of chat; agentic loops use 200×
+            or more. As tools auto-escalate, the same task quietly costs more<Cite n={[10, 11]} />.
+          </p>
+          {/* Mini bar chart */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+            {tierBars.map((b) => {
+              const widthPct = Math.log10(b.value + 1) / Math.log10(201) * 100;
+              return (
+                <div key={b.tier} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{
+                    fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+                    width: 70, textAlign: 'right',
+                  }}>{b.tier}</span>
+                  <div style={{
+                    flex: 1, height: 14, background: C.hairSoft,
+                    borderRadius: 1, overflow: 'hidden', position: 'relative',
+                  }}>
+                    <div style={{
+                      width: `${widthPct}%`, height: '100%',
+                      background: b.color,
+                    }} />
+                  </div>
+                  <span style={{
+                    fontFamily: FF_MONO, fontSize: 11, color: b.color,
+                    fontWeight: 500, width: 36,
+                  }}>{b.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Tasks per user */}
+        <div style={{
+          padding: 28, background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Tag color={C.ox} bg={C.paper} size={10}>↑ Rising</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 3</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
+          }}>Tasks per user</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96', marginTop: 6,
+          }}>+44%</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
+          }}>Directive delegation, 8-month window</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 14, marginBottom: 16,
+          }}>
+            Anthropic's Economic Index shows directive task delegation rising from
+            27% to 39% in eight months<Cite n={8} />. Gartner forecasts AI agent
+            spending growing 4.4× from $86B to $376B between 2025 and 2027<Cite n={9} />.
+          </p>
+          {/* Mini visual: 27 → 39 */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 14, marginTop: 8,
+            padding: '10px 14px', background: C.paperSoft, borderRadius: 3,
+          }}>
+            <span style={{
+              fontFamily: FF_DISPLAY, fontSize: 22, color: C.muted, fontWeight: 500,
+            }}>27%</span>
+            <span style={{ flex: 1, height: 2, background: C.ochre, position: 'relative' }}>
+              <span style={{
+                position: 'absolute', right: -6, top: -4,
+                width: 0, height: 0,
+                borderLeft: `7px solid ${C.ochre}`,
+                borderTop: '5px solid transparent',
+                borderBottom: '5px solid transparent',
+              }} />
+            </span>
+            <span style={{
+              fontFamily: FF_DISPLAY, fontSize: 22, color: C.ox, fontWeight: 500,
+            }}>39%</span>
+          </div>
+        </div>
+
+        {/* Users with seats — and the seat price is rising too */}
+        <div style={{
+          padding: 28, background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Tag color={C.ox} bg={C.paper} size={10}>↑ Rising</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 4</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
+          }}>Seats — and seat prices</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96', marginTop: 6,
+          }}>+17%</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
+          }}>Copilot Business · July 2026 hike
+          </div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 14, marginBottom: 16,
+          }}>
+            Microsoft 365 Copilot now spans three tiers — Business $18→$21, Pro $20,
+            Enterprise $30/user/month<Cite n={7} />. Adoption climbs (50 seats becomes
+            5,000) while the seat price itself rises. Even the "flat" layer of the
+            stack isn't flat.
+          </p>
+          {/* Three-tier visual */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8,
+          }}>
+            {[
+              { label: 'Business', value: 18, after: 21, color: C.sage },
+              { label: 'Pro', value: 20, after: 20, color: C.ochre },
+              { label: 'Enterprise', value: 30, after: 30, color: C.ox },
+            ].map((t) => (
+              <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: C.muted, width: 80,
+                }}>{t.label}</span>
+                <div style={{
+                  flex: 1, height: 10, background: C.hairSoft,
+                  borderRadius: 1, overflow: 'hidden', position: 'relative',
+                }}>
+                  <div style={{
+                    width: `${(t.value / 30) * 100}%`, height: '100%',
+                    background: t.color, opacity: 0.55,
+                  }} />
+                  {t.after > t.value && (
+                    <div style={{
+                      position: 'absolute', top: 0,
+                      left: `${(t.value / 30) * 100}%`,
+                      width: `${((t.after - t.value) / 30) * 100}%`,
+                      height: '100%',
+                      background: t.color,
+                      borderLeft: `1px dashed ${C.paper}`,
+                    }} />
+                  )}
+                </div>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: t.color, fontWeight: 500, width: 56,
+                }}>
+                  ${t.value}{t.after > t.value && <span style={{ color: C.ox }}>→${t.after}</span>}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Governance overhead */}
+        <div style={{
+          padding: 28, background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Tag color={C.ox} bg={C.paper} size={10}>↑ Emerging</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 5</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
+          }}>Governance overhead</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96', marginTop: 6,
+          }}>95%</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
+          }}>Pilots with no P&L impact</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 14, marginBottom: 16,
+          }}>
+            MIT finds 95% of GenAI pilots show no P&L impact<Cite n={1} />; BCG finds
+            60% of firms report no benefit, only 5% see value at scale<Cite n={3} />.
+            Closing that gap requires evals, audit, review, security — none of
+            which existed as line items two years ago.
+          </p>
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8,
+          }}>
+            {[
+              { label: 'No P&L impact', value: 95, color: C.ox },
+              { label: 'No benefit reported', value: 60, color: C.ochre },
+              { label: 'Value at scale', value: 5, color: C.sage },
+            ].map((b) => (
+              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+                  width: 130,
+                }}>{b.label}</span>
+                <div style={{
+                  flex: 1, height: 10, background: C.hairSoft, borderRadius: 1, overflow: 'hidden',
+                }}>
+                  <div style={{
+                    width: `${b.value}%`, height: '100%', background: b.color,
+                  }} />
+                </div>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: b.color, fontWeight: 500, width: 32,
+                }}>{b.value}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* The counterpoint: $700B+ of infrastructure capex this year alone */}
+      <div style={{
+        marginTop: 56, padding: '36px 40px',
+        background: C.paperSoft,
+        border: `2px solid ${C.sage}`, borderRadius: 4,
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 16,
+        }}>
+          <Tag color={C.sage} bg={C.paper} size={10}>↓ The bull case</Tag>
+          <span style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em',
+          }}>What could break this argument</span>
+        </div>
+        <h3 style={{
+          fontFamily: FF_DISPLAY, fontSize: 30, fontWeight: 500,
+          color: C.ink, letterSpacing: '-0.02em', margin: '0 0 16px',
+          lineHeight: 1.15, maxWidth: 820,
+        }}>
+          But hyperscalers are committing hundreds of billions to expand compute supply.
+        </h3>
+        <p style={{
+          fontFamily: FF_BODY, fontSize: 15.5, lineHeight: 1.65,
+          color: C.inkSoft, margin: '0 0 24px', maxWidth: 820,
+        }}>
+          The honest counter-argument: if compute supply expands fast enough,
+          token prices may keep falling faster than enterprise demand grows.
+          The 2026 capex numbers are large.
+        </p>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24,
+          marginBottom: 24,
+        }} className="bullcase-grid">
+          <div>
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+              color: C.sage, letterSpacing: '-0.03em', lineHeight: 1,
+              fontVariationSettings: '"opsz" 96',
+            }}>$700B</div>
+            <div style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 8,
+            }}>2026 AI data-center capex<Cite n={17} /></div>
+            <p style={{
+              fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+              marginTop: 10, lineHeight: 1.5,
+            }}>
+              Across Meta, Google, Amazon, OpenAI, Anthropic and others. A 62% jump
+              from 2025. Forecast to compound to $5.2T by 2030.
+            </p>
+          </div>
+          <div>
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+              color: C.sage, letterSpacing: '-0.03em', lineHeight: 1,
+              fontVariationSettings: '"opsz" 96',
+            }}>$200B</div>
+            <div style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 8,
+            }}>Meta · Hyperion alone<Cite n={18} /></div>
+            <p style={{
+              fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+              marginTop: 10, lineHeight: 1.5,
+            }}>
+              5 GW Louisiana campus, 10 gas plants, four times the size of Central
+              Park. Meta's 2026 capex alone is $125–$145B, nearly double 2025.
+            </p>
+          </div>
+          <div>
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+              color: C.sage, letterSpacing: '-0.03em', lineHeight: 1,
+              fontVariationSettings: '"opsz" 96',
+            }}>555K</div>
+            <div style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 8,
+            }}>GPUs · xAI Colossus 2<Cite n={19} /></div>
+            <p style={{
+              fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+              marginTop: 10, lineHeight: 1.5,
+            }}>
+              $18B in NVIDIA hardware, 2 GW Memphis facility, target of 1M GPUs.
+              19-day rack-to-training timelines. Speed-as-a-weapon strategy.
+            </p>
+          </div>
+        </div>
+
+        {/* The nuance */}
+        <div style={{
+          paddingTop: 24, borderTop: `1px solid ${C.hair}`,
+        }}>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 12,
+          }}>The nuance</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 14.5, lineHeight: 1.65,
+            color: C.inkSoft, margin: 0, maxWidth: 820,
+          }}>
+            If this much compute comes online, per-token prices probably keep falling
+            — possibly faster than they have been. But three reasons the bull case
+            doesn't dissolve the thesis: <strong style={{ color: C.ink }}>(1)</strong>{' '}
+            this capex has to be paid back, and the labs are already raising prices
+            on flagship models to do it (GPT-5.5, Claude Opus, Gemini 3.5 Flash all
+            up YoY). <strong style={{ color: C.ink }}>(2)</strong> Even at falling
+            per-token prices, the four other variables are still rising — agentic
+            workloads will absorb every efficiency gain and ask for more.{' '}
+            <strong style={{ color: C.ink }}>(3)</strong> Power, transformers, and
+            land are the new bottlenecks. Even with $700B committed, hyperscalers
+            report lead times of 18–24 months on critical infrastructure
+            components<Cite n={19} />. The race may be between supply expansion and
+            demand expansion — and demand is winning so far.
+          </p>
+        </div>
+      </div>
+
+      {/* Handoff to §04 */}
+      <div style={{
+        marginTop: 56, padding: '28px 32px',
+        background: C.ink, color: C.paper, borderRadius: 4,
+      }}>
+        <div style={{
+          fontFamily: FF_MONO, fontSize: 10, color: C.paperSoft,
+          letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 10,
+        }}>The math, on balance</div>
+        <p style={{
+          fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.5,
+          color: C.paper, margin: 0, maxWidth: 880,
+          fontVariationSettings: '"opsz" 36',
+        }}>
+          Even granting the bull case — that $700B in 2026 capex keeps token prices
+          falling — the other four variables are rising fast enough that total enterprise
+          spend keeps climbing. Price is the <em style={{ color: C.ochreSoft }}>smallest
+          moving variable</em> in the system, in either direction.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// §01 The Trajectory — news-anchored macro picture, no charts
+// ─────────────────────────────────────────────────────────────────
+function ExpansionTrajectory() {
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="01">The Trajectory</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
+        marginBottom: 56,
+      }} className="trajectory-intro">
+        <h2 style={{
+          fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+          lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
+        }}>
+          Enterprise AI economics, in headlines.
+        </h2>
+        <p style={{
+          fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+          color: C.inkSoft, margin: 0, maxWidth: 540,
+        }}>
+          Before the math, the news. Each year of the AI buildout has been
+          punctuated by a headline that shifted what enterprises thought they
+          were buying. Cheaper tokens, then default seats, then leaderboards
+          ranking engineers by consumption, then the first public budget blowups,
+          then a buildout race with hundreds of billions in commitments. The
+          rest of this paper is an attempt to read what these headlines, taken
+          together, are actually saying.
+        </p>
+      </div>
+
+      {/* News events anchored to the timeline */}
+      <ol style={{
+        margin: 0, padding: 0, listStyle: 'none',
+      }}>
+        {EVENTS.map((e) => {
+          const toneColor =
+            e.tone === 'down' ? C.sage :
+            e.tone === 'up' ? C.ox :
+            e.tone === 'governance' ? C.ochre :
+            C.muted;
+          return (
+            <li
+              key={e.year}
+              style={{
+                padding: '22px 0',
+                borderTop: `1px solid ${C.hair}`,
+                display: 'grid',
+                gridTemplateColumns: '90px 1fr',
+                gap: 32,
+                alignItems: 'baseline',
+                background: e.anchor ? C.paperSoft : 'transparent',
+                paddingLeft: e.anchor ? 20 : 0,
+                paddingRight: e.anchor ? 20 : 0,
+                marginLeft: e.anchor ? -20 : 0,
+                marginRight: e.anchor ? -20 : 0,
+              }}
+            >
+              <div style={{
+                fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
+                color: e.anchor ? C.ox : C.ink, letterSpacing: '-0.02em',
+                lineHeight: 1, display: 'flex', alignItems: 'baseline', gap: 8,
+              }}>
+                {e.year}
+                <span style={{
+                  width: 10, height: 10, background: toneColor, borderRadius: 5,
+                  display: 'inline-block',
+                }} />
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: FF_DISPLAY, fontSize: 20, fontWeight: 500,
+                  color: C.ink, letterSpacing: '-0.01em', marginBottom: 6,
+                }}>
+                  {e.label}
+                  {e.anchor && (
+                    <span style={{
+                      marginLeft: 10, fontFamily: FF_MONO, fontSize: 10,
+                      color: C.ox, letterSpacing: '0.14em', textTransform: 'uppercase',
+                      fontWeight: 600, fontStyle: 'normal',
+                    }}>· now</span>
+                  )}
+                </div>
+                <div style={{
+                  fontFamily: FF_BODY, fontSize: 14.5, color: C.inkSoft,
+                  lineHeight: 1.6, maxWidth: 760,
+                }}>{e.body}</div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div style={{
+        marginTop: 24, display: 'flex', gap: 24, flexWrap: 'wrap',
+        fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+        letterSpacing: '0.12em', textTransform: 'uppercase',
+      }}>
+        <span><span style={{
+          display: 'inline-block', width: 8, height: 8, background: C.sage,
+          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
+        }} />Prices fall</span>
+        <span><span style={{
+          display: 'inline-block', width: 8, height: 8, background: C.ox,
+          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
+        }} />Costs rise</span>
+        <span><span style={{
+          display: 'inline-block', width: 8, height: 8, background: C.ochre,
+          borderRadius: 4, marginRight: 8, verticalAlign: 'middle',
+        }} />Governance arrives</span>
+      </div>
+
+      <p style={{
+        marginTop: 28, fontFamily: FF_MONO, fontSize: 11,
+        color: C.muted, lineHeight: 1.6, fontStyle: 'italic',
+      }}>
+        Sources: The Verge<Cite n={12} />, Fortune<Cite n={14} />, TechRadar<Cite n={12} />,
+        NVIDIA GTC 2026<Cite n={15} />, IDC FutureScape 2026<Cite n={16} />.
+      </p>
+
+      {/* Handoff to formula */}
+      <div style={{
+        marginTop: 56, padding: '28px 32px',
+        background: C.ink, color: C.paper, borderRadius: 4,
+      }}>
+        <div style={{
+          fontFamily: FF_MONO, fontSize: 10, color: C.paperSoft,
+          letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 10,
+        }}>What these headlines have in common</div>
+        <p style={{
+          fontFamily: FF_DISPLAY, fontSize: 22, lineHeight: 1.5,
+          color: C.paper, margin: 0, maxWidth: 880,
+          fontVariationSettings: '"opsz" 36',
+        }}>
+          Each of these stories is the same underlying math, surfacing in
+          different parts of the enterprise. The next section sets out
+          that math.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// §04 The Cost Stack — chart + layers + two motions, after the math
+// ─────────────────────────────────────────────────────────────────
+function CostStack() {
+  const [hover, setHover] = useState(null);
+
+  const TooltipCard = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null;
+    const row = TRAJECTORY.find((r) => r.year === label);
+    if (!row) return null;
+    return (
+      <div style={{
+        background: C.paper, border: `1px solid ${C.ink}`, borderRadius: 3,
+        padding: '14px 16px', fontFamily: FF_MONO, fontSize: 11,
+        minWidth: 220, boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+      }}>
+        <div style={{
+          fontFamily: FF_DISPLAY, fontSize: 18, color: C.ink,
+          fontWeight: 500, marginBottom: 2,
+        }}>{row.year}</div>
+        <div style={{
+          fontFamily: FF_BODY, fontSize: 12, color: C.ox, fontStyle: 'italic',
+          marginBottom: 10, fontWeight: 500,
+        }}>{row.stage}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {[...COST_LAYERS].reverse().map((l) => (
+            <div key={l.key} style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.inkSoft }}>
+                <span style={{
+                  width: 8, height: 8, background: l.color,
+                  display: 'inline-block', borderRadius: 1,
+                }} />
+                {l.name}
+              </span>
+              <span style={{ color: C.ink, fontWeight: 500 }}>${row[l.key]}K</span>
+            </div>
+          ))}
+        </div>
+        <div style={{
+          marginTop: 10, paddingTop: 10, borderTop: `1px solid ${C.hair}`,
+          display: 'flex', justifyContent: 'space-between',
+        }}>
+          <span style={{ color: C.ink, fontWeight: 500 }}>Total</span>
+          <span style={{
+            fontFamily: FF_DISPLAY, fontSize: 16, color: C.ink, fontWeight: 500,
+          }}>
+            ${row.total >= 1000 ? `${(row.total/1000).toFixed(1)}M` : `${row.total}K`}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="04">The Cost Stack</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
+        marginBottom: 40,
+      }} className="trajectory-intro">
+        <h2 style={{
+          fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+          lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
+        }}>
+          The same formula,<br />
+          drawn over time.
+        </h2>
+        <p style={{
+          fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+          color: C.inkSoft, margin: 0, maxWidth: 540,
+        }}>
+          A modeled trajectory for a 100-person marketing organization, in three
+          honest cost layers. The 2023–2026 numbers reflect what enterprises are
+          observably spending; 2027–2030 is a trend projection assuming AI use
+          continues to expand without explicit cost discipline.{' '}
+          <strong style={{ color: C.ink }}>This is a trend shape, not a forecast
+          for any specific company.</strong> What matters is the composition
+          shift: seat licenses start as the majority of spend and end as a
+          minority. Usage and governance, near zero in 2023, become the
+          dominant lines.
+        </p>
+      </div>
+
+      {/* Stacked area chart */}
+      <div style={{ height: 460, padding: '8px 0' }}>
+        <ResponsiveContainer>
+          <ComposedChart
+            data={TRAJECTORY}
+            margin={{ top: 60, right: 40, bottom: 0, left: 0 }}
+          >
+            <defs>
+              {COST_LAYERS.map((l) => (
+                <linearGradient key={l.key} id={`grad-${l.key}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={l.color} stopOpacity={0.95} />
+                  <stop offset="100%" stopColor={l.color} stopOpacity={0.85} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid stroke={C.hairSoft} vertical={false} />
+            <XAxis
+              dataKey="year"
+              tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }}
+              axisLine={{ stroke: C.hair }}
+              tickLine={false}
+              padding={{ left: 20, right: 20 }}
+            />
+            <YAxis
+              tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(v) => v >= 1000 ? `$${(v/1000).toFixed(1)}M` : `$${v}K`}
+              width={70}
+            />
+            <Tooltip content={<TooltipCard />} cursor={{ stroke: C.ink, strokeWidth: 1, strokeDasharray: '3 3' }} />
+            {COST_LAYERS.map((l) => (
+              <Area
+                key={l.key}
+                type="monotone"
+                dataKey={l.key}
+                stackId="1"
+                stroke={l.color}
+                strokeWidth={0.5}
+                fill={`url(#grad-${l.key})`}
+              />
+            ))}
+            <ReferenceLine
+              x="2026"
+              stroke={C.ink}
+              strokeWidth={1}
+              strokeDasharray="4 4"
+              label={{
+                value: 'You are here',
+                position: 'top',
+                fill: C.ink,
+                fontFamily: FF_MONO,
+                fontSize: 10,
+                fontWeight: 600,
+                offset: 8,
+              }}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Trajectory strip below chart — what AI is doing each year */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `70px repeat(${TRAJECTORY.length}, 1fr) 40px`,
+        gap: 0, alignItems: 'stretch',
+        marginTop: 4, paddingTop: 16,
+        borderTop: `1px solid ${C.hair}`,
+      }}>
+        <div style={{
+          fontFamily: FF_MONO, fontSize: 9, color: C.muted,
+          letterSpacing: '0.15em', textTransform: 'uppercase',
+          paddingTop: 4, textAlign: 'right', paddingRight: 8,
+        }}>
+          What AI<br />is doing
+        </div>
+        {TRAJECTORY.map((r) => (
+          <div
+            key={r.year}
+            onMouseEnter={() => setHover(r.year)}
+            onMouseLeave={() => setHover(null)}
+            style={{
+              padding: '4px 8px', cursor: 'default',
+              borderLeft: r.anchor ? `2px solid ${C.ink}` : `1px solid ${C.hairSoft}`,
+              background: hover === r.year ? C.paperSoft : 'transparent',
+              transition: 'background 0.15s ease',
+              minHeight: 90,
+            }}
+          >
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 13, fontWeight: 500,
+              color: r.anchor ? C.ox : C.ink, lineHeight: 1.2,
+              marginBottom: 4, letterSpacing: '-0.005em',
+            }}>{r.stage}</div>
+            <div style={{
+              fontFamily: FF_BODY, fontSize: 10.5, color: C.muted,
+              lineHeight: 1.4,
+            }}>{r.note}</div>
+          </div>
+        ))}
+        <div />
+      </div>
+
+      {/* Cost layer breakdown — share-of-total */}
+      <div style={{ marginTop: 64 }}>
+        <div style={{
+          display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 24,
+        }}>
+          <h3 style={{
+            fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 22,
+            color: C.ink, margin: 0, letterSpacing: '-0.01em',
+          }}>The stack inverts</h3>
+          <span style={{ flex: 1, height: 1, background: C.hair }} />
+          <span style={{ fontFamily: FF_MONO, fontSize: 10, color: C.muted, letterSpacing: '0.15em' }}>
+            SHARE OF TOTAL · 2023 → 2030
+          </span>
+        </div>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: `repeat(${COST_LAYERS.length}, 1fr)`,
+          gap: 1, background: C.hair, border: `1px solid ${C.hair}`,
+        }} className="layer-grid">
+          {COST_LAYERS.map((l, i) => {
+            const first = TRAJECTORY[0];
+            const last = TRAJECTORY[TRAJECTORY.length - 1];
+            const startPct = Math.round((first[l.key] / first.total) * 100);
+            const endPct = Math.round((last[l.key] / last.total) * 100);
+            const direction = endPct > startPct ? '↑' : endPct < startPct ? '↓' : '→';
+            return (
+              <div key={l.key} style={{
+                background: C.paper, padding: '24px 22px',
+                display: 'flex', flexDirection: 'column', gap: 12,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{
+                    width: 12, height: 12, background: l.color, borderRadius: 2,
+                  }} />
+                  <span style={{
+                    fontFamily: FF_MONO, fontSize: 9, color: C.muted,
+                    letterSpacing: '0.15em', textTransform: 'uppercase',
+                  }}>Layer {i + 1}</span>
+                </div>
+                <div style={{
+                  fontFamily: FF_DISPLAY, fontSize: 22, color: C.ink,
+                  fontWeight: 500, letterSpacing: '-0.015em', lineHeight: 1.1,
+                }}>{l.name}</div>
+                <div style={{
+                  fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+                  lineHeight: 1.55, flex: 1,
+                }}>{l.desc}</div>
+                <div style={{
+                  marginTop: 'auto', paddingTop: 14,
+                  borderTop: `1px solid ${C.hair}`,
+                }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+                    marginBottom: 8,
+                  }}>
+                    <span style={{
+                      fontFamily: FF_MONO, fontSize: 9, color: C.muted,
+                      letterSpacing: '0.12em', textTransform: 'uppercase',
+                    }}>2023</span>
+                    <span style={{
+                      fontFamily: FF_MONO, fontSize: 9, color: l.color,
+                      letterSpacing: '0.12em', fontWeight: 500,
+                    }}>{direction} 2030</span>
+                  </div>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                  }}>
+                    <span style={{
+                      fontFamily: FF_DISPLAY, fontSize: 26, fontWeight: 500,
+                      color: C.muted, letterSpacing: '-0.02em', lineHeight: 1,
+                      width: 56,
+                    }}>{startPct}%</span>
+                    <span style={{ flex: 1, height: 2, background: l.color, opacity: 0.4 }} />
+                    <span style={{
+                      fontFamily: FF_DISPLAY, fontSize: 30, fontWeight: 500,
+                      color: l.color, letterSpacing: '-0.02em', lineHeight: 1,
+                    }}>{endPct}%</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* The two-motion summary */}
+      <div style={{
+        marginTop: 56, padding: '32px 36px',
+        background: C.ink, color: C.paper, borderRadius: 4,
+      }}>
+        <div style={{
+          fontFamily: FF_MONO, fontSize: 10, color: C.paperSoft,
+          letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 14,
+        }}>The two motions</div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40,
+        }} className="motions-grid">
+          <div>
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+              color: C.paper, marginBottom: 8, letterSpacing: '-0.015em',
+            }}>
+              Expansion <em style={{ color: C.ochreSoft }}>→ outward</em>
+            </div>
+            <p style={{
+              fontFamily: FF_BODY, fontSize: 14, lineHeight: 1.6,
+              color: C.paperSoft, margin: 0,
+            }}>
+              The surface area of AI use grows year over year — from one
+              person's editor, to team workflows, to internal automation,
+              to vendor replacement, to customer-facing product.
+            </p>
+          </div>
+          <div>
+            <div style={{
+              fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+              color: C.paper, marginBottom: 8, letterSpacing: '-0.015em',
+            }}>
+              Cost shift <em style={{ color: C.oxSoft }}>↓ downward</em>
+            </div>
+            <p style={{
+              fontFamily: FF_BODY, fontSize: 14, lineHeight: 1.6,
+              color: C.paperSoft, margin: 0,
+            }}>
+              The cost mix changes underneath. Seat licenses fall as a
+              share. Agentic usage and governance overhead become the
+              dominant lines. Predictable subscriptions give way to
+              consumption bills.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// §06 The Moving Constraint — what AI needs to work, and what comes next
+// ─────────────────────────────────────────────────────────────────
+function CostEngineer() {
+  const eras = [
+    {
+      key: 'prompt',
+      era: 'Era 1',
+      years: '2022–2023',
+      role: 'Prompt Engineering',
+      constraint: 'Tiny context',
+      sub: 'What you said inside the 4K–8K window was everything.',
+      did: 'Crafted phrasing, designed few-shot examples, invented chain-of-thought tricks. The discipline that made early LLMs useful at all.',
+      faded: 'Faded as a discrete role once context windows grew large enough that craft mattered less than what you put in.',
+      color: C.sage,
+      status: 'past',
+    },
+    {
+      key: 'context',
+      era: 'Era 2',
+      years: '2023–2025',
+      role: 'Context Engineering',
+      constraint: 'Relevance at scale',
+      sub: 'Windows expanded. The question became what to put in them.',
+      did: 'RAG pipelines, system prompts, tool definitions, agent harnesses, memory and state. The discipline that turned LLMs into systems that know your business.',
+      faded: 'Still essential — but no longer the binding constraint. Most teams now have at least one person who does this competently.',
+      color: C.ochre,
+      status: 'recent',
+    },
+    {
+      key: 'cost',
+      era: 'Era 3',
+      years: '2026–?',
+      role: 'Cost Engineering',
+      constraint: 'Token economics',
+      sub: 'Compute became scarce. The bill became the thing that breaks first.',
+      did: 'Model routing, prompt caching, batch policies, agent budgets, cost-per-outcome evaluation. The discipline most organizations have not yet built.',
+      faded: 'The current binding constraint. Microsoft, Uber, the $500K-bill anecdotes are all symptoms of organizations operating without this discipline yet.',
+      color: C.ox,
+      status: 'current',
+    },
+    {
+      key: 'goal',
+      era: 'Era 4',
+      years: '?',
+      role: 'Goal Engineering',
+      constraint: 'Agency without alignment',
+      sub: 'When AI can act, the hard question becomes what should it act on.',
+      did: 'Defining what autonomous systems are optimizing for, who decides, how conflicting goals resolve, how goals update as the world changes, how multi-agent systems share or contest objectives across organizational boundaries.',
+      faded: 'Not yet a discipline. A direction. After all — we need to know what we are building toward and put it as a clear goal.',
+      color: C.muted,
+      status: 'next',
+    },
+  ];
+
+  return (
+    <section style={{ padding: '80px 0', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="06">The Moving Constraint</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64,
+        marginBottom: 56,
+      }} className="ce-intro">
+        <h2 style={{
+          fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 44,
+          lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
+        }}>
+          What AI needs to work<br />
+          has changed three times.
+        </h2>
+        <p style={{
+          fontFamily: FF_BODY, fontSize: 16, lineHeight: 1.65,
+          color: C.inkSoft, margin: 0, maxWidth: 540,
+        }}>
+          Every era of AI engineering has been defined by what was scarce. When
+          context was tiny, prompt craft was the whole game. When windows expanded,
+          the work moved to what you put in them. Now that context and quality are
+          mostly solved, the binding constraint is the bill — and the discipline
+          that emerges to manage it is what we're calling cost engineering.
+          What's next is the question worth watching.
+        </p>
+      </div>
+
+      {/* Four-era horizontal flow */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1,
+        background: C.hair, border: `1px solid ${C.hair}`, marginBottom: 40,
+      }} className="eras-grid">
+        {eras.map((e) => {
+          const isNext = e.status === 'next';
+          const isCurrent = e.status === 'current';
+          return (
+            <div key={e.key} style={{
+              background: isNext ? C.paperSoft : C.paper,
+              padding: '28px 24px',
+              display: 'flex', flexDirection: 'column', gap: 14,
+              borderTop: `4px solid ${e.color}`,
+              opacity: e.status === 'past' ? 0.78 : 1,
+              borderStyle: isNext ? 'dashed' : 'solid',
+              borderRightStyle: 'solid', borderLeftStyle: 'solid',
+              borderBottomStyle: 'solid',
+              borderRightWidth: 0, borderLeftWidth: 0, borderBottomWidth: 0,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: e.color,
+                  letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500,
+                }}>{e.era}</span>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+                  letterSpacing: '0.12em',
+                }}>{e.years}</span>
+              </div>
+
+              <div style={{
+                fontFamily: FF_DISPLAY, fontSize: 24, fontWeight: 500,
+                color: C.ink, letterSpacing: '-0.02em', lineHeight: 1.1,
+                fontStyle: isNext ? 'italic' : 'normal',
+              }}>{e.role}</div>
+
+              <div>
+                <div style={{
+                  fontFamily: FF_MONO, fontSize: 9, color: C.muted,
+                  letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 4,
+                }}>Constraint</div>
+                <div style={{
+                  fontFamily: FF_DISPLAY, fontSize: 16, fontWeight: 500,
+                  color: e.color, letterSpacing: '-0.005em', fontStyle: 'italic',
+                  lineHeight: 1.2,
+                }}>{e.constraint}</div>
+                <div style={{
+                  fontFamily: FF_BODY, fontSize: 12.5, color: C.muted,
+                  marginTop: 4, lineHeight: 1.4, fontStyle: 'italic',
+                }}>{e.sub}</div>
+              </div>
+
+              <div style={{
+                fontFamily: FF_BODY, fontSize: 13, lineHeight: 1.55,
+                color: C.inkSoft,
+              }}>{e.did}</div>
+
+              <div style={{
+                marginTop: 'auto', paddingTop: 12,
+                borderTop: `1px solid ${C.hair}`,
+                fontFamily: FF_BODY, fontSize: 12, color: C.muted,
+                lineHeight: 1.5, fontStyle: 'italic',
+              }}>
+                {isCurrent && (
+                  <span style={{
+                    display: 'inline-block', fontFamily: FF_MONO, fontSize: 9,
+                    color: C.ox, letterSpacing: '0.15em', textTransform: 'uppercase',
+                    fontWeight: 600, marginBottom: 6, fontStyle: 'normal',
+                  }}>◆ where we are</span>
+                )}
+                {isNext && (
+                  <span style={{
+                    display: 'inline-block', fontFamily: FF_MONO, fontSize: 9,
+                    color: C.muted, letterSpacing: '0.15em', textTransform: 'uppercase',
+                    fontWeight: 600, marginBottom: 6, fontStyle: 'normal',
+                  }}>◇ likely next</span>
+                )}
+                <div>{e.faded}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Closing thesis */}
+      <div style={{
+        padding: '36px 40px',
+        background: C.ink, color: C.paper, borderRadius: 4,
+      }}>
+        <p style={{
+          fontFamily: FF_DISPLAY, fontSize: 26, lineHeight: 1.4,
+          color: C.paper, margin: 0, maxWidth: 920,
+          fontVariationSettings: '"opsz" 36',
+        }}>
+          The discipline that runs AI well shifts as the binding constraint
+          shifts. The current constraint is cost. The next one is likely to
+          be the harder question of <em style={{ color: C.ochreSoft }}>what
+          we're building toward</em> — and how to write that down clearly
+          enough for an autonomous system to act on it.
+        </p>
+        <div style={{
+          marginTop: 24, fontFamily: FF_MONO, fontSize: 10, color: C.paperSoft,
+          letterSpacing: '0.18em', textTransform: 'uppercase',
+        }}>
+          ◆ The thesis
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Sources
+// ─────────────────────────────────────────────────────────────────
+function Sources() {
+  return (
+    <section style={{ padding: '80px 0 40px', borderTop: `1px solid ${C.hair}` }}>
+      <Eyebrow num="07">Sources & Method</Eyebrow>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 64,
+      }} className="sources-grid">
+        <div>
+          <h2 style={{
+            fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 36,
+            lineHeight: 1.05, color: C.ink, letterSpacing: '-0.025em', margin: 0,
+          }}>
+            What this is built on.
+          </h2>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 14.5, lineHeight: 1.65,
+            color: C.inkSoft, marginTop: 20, maxWidth: 420,
+          }}>
+            A working paper, not a report. Numbers in the simulator are illustrative;
+            the frameworks (three phases, two cost models, three task tiers, EICI) are
+            the contribution. Sources are public and citable. Tier weights are
+            practitioner estimates triangulated from published benchmarks — they are
+            directional, not definitive.
+          </p>
+          <p style={{
+            fontFamily: FF_MONO, fontSize: 11, color: C.muted,
+            marginTop: 24, lineHeight: 1.7,
+          }}>
+            v0.1 · May 2026 · revisions welcome
+          </p>
+        </div>
+
+        <ol style={{
+          margin: 0, padding: 0, listStyle: 'none',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {SOURCES.map((s) => (
+            <li
+              key={s.id}
+              id={`src-${s.id}`}
+              style={{
+                padding: '18px 0',
+                borderTop: `1px solid ${C.hair}`,
+                display: 'grid',
+                gridTemplateColumns: '40px 1fr',
+                gap: 16,
+                alignItems: 'baseline',
+              }}
+            >
+              <span style={{
+                fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
+                color: C.ox, letterSpacing: '-0.02em', lineHeight: 1,
+              }}>{s.id}</span>
+              <div>
+                <div style={{
+                  fontFamily: FF_DISPLAY, fontSize: 17, fontWeight: 500,
+                  color: C.ink, letterSpacing: '-0.01em', marginBottom: 4,
+                }}>{s.label}</div>
+                <div style={{
+                  fontFamily: FF_BODY, fontSize: 13, color: C.inkSoft,
+                  lineHeight: 1.55,
+                }}>{s.cite}</div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Footer
+// ─────────────────────────────────────────────────────────────────
+function Footer() {
+  return (
+    <footer style={{
+      padding: '60px 0 80px', borderTop: `1px solid ${C.ink}`,
+      marginTop: 40,
+    }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: 40,
+      }}>
+        <div>
+          <Tag color={C.ink} size={10}>Method</Tag>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 12.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 12,
+          }}>
+            Modeled on Epoch / Artificial Analysis cost-performance data,
+            Anthropic Economic Index task-delegation patterns, Barclays reasoning
+            workload estimates, and AgencyBench agentic benchmarks.
+          </p>
+        </div>
+        <div>
+          <Tag color={C.ink} size={10}>Validation</Tag>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 12.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 12,
+          }}>
+            95% / 5% figures from MIT GenAI Divide (2025) and BCG AI at
+            Scale survey (n = 1,250+, 2025). 93% CMO ROI figure from SAS /
+            Coleman Parkes 2025 marketing survey.
+          </p>
+        </div>
+        <div>
+          <Tag color={C.ink} size={10}>Caveats</Tag>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 12.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 12,
+          }}>
+            Working paper, v0.1. Tier weights are practitioner estimates,
+            not vendor disclosures. Scenario figures are illustrative for
+            a 100-person marketing organization.
+          </p>
+        </div>
+        <div>
+          <Tag color={C.ink} size={10}>Cite as</Tag>
+          <p style={{
+            fontFamily: FF_MONO, fontSize: 11, lineHeight: 1.7,
+            color: C.inkSoft, marginTop: 12,
+          }}>
+            Bakopoulos, V. (2026).<br />
+            The Economics of Enterprise AI.<br />
+            <em>Marketing Embeddings, Working Paper v0.1.</em>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Main
+// ─────────────────────────────────────────────────────────────────
+function App() {
+  return (
+    <div style={{
+      background: C.paper, color: C.ink,
+      fontFamily: FF_BODY, minHeight: '100vh',
+      backgroundImage: `radial-gradient(${C.hairSoft} 1px, transparent 1px)`,
+      backgroundSize: '32px 32px',
+      backgroundPosition: '0 0',
+    }}>
+      <link rel="stylesheet" href={FONTS_LINK} />
+      <style>{`
+        body { margin: 0; }
+        button:hover {
+          opacity: 0.85;
+        }
+        a[id^="src-"] {
+          scroll-margin-top: 80px;
+        }
+        @media (max-width: 880px) {
+          .phases-grid, .sources-grid,
+          .trajectory-intro, .motions-grid,
+          .evidence-intro, .hero-finding, .evidence-grid, .bullcase-grid,
+          .ce-intro, .signal-grid {
+            grid-template-columns: 1fr !important;
+            gap: 40px !important;
+          }
+          .layer-grid, .evolution-grid, .responsibilities-grid, .eras-grid, .hiring-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+      <div style={{
+        maxWidth: 1280, margin: '0 auto',
+        padding: '0 clamp(20px, 4vw, 56px)',
+      }}>
+        <Hero />
+        <ExpansionTrajectory />
+        <CostFormula />
+        <Evidence />
+        <CostStack />
+        <ThreePhases />
+        <CostEngineer />
+        <Sources />
+        <Footer />
+      </div>
+    </div>
+  );
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+</script>
+</body>
+</html>
