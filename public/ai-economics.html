@@ -58,18 +58,27 @@ const FF_MONO = '"Geist Mono", ui-monospace, SFMono-Regular, monospace';
 // ─────────────────────────────────────────────────────────────────
 
 // Modeled cost trajectory for a 100-person marketing org. Costs in $K annual.
-// 2023-2026 anchored to observable enterprise spend; 2027-2030 is modeled trend
-// assuming AI footprint continues to expand without explicit cost intervention.
-// Phase 3 / disciplined intervention shown separately in §05.
+// Each year derives from the four sourced variables in §02:
+//   Seat   = active_seats × seat_$/year                                  (source #7)
+//   Usage  = active_seats × tasks/user/yr × tokens/task ÷ 1M × $/M       (sources #4, #8, #10, #11, #20)
+//   Gov    = usage × governance_overhead_%                               (source #16)
+// 2023-2026 uses conservative scenario inputs:
+//   seats:        10 → 25 → 50 → 100
+//   seat $/yr:    240 → 280 → 320 → 360       (ChatGPT Plus era to Copilot Enterprise)
+//   tasks/u/yr:   3,000 → 3,800 → 4,800 → 6,000   (NBER cohort doubling applied conservatively)
+//   tokens/task:  3,400 → 6,900 → 14,000 → 28,100 (tier mix shifts toward delegation)
+//   blended $/M:  20 → 11.70 → 6.80 → 4         (5x decline, low end of #4's 5-10x/yr)
+//   gov%:         0% → 5% → 10% → 15%           (sized from #16's up-to-30% by 2027)
+// 2027-2030 extends those inputs forward at decelerating rates.
 const TRAJECTORY = [
-  { year: '2023', seat: 4,  usage: 5,   governance: 0,   total: 9,    stage: 'Personal productivity',  note: 'Early adopters. Mostly ChatGPT/Copilot pilots.' },
-  { year: '2024', seat: 14, usage: 24,  governance: 2,   total: 40,   stage: 'Team workflows',         note: 'Copilot rolls out. Reasoning use grows.' },
-  { year: '2025', seat: 26, usage: 80,  governance: 6,   total: 112,  stage: 'Internal automation',    note: 'Scheduled workflows. First agents arrive.' },
-  { year: '2026', seat: 36, usage: 215, governance: 32,  total: 283,  stage: 'Vendor replacement',     note: 'AI replaces some SaaS tools. Bills surprise CFOs.', anchor: true },
-  { year: '2027', seat: 42, usage: 380, governance: 70,  total: 492,  stage: 'Always-on agents',       note: 'Autonomous workflows compound.' },
-  { year: '2028', seat: 48, usage: 620, governance: 130, total: 798,  stage: 'Customer-facing AI',     note: 'AI in support, sales, onboarding.' },
-  { year: '2029', seat: 52, usage: 920, governance: 215, total: 1187, stage: 'AI in product',          note: 'Tokens enter COGS. Margin question opens.' },
-  { year: '2030', seat: 56, usage: 1280, governance: 320, total: 1656, stage: 'AI-native operations',   note: 'AI is the default tool, not a special one.' },
+  { year: '2023', seat: 2,  usage: 2,   governance: 0,   total: 4,    stage: 'Personal productivity',  note: 'Early adopters. Mostly ChatGPT/Copilot pilots.' },
+  { year: '2024', seat: 7,  usage: 8,   governance: 0,   total: 15,   stage: 'Team workflows',         note: 'Copilot rolls out. Reasoning use grows.' },
+  { year: '2025', seat: 16, usage: 23,  governance: 2,   total: 41,   stage: 'Internal automation',    note: 'Scheduled workflows. First agents arrive.' },
+  { year: '2026', seat: 36, usage: 67,  governance: 10,  total: 113,  stage: 'Vendor replacement',     note: 'AI replaces some SaaS tools. Bills surprise CFOs.', anchor: true },
+  { year: '2027', seat: 37, usage: 109, governance: 22,  total: 168,  stage: 'Always-on agents',       note: 'Autonomous workflows compound.' },
+  { year: '2028', seat: 39, usage: 158, governance: 40,  total: 237,  stage: 'Customer-facing AI',     note: 'AI in support, sales, onboarding.' },
+  { year: '2029', seat: 40, usage: 199, governance: 56,  total: 295,  stage: 'AI in product',          note: 'Tokens enter COGS. Margin question opens.' },
+  { year: '2030', seat: 41, usage: 231, governance: 69,  total: 341,  stage: 'AI-native operations',   note: 'AI is the default tool, not a special one.' },
 ];
 
 const COST_LAYERS = [
@@ -259,10 +268,10 @@ function Hero() {
           color={C.ox} big cite={17}
         />
         <Stat
-          value="31×"
+          value="26×"
           label="Modeled total cost increase"
-          sub="100-person marketing org, 2023 to 2026, even with per-token prices falling roughly 90% over the period."
-          color={C.ink} big cite={[4, 5, 6]}
+          sub="100-person marketing org, 2023 to 2026. Derived from the four sourced variables in §02, even with blended per-token prices roughly 5× cheaper by the end."
+          color={C.ink} big cite={[4, 7, 10, 16, 20]}
         />
       </div>
 
@@ -1115,9 +1124,11 @@ function CostStack() {
           color: C.inkSoft, margin: 0, maxWidth: 540,
         }}>
           A modeled trajectory for a 100-person marketing organization, in three
-          honest cost layers. The 2023–2026 numbers reflect what enterprises are
-          observably spending; 2027–2030 is a trend projection assuming AI use
-          continues to expand without explicit cost discipline.{' '}
+          honest cost layers. Each year's totals derive from the four sourced
+          variables in §02 (seat adoption and pricing, tasks per user, tokens per
+          task via tier mix, and governance as a share of usage). 2023 to 2026
+          uses conservative inputs from those citations; 2027 to 2030 extends
+          those inputs forward at decelerating rates.{' '}
           <strong style={{ color: C.ink }}>This is a trend shape, not a forecast
           for any specific company.</strong> What matters is the composition
           shift: seat licenses start as the majority of spend and end as a
