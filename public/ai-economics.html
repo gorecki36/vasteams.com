@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MKVDNBTXFW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MKVDNBTXFW');
+</script>
 <title>The Economics of Enterprise AI · Marketing Embeddings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -110,6 +117,10 @@ const SOURCES = [
   { id: 18, label: 'Meta Hyperion (Bloomberg / The Next Web, 2026)', cite: 'Meta\'s Hyperion data center campus in Richland Parish, Louisiana: planned investment >$200B per Bloomberg, $27B Blue Owl-financed joint venture, 5 GW compute capacity, 10 gas-fired plants. Meta 2026 capex guidance: $125B–$145B, ~2× 2025. Bloomberg and The Next Web, 2026.' },
   { id: 19, label: 'xAI Colossus 2 (Introl Blog / January 2026)', cite: 'xAI Colossus 2 Memphis facility: 555,000 NVIDIA GPUs at ~$18B, 2 GW total capacity, targeting 1M GPUs. Industry-wide lead times of 18 to 24 months on transformers and high-voltage switchgear. NVIDIA "token factory" framing at GTC 2026.' },
   { id: 20, label: 'How People Use ChatGPT (Chatterji et al., NBER #34255, Sept 2025)', cite: 'Chatterji, Cunningham, Deming, Hitzig, Ong, Shan, Wadman. "How People Use ChatGPT" (NBER Working Paper #34255, also published by OpenAI). Aggregate ChatGPT messages grew from 451M/day (June 2024) to 2.63B/day (June 2025), a 5.8× message growth against ~3.2× user growth, implying messages per active user roughly doubled. Within fixed cohorts: Q1 2023 cohort +40% over two years; Q4 2024 cohort nearly 2× in under a year. https://www.nber.org/papers/w34255' },
+  { id: 21, label: 'Google Gemini for Workspace pricing increase (Jan 2025)', cite: 'Google Workspace dropped the standalone Gemini add-on in January 2025 and bundled Gemini AI capabilities into Business Standard, Plus, and Enterprise tiers, representing a 17–22% effective price increase across plans. Gemini Business at $21/user/month (annual), Gemini Enterprise Standard $30–$35, Gemini Enterprise Plus $50–$60. Sources: Google Workspace pricing pages and Workspace knowledge center, 2025–2026.' },
+  { id: 22, label: 'Anthropic Claude for Enterprise unbundled pricing (2026)', cite: 'In 2026, Anthropic decoupled seat fees from token bundles for Claude Enterprise. Base seat fee ~$20/user/month; all token consumption now bills separately at full standard API rates with no built-in discount. Real-world per-user totals reported at $60–$250+/month depending on usage. Team Standard $25/seat (monthly) or $20/seat (annual); Team Premium $125/seat (monthly) or $100/seat (annual). Sources: Anthropic public pricing page and enterprise customer reports, 2026.' },
+  { id: 23, label: 'GitHub Copilot usage-based billing shift (June 1, 2026)', cite: 'GitHub Copilot moved to usage-based billing on June 1, 2026. Base seat pricing held flat at Business $19/user/month, Enterprise $39/user/month, with monthly allotments of GitHub AI Credits. Agentic usage now consumes additional credits; power-user costs reportedly increase 10–50× under the new structure. Sources: GitHub blog and Tech Times coverage, May–June 2026.' },
+  { id: 24, label: 'ChatGPT Enterprise custom pricing range (OpenAI, 2026)', cite: 'OpenAI does not publish standard ChatGPT Enterprise pricing. Industry reporting and procurement data suggest a range of $45–$75/user/month, with a 150-seat minimum and required annual contract. Effective floor: ~$108K annual at 150 seats × $60/user. Sources: industry analyst reports and procurement guides, 2026.' },
 ];
 
 // Phase definitions
@@ -617,7 +628,7 @@ function Evidence() {
         }}>
           The headline narrative is that AI gets cheaper every year. The data
           confirms one piece of that. Price per token does fall, sharply.
-          But it's only one of four variables that determine total cost. The
+          But it's only one of five variables that determine total cost. The
           other three are all rising, and rising faster than price is falling.
           Here's what each one is doing.
         </p>
@@ -636,7 +647,7 @@ function Evidence() {
             <span style={{
               fontFamily: FF_MONO, fontSize: 10, color: C.muted,
               letterSpacing: '0.15em',
-            }}>Variable 1 of 4</span>
+            }}>Variable 1 of 5</span>
           </div>
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 28, fontWeight: 500,
@@ -698,7 +709,7 @@ function Evidence() {
         color: C.ink, letterSpacing: '-0.015em',
         margin: '40px 0 24px', maxWidth: 700, lineHeight: 1.3,
       }}>
-        But these three variables are all rising, and together they overwhelm the price fall.
+        But these three variables are all rising, and a fourth is emerging as a new budget line entirely. Together they overwhelm the price fall.
       </h3>
 
       {/* 2×2 grid of rising findings */}
@@ -836,6 +847,72 @@ function Evidence() {
         </div>
 
 
+        {/* Seats and seat prices */}
+        <div style={{
+          padding: 28, background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 4,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Tag color={C.ox} bg={C.paper} size={10}>↑ Rising</Tag>
+            <span style={{
+              fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+              letterSpacing: '0.15em',
+            }}>Variable 4</span>
+          </div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
+            color: C.ink, letterSpacing: '-0.015em', marginBottom: 4,
+          }}>Seats and seat prices</div>
+          <div style={{
+            fontFamily: FF_DISPLAY, fontSize: 44, fontWeight: 500,
+            color: C.ox, letterSpacing: '-0.03em', lineHeight: 1,
+            fontVariationSettings: '"opsz" 96', marginTop: 6,
+          }}>5 of 5</div>
+          <div style={{
+            fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+            letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: 6,
+          }}>Major enterprise AI seat vendors restructured pricing in 2025–2026</div>
+          <p style={{
+            fontFamily: FF_BODY, fontSize: 13.5, lineHeight: 1.6,
+            color: C.inkSoft, marginTop: 14, marginBottom: 16,
+          }}>
+            Microsoft 365 Copilot Business rises 17% to $21 in July<Cite n={7} />.
+            Google's Gemini for Workspace saw 17–22% increases across plans through
+            bundling<Cite n={21} />. Anthropic decoupled Claude Enterprise tokens
+            from seat fees in 2026: base seat $20, all token usage now bills at full
+            standard API rates separately<Cite n={22} />. GitHub Copilot moved to
+            usage-based billing in June, with agentic sessions reportedly raising
+            power-user costs 10–50×<Cite n={23} />. ChatGPT Enterprise remains
+            custom-priced at $45–$75/user with 150-seat minimums<Cite n={24} />.
+          </p>
+          <div style={{
+            display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8,
+          }}>
+            {[
+              { label: 'Microsoft Copilot', change: '+17%', color: C.ox },
+              { label: 'Google Gemini', change: '+17–22%', color: C.ox },
+              { label: 'Anthropic Claude', change: 'unbundled', color: C.ochre },
+              { label: 'GitHub Copilot', change: 'usage-based', color: C.ochre },
+              { label: 'ChatGPT Enterprise', change: '$45–$75', color: C.muted },
+            ].map((v) => (
+              <div key={v.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: C.muted,
+                  width: 140,
+                }}>{v.label}</span>
+                <div style={{
+                  flex: 1, height: 8, background: C.hairSoft, borderRadius: 1,
+                }} />
+                <span style={{
+                  fontFamily: FF_MONO, fontSize: 10, color: v.color, fontWeight: 500,
+                  width: 90, textAlign: 'right',
+                }}>{v.change}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
         {/* Governance overhead */}
         <div style={{
           padding: 28, background: C.paper,
@@ -846,7 +923,7 @@ function Evidence() {
             <span style={{
               fontFamily: FF_MONO, fontSize: 10, color: C.muted,
               letterSpacing: '0.15em',
-            }}>Variable 4</span>
+            }}>Variable 5</span>
           </div>
           <div style={{
             fontFamily: FF_DISPLAY, fontSize: 22, fontWeight: 500,
@@ -1034,7 +1111,7 @@ function Evidence() {
           fontVariationSettings: '"opsz" 36',
         }}>
           Even granting the bull case, that $700B in 2026 capex keeps token prices
-          falling, the other three variables are rising fast enough that total enterprise
+          falling, the other four variables are rising fast enough that total enterprise
           spend keeps climbing. Price is the <em style={{ color: C.ochreSoft }}>smallest
           moving variable</em> in the system, in either direction.
         </p>
