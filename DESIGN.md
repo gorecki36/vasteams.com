@@ -69,10 +69,14 @@ Geist Sans for body and display. Geist Mono for labels, eyebrows, nav, dates. Lo
 | Body — default | Geist Sans | 300 | 17px | none | 1.7 |
 | Body — long-form | Geist Sans | 300 | 18–19px | none | 1.85 |
 | Sub-copy (hero) | Geist Sans | 300 | clamp(1.05rem, 1.5vw, 1.35rem) | none | 1.65 |
-| Eyebrow / label | Geist Mono | 500 | 11–12px | 0.22–0.24em | 1.7 |
-| Nav link | Geist Mono | 400 | 11–12px | 0.16em | 1.7 |
-| Footer meta | Geist Mono | 400 | 11px | 0.16em | 1.7 |
-| Brand mark (VAST //) | Geist Mono | 700 | 0.95–1.6rem | 0.18–0.22em | 1 |
+| Eyebrow / section label | Geist Mono | 500 | 12px | 0.22–0.24em | 1.7 |
+| Meta label (list row role / type / partner) | Geist Mono | 500 | 12px | 0.16–0.22em | 1.7 |
+| Meta date (list row) | Geist Mono | 500 | 12.5px | 0.06em | 1.7 |
+| Row action arrow ("Visit →", "Read →") | Geist Mono | 400 | 14px | 0.16em | 1 |
+| Nav link | Geist Mono | 400 | 14px | 0.16–0.18em | 1.7 |
+| Footer meta (copyright, email) | Geist Mono | 400 | 12px | 0.16–0.20em | 1.7 |
+| Brand mark — home | Geist Mono | 700 | text-2xl md:text-3xl (24/30px) | 0.22em | 1 |
+| Brand mark — sub-pages | Geist Mono | 700 | text-xl md:text-2xl (20/24px) | 0.18em | 1 |
 
 **Three rules that define the feel:**
 1. Big type = **light weight (300)**. The size carries the weight, not the boldness.
