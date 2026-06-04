@@ -2,11 +2,12 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  thumbnail?: string;
-  /** Monospace icon/glyph shown on the card */
+  /** Single-glyph icon shown small in card head + large as watermark */
   icon?: string;
-  /** Optional override for icon styling */
-  iconClass?: string;
+  /** Render the icon bold (used for `//` Matrix Moment) */
+  iconBold?: boolean;
+  /** Per-card accent color (hex). Drives border + title + watermark on hover. */
+  accent?: string;
   href: string;
   status: "live" | "coming_soon";
   tags?: string[];
@@ -20,9 +21,9 @@ export const PROJECTS: Project[] = [
       "Where AI spend is heading from 2023 to 2030. The value realization gap, three cost phases, and what disciplined intervention looks like.",
     href: "/ai-economics.html",
     status: "live",
-    tags: ["AI", "economics", "data story"],
+    tags: ["AI", "Economics", "Data story"],
     icon: "↗",
-    iconClass: "text-4xl text-gold",
+    accent: "#D4A017",
   },
   {
     id: "pulse",
@@ -31,9 +32,9 @@ export const PROJECTS: Project[] = [
       "Is AI making you sharper or just faster? Weekly 45-second check-in tracking how AI shapes your thinking, meaning, and growth at work.",
     href: "/pulse",
     status: "live",
-    tags: ["AI", "research", "self-assessment"],
+    tags: ["AI", "Research", "Self-assessment"],
     icon: "◉",
-    iconClass: "text-4xl text-cyan-400",
+    accent: "#22D3EE",
   },
   {
     id: "ai-clock",
@@ -42,9 +43,9 @@ export const PROJECTS: Project[] = [
       "How ready is AI for your marketing role? Live benchmark data mapped to 6 marketing capabilities.",
     href: "/ai-clock",
     status: "live",
-    tags: ["AI", "benchmarks", "marketing"],
-    icon: "\u25D4",
-    iconClass: "text-4xl text-red-400",
+    tags: ["AI", "Benchmarks", "Marketing"],
+    icon: "◔",
+    accent: "#F87171",
   },
   {
     id: "ai-investment",
@@ -53,9 +54,9 @@ export const PROJECTS: Project[] = [
       "Where the money actually flows. 6-layer infrastructure stack, historical cycle comparison, and the bottlenecks money can't solve quickly.",
     href: "/ai-investment",
     status: "live",
-    tags: ["AI", "investment", "data story"],
+    tags: ["AI", "Investment", "Data story"],
     icon: "◈",
-    iconClass: "text-4xl text-amber-400",
+    accent: "#FBBF24",
   },
   {
     id: "matrix-moment",
@@ -64,8 +65,9 @@ export const PROJECTS: Project[] = [
       "How close are we to the matrix moment? Adjust 7 macro forces, pick a year, and meet yourself in that world.",
     href: "/matrix-moment",
     status: "live",
-    tags: ["simulation", "AI", "futures"],
+    tags: ["Simulation", "AI", "Futures"],
     icon: "//",
-    iconClass: "text-3xl font-mono text-emerald-500 font-bold",
+    iconBold: true,
+    accent: "#10B981",
   },
 ];
