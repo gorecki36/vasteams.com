@@ -53,76 +53,82 @@ export default function AboutPage() {
       </header>
 
       {/* Content */}
-      <main className="px-6 md:px-8 py-16 max-w-5xl">
+      <main className="px-6 md:px-8 py-16 max-w-7xl">
         <h1 className="text-xl font-bold text-zinc-100 tracking-wide mb-12">
           About
         </h1>
 
-        <div className="mb-12 max-w-2xl overflow-hidden rounded-lg">
-          <Image
-            src="/about/vas-hi.jpg"
-            alt="Vas on stage, waving to the audience"
-            width={2836}
-            height={1889}
-            priority
-            className="w-full h-auto"
-          />
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          {/* Bio + contact (left) */}
+          <div className="lg:col-span-5 lg:order-1 order-2">
+            <div className="space-y-6 text-sm text-zinc-400 leading-relaxed">
+              <p>
+                I&apos;m{" "}
+                <a
+                  href="https://www.linkedin.com/in/vbakopoulos/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:text-gold/80 transition-colors"
+                >
+                  Vas
+                </a>
+                . Head of Research at{" "}
+                <a
+                  href="https://mmaglobal.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:text-gold/80 transition-colors"
+                >
+                  MMA
+                </a>
+                , where I work with marketing
+                leaders worldwide through events, think tanks, and industry research.
+                I hear what CMOs are actually worried about&mdash;not what they say on
+                panels. I also work closely with AI companies building the tools
+                reshaping our industry. I see firsthand what works, what doesn&apos;t,
+                and where the gap between promise and reality lives.
+              </p>
 
-        <div className="space-y-6 text-sm text-zinc-400 leading-relaxed max-w-2xl">
-          <p>
-            I&apos;m{" "}
-            <a
-              href="https://www.linkedin.com/in/vbakopoulos/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gold hover:text-gold/80 transition-colors"
-            >
-              Vas
-            </a>
-            . Head of Research at{" "}
-            <a
-              href="https://mmaglobal.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gold hover:text-gold/80 transition-colors"
-            >
-              MMA
-            </a>
-            , where I work with marketing
-            leaders worldwide through events, think tanks, and industry research.
-            I hear what CMOs are actually worried about&mdash;not what they say on
-            panels. I also work closely with AI companies building the tools
-            reshaping our industry. I see firsthand what works, what doesn&apos;t,
-            and where the gap between promise and reality lives.
-          </p>
+              <p>
+                I write{" "}
+                <a
+                  href="https://marketingembeddings.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:text-gold/80 transition-colors"
+                >
+                  Marketing Embeddings
+                </a>
+                , a newsletter for CMOs, CTOs, and media leaders on AI-driven
+                marketing trends, benchmarks, and workflows.
+              </p>
+            </div>
 
-          <p>
-            I write{" "}
-            <a
-              href="https://marketingembeddings.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gold hover:text-gold/80 transition-colors"
-            >
-              Marketing Embeddings
-            </a>
-            , a newsletter for CMOs, CTOs, and media leaders on AI-driven
-            marketing trends, benchmarks, and workflows.
-          </p>
-        </div>
+            <div className="mt-12 pt-10 border-t border-zinc-800">
+              <p className="text-[11px] text-zinc-600 tracking-widest uppercase mb-3">
+                Get in touch
+              </p>
+              <a
+                href="mailto:one@vasteams.com"
+                className="text-sm text-zinc-400 hover:text-gold transition-colors border-b border-zinc-800 hover:border-gold/50 pb-0.5"
+              >
+                one@vasteams.com
+              </a>
+            </div>
+          </div>
 
-        {/* Contact */}
-        <div className="mt-16 pt-12 border-t border-zinc-800">
-          <p className="text-[11px] text-zinc-600 tracking-widest uppercase mb-3">
-            Get in touch
-          </p>
-          <a
-            href="mailto:one@vasteams.com"
-            className="text-sm text-zinc-400 hover:text-gold transition-colors border-b border-zinc-800 hover:border-gold/50 pb-0.5"
-          >
-            one@vasteams.com
-          </a>
+          {/* Image (right, larger) */}
+          <div className="lg:col-span-7 lg:order-2 order-1 overflow-hidden rounded-lg">
+            <Image
+              src="/about/vas-hi.jpg"
+              alt="Vas on stage, waving to the audience"
+              width={2836}
+              height={1889}
+              priority
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              className="w-full h-auto"
+            />
+          </div>
         </div>
 
         <div className="mt-16">
