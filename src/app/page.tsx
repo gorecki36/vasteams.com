@@ -11,19 +11,30 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
 ];
 
-function NavLink({ href, label, external, className }: {
-  href: string; label: string; external?: boolean; className?: string;
+const navLinkClass =
+  "font-mono text-sm uppercase tracking-[0.18em] text-white/55 hover:text-gold transition-colors";
+
+function NavLink({
+  href,
+  label,
+  external,
+  className,
+}: {
+  href: string;
+  label: string;
+  external?: boolean;
+  className?: string;
 }) {
-  const cls = className ?? "text-sm tracking-widest uppercase hover:text-gold transition-colors";
+  const cls = className ?? navLinkClass;
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={{ color: "#525252" }}>
+      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
         {label}
       </a>
     );
   }
   return (
-    <Link href={href} className={cls} style={{ color: "#525252" }}>
+    <Link href={href} className={cls}>
       {label}
     </Link>
   );
@@ -34,35 +45,29 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen flex flex-col overflow-hidden"
-      style={{
-        background: "#0A0A0A",
-        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-      }}
+      className="min-h-screen flex flex-col overflow-hidden bg-[#0A0A0A] text-white"
+      style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
     >
       {/* Header */}
-      <header className="px-5 md:px-10 pt-6 md:pt-8 flex items-center justify-between relative z-20">
+      <header className="px-5 md:px-10 pt-6 md:pt-8 flex items-start justify-between relative z-20">
         <div>
           <span
-            className="text-2xl md:text-3xl font-bold tracking-widest"
-            style={{
-              color: "#E5E5E5",
-              fontFamily: "var(--font-geist-mono), monospace",
-            }}
+            className="text-2xl md:text-3xl font-bold tracking-[0.22em] leading-none text-[#E5E5E5]"
+            style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
             VAS<span className="text-gold">T</span>{" "}
-            <span style={{ color: "#3A3A3A" }}>//</span>
+            <span className="text-white/15">//</span>
           </span>
           <p
-            className="text-[11px] md:text-xs tracking-[0.25em] uppercase mt-1"
-            style={{ color: "#525252" }}
+            className="text-[11px] md:text-xs tracking-[0.28em] uppercase mt-2 text-white/30"
+            style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
             Research, Build, Repeat.
           </p>
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8 pt-1.5">
           {NAV_LINKS.map((link) => (
             <NavLink key={link.label} {...link} />
           ))}
@@ -101,15 +106,14 @@ export default function Home() {
       {/* Mobile menu overlay */}
       {menuOpen && (
         <div
-          className="md:hidden fixed inset-0 z-10 flex flex-col items-center justify-center gap-8"
-          style={{ background: "rgba(10, 10, 10, 0.97)" }}
+          className="md:hidden fixed inset-0 z-10 flex flex-col items-center justify-center gap-8 bg-[#0A0A0A]/95"
           onClick={() => setMenuOpen(false)}
         >
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.label}
               {...link}
-              className="text-lg tracking-widest uppercase hover:text-gold transition-colors"
+              className="font-mono text-lg tracking-[0.18em] uppercase text-white/55 hover:text-gold transition-colors"
             />
           ))}
         </div>
@@ -117,9 +121,20 @@ export default function Home() {
 
       {/* Hero */}
       <main className="flex-1 flex items-center px-5 md:px-10 relative">
-        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-12 md:gap-0">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center gap-12 md:gap-0">
           {/* Left: type */}
-          <div className="flex-1 md:pr-8">
+          <div className="flex-1 md:pr-8 relative z-[2]">
+            {/* Eyebrow with hairline rules */}
+            <div className="flex items-center gap-5 mb-8">
+              <div className="h-px w-8 bg-white/[0.07]" />
+              <span
+                className="font-mono uppercase tracking-[0.32em] text-[11px] text-white/30"
+              >
+                Vas Bakopoulos
+              </span>
+              <div className="h-px flex-1 max-w-16 bg-white/[0.07]" />
+            </div>
+
             <h1
               style={{
                 fontSize: "clamp(3.5rem, 10vw, 9rem)",
@@ -138,12 +153,11 @@ export default function Home() {
             </h1>
 
             <p
-              className="mt-6 md:mt-8"
+              className="mt-8 md:mt-10 font-light text-white/55"
               style={{
-                fontSize: "clamp(0.95rem, 1.8vw, 1.2rem)",
-                color: "#666666",
-                lineHeight: 1.7,
-                fontWeight: 300,
+                fontSize: "clamp(1.05rem, 1.5vw, 1.35rem)",
+                lineHeight: 1.65,
+                maxWidth: "32ch",
               }}
             >
               When answers are free, questions are the only advantage left.
@@ -156,7 +170,8 @@ export default function Home() {
             <div
               className="absolute blur-[120px] opacity-25"
               style={{
-                background: "radial-gradient(ellipse at center, #D4A017 0%, #8B6914 40%, transparent 70%)",
+                background:
+                  "radial-gradient(ellipse at center, #D4A017 0%, #8B6914 40%, transparent 70%)",
                 width: "130%",
                 height: "130%",
                 top: "-15%",
@@ -167,7 +182,8 @@ export default function Home() {
             <div
               className="absolute blur-[70px] opacity-35"
               style={{
-                background: "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 30%, transparent 65%)",
+                background:
+                  "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 30%, transparent 65%)",
                 width: "90%",
                 height: "90%",
                 top: "5%",
@@ -178,7 +194,8 @@ export default function Home() {
             <div
               className="absolute blur-[80px] opacity-40"
               style={{
-                background: "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 35%, transparent 65%)",
+                background:
+                  "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 35%, transparent 65%)",
                 width: "70%",
                 height: "50%",
                 bottom: "-10%",
@@ -189,20 +206,21 @@ export default function Home() {
             <div
               className="absolute blur-[35px] opacity-45"
               style={{
-                background: "radial-gradient(ellipse at center, #FFFFFF 0%, #FDE68A 30%, #D4A017 55%, transparent 75%)",
+                background:
+                  "radial-gradient(ellipse at center, #FFFFFF 0%, #FDE68A 30%, #D4A017 55%, transparent 75%)",
                 width: "30%",
                 height: "30%",
                 top: "32%",
                 left: "35%",
               }}
             />
-            {/* The omega: pure black */}
+            {/* The omega: pure black, thicker per design review */}
             <span
               className="relative select-none"
               style={{
                 fontSize: "clamp(14rem, 35vw, 28rem)",
                 lineHeight: 0.85,
-                fontWeight: 200,
+                fontWeight: 400,
                 color: "#000000",
                 WebkitTextFillColor: "#000000",
               }}
@@ -214,14 +232,19 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="px-5 md:px-10 py-6 flex items-center justify-between relative z-10">
-        <p className="text-[11px] tracking-wide" style={{ color: "#3A3A3A" }}>
-          built by{" "}
-          <Link href="/about" className="hover:text-neutral-400 transition-colors" style={{ color: "#3A3A3A" }}>
+      <footer className="px-5 md:px-10 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-white/[0.07] relative z-10">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30">
+          &copy; 2026 &nbsp;·&nbsp; built by{" "}
+          <Link href="/about" className="text-white/55 hover:text-gold transition-colors">
             vas
           </Link>
         </p>
-        <span />
+        <a
+          href="mailto:one@vasteams.com"
+          className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 hover:text-gold transition-colors"
+        >
+          one@vasteams.com
+        </a>
       </footer>
     </div>
   );
