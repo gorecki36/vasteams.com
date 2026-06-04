@@ -164,11 +164,11 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Right: black omega with gold halo */}
-          <div className="w-full md:w-auto flex-shrink-0 relative flex items-center justify-center md:justify-end">
+          {/* Right: black omega with gold halo. Halos brighten on hover. */}
+          <div className="group w-full md:w-auto flex-shrink-0 relative flex items-center justify-center md:justify-end cursor-default">
             {/* Outer halo: wide, soft gold bloom */}
             <div
-              className="absolute blur-[120px] opacity-25"
+              className="absolute blur-[120px] opacity-25 group-hover:opacity-40 transition-opacity duration-700 motion-reduce:transition-none"
               style={{
                 background:
                   "radial-gradient(ellipse at center, #D4A017 0%, #8B6914 40%, transparent 70%)",
@@ -180,7 +180,7 @@ export default function Home() {
             />
             {/* Mid halo: concentrated around the form */}
             <div
-              className="absolute blur-[70px] opacity-35"
+              className="absolute blur-[70px] opacity-35 group-hover:opacity-50 transition-opacity duration-700 motion-reduce:transition-none"
               style={{
                 background:
                   "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 30%, transparent 65%)",
@@ -192,7 +192,7 @@ export default function Home() {
             />
             {/* Under-glow: stronger at the bottom */}
             <div
-              className="absolute blur-[80px] opacity-40"
+              className="absolute blur-[80px] opacity-40 group-hover:opacity-[0.55] transition-opacity duration-700 motion-reduce:transition-none"
               style={{
                 background:
                   "radial-gradient(ellipse at center, #FDE68A 0%, #D4A017 35%, transparent 65%)",
@@ -204,7 +204,7 @@ export default function Home() {
             />
             {/* Inner cavity glow: hot white-gold core */}
             <div
-              className="absolute blur-[35px] opacity-45"
+              className="absolute blur-[35px] opacity-45 group-hover:opacity-[0.65] transition-opacity duration-700 motion-reduce:transition-none"
               style={{
                 background:
                   "radial-gradient(ellipse at center, #FFFFFF 0%, #FDE68A 30%, #D4A017 55%, transparent 75%)",
