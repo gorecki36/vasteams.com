@@ -95,8 +95,13 @@ export default function WorkPage() {
     >
       {/* Header */}
       <header className="px-6 md:px-10 pt-8 pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <Link href="/" className={navLinkClass}>
-          &larr; Back
+        <Link
+          href="/"
+          aria-label="Home"
+          className="group font-mono text-[15px] tracking-[0.18em] font-bold text-white leading-none"
+        >
+          VAS<span className="text-gold">T</span>{" "}
+          <span className="text-white/30 group-hover:text-white/55 transition-colors">//</span>
         </Link>
         <nav className="flex flex-wrap items-center gap-x-8 gap-y-2">
           <Link href="/research" className={navLinkClass}>Research</Link>
