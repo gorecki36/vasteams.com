@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { RESEARCH, type ResearchItem } from "@/lib/research";
+import { RESEARCH } from "@/lib/research";
+import { ResearchRow } from "@/components/research/ResearchRow";
 
 export const metadata: Metadata = {
   title: "Marketing Research & Webinars",
@@ -11,138 +12,81 @@ export const metadata: Metadata = {
   },
 };
 
-const TYPE_LABELS: Record<ResearchItem["type"], string> = {
-  webinar: "Webinar",
-  report: "Report",
-  talk: "Talk",
-  podcast: "Podcast",
-  stage: "Stage",
-};
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr + "T00:00:00");
-  // Hide day for items where we only know the year
-  if (dateStr.endsWith("-01-01") && !dateStr.includes("2026-01")) {
-    return d.toLocaleDateString("en-US", { year: "numeric" });
-  }
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function ResearchRow({ item }: { item: ResearchItem }) {
-  return (
-    <a
-      href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex gap-5 py-5 border-b border-zinc-800/50 hover:border-gold/30 transition-colors"
-    >
-      <div className="flex-1 min-w-0">
-        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6">
-          <span className="text-[11px] text-zinc-600 tracking-widest uppercase shrink-0 w-28">
-            {formatDate(item.date)}
-          </span>
-          <span className="flex-1 text-sm text-zinc-300 group-hover:text-gold transition-colors">
-            {item.title}
-          </span>
-          <span className="flex items-center gap-3 shrink-0">
-            {item.partner && (
-              <span className="text-[10px] text-zinc-600 tracking-widest uppercase">
-                {item.partner}
-              </span>
-            )}
-            <span className="text-[10px] text-zinc-700 tracking-widest uppercase border border-zinc-800 px-2 py-0.5">
-              {TYPE_LABELS[item.type]}
-            </span>
-          </span>
-        </div>
-        <p className="text-xs text-zinc-600 leading-relaxed mt-2 sm:ml-34 sm:pl-6 max-w-2xl">
-          {item.description}
-        </p>
-      </div>
-      {item.image && (
-        <div className="shrink-0 w-28 h-20 overflow-hidden rounded-sm bg-zinc-900 hidden sm:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={item.image}
-            alt=""
-            className="w-full h-full object-cover opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
-          />
-        </div>
-      )}
-    </a>
-  );
-}
+const navLinkClass =
+  "font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors";
 
 export default function ResearchPage() {
   return (
-    <div className="min-h-screen bg-black text-zinc-300 flex flex-col font-mono">
+    <div
+      className="bg-[#0c0c0c] text-white min-h-screen flex flex-col"
+      style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
+    >
       {/* Header */}
-      <header className="px-6 md:px-8 pt-10 pb-8 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <Link
-          href="/"
-          className="text-xs text-zinc-600 hover:text-gold tracking-widest uppercase transition-colors"
-        >
-          &larr; Home
+      <header className="px-6 md:px-10 pt-8 pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <Link href="/" className={navLinkClass}>
+          &larr; Back
         </Link>
-        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <Link
-            href="/work"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
-          >
-            Work
-          </Link>
+        <nav className="flex flex-wrap items-center gap-x-8 gap-y-2">
+          <Link href="/work" className={navLinkClass}>Work</Link>
           <a
             href="https://marketingembeddings.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
+            className={navLinkClass}
           >
             Marketing Embeddings
           </a>
-          <Link
-            href="/projects"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
-          >
-            Quick Builds
-          </Link>
-          <Link
-            href="/about"
-            className="text-xs uppercase tracking-widest text-zinc-600 hover:text-gold transition-colors"
-          >
-            About
-          </Link>
+          <Link href="/projects" className={navLinkClass}>Quick Builds</Link>
+          <Link href="/about" className={navLinkClass}>About</Link>
         </nav>
       </header>
 
-      {/* Content */}
-      <main className="flex-1 px-6 md:px-8 py-16 max-w-4xl">
-        <h1 className="text-xl font-bold text-zinc-100 tracking-wide mb-2">
-          Research
-        </h1>
-        <p className="text-sm text-zinc-500 leading-relaxed mb-12">
-          Research I&apos;ve led and presented through MMA Global, working with
-          industry partners across measurement, AI, brand strategy, and media.
-        </p>
+      {/* Hero band */}
+      <section className="px-6 md:px-16 pt-12 pb-10 md:pt-20 md:pb-14 border-b border-white/[0.07]">
+        <div className="max-w-[1160px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 md:gap-16 items-end">
+          <div>
+            <p className="font-mono uppercase tracking-[0.24em] text-[11px] text-white/30 mb-7">
+              01 / Research
+            </p>
+            <h1
+              className="text-white font-light leading-[0.98] tracking-[-0.035em]"
+              style={{ fontSize: "clamp(2.5rem, 4.5vw, 4rem)" }}
+            >
+              Research, talks,
+              <br />
+              and reports.
+            </h1>
+          </div>
+          <p
+            className="text-white/55 font-light leading-[1.65] max-w-[38ch] md:text-right pb-1.5"
+            style={{ fontSize: "clamp(1rem, 1.3vw, 1.15rem)" }}
+          >
+            Research I&rsquo;ve led and presented through MMA Global, working with
+            industry partners across measurement, AI, brand strategy, and media.
+          </p>
+        </div>
+      </section>
 
-        <div className="flex flex-col">
+      {/* List */}
+      <section className="px-6 md:px-16 py-8 md:py-12 flex-1">
+        <div className="max-w-[1160px] mx-auto">
           {RESEARCH.map((item) => (
             <ResearchRow key={item.id} item={item} />
           ))}
         </div>
-      </main>
+      </section>
 
       {/* Footer */}
-      <footer className="px-8 py-6 border-t border-zinc-900">
-        <p className="text-[11px] text-zinc-700 tracking-wide">
-          built by{" "}
-          <Link href="/" className="hover:text-zinc-500 transition-colors">
-            vas
-          </Link>
+      <footer className="px-6 md:px-10 py-10 border-t border-white/[0.09] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/30">
+          &copy; 2026 Vas Bakopoulos
         </p>
+        <Link
+          href="/"
+          className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors"
+        >
+          &larr; Home
+        </Link>
       </footer>
     </div>
   );
