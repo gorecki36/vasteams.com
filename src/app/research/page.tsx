@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 const navLinkClass =
-  "font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors";
+  "font-mono text-sm uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors";
 
 export default function ResearchPage() {
   return (
@@ -83,7 +83,7 @@ export default function ResearchPage() {
         </p>
         <Link
           href="/"
-          className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors"
+          className="font-mono text-sm uppercase tracking-[0.16em] text-white/55 hover:text-gold transition-colors"
         >
           &larr; Home
         </Link>
