@@ -26,7 +26,7 @@ export default function ResearchPage() {
         <Link
           href="/"
           aria-label="Home"
-          className="group font-mono text-[15px] tracking-[0.18em] font-bold text-white leading-none"
+          className="group font-mono text-xl md:text-2xl tracking-[0.18em] font-bold text-white leading-none"
         >
           VAS<span className="text-gold">T</span>{" "}
           <span className="text-white/30 group-hover:text-white/55 transition-colors">//</span>

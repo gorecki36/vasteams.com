@@ -32,7 +32,7 @@ function WorkRow({ item }: { item: WorkItem }) {
           )}
         </p>
       )}
-      <p className="font-mono text-[10.8px] font-medium text-white/30 tracking-[0.22em] uppercase whitespace-pre-line">
+      <p className="font-mono text-xs font-medium text-white/30 tracking-[0.22em] uppercase whitespace-pre-line">
         {item.role.replace(" & ", "\n& ")}
       </p>
     </div>
@@ -56,7 +56,7 @@ function WorkRow({ item }: { item: WorkItem }) {
   );
 
   const arrow = (
-    <span className="font-mono text-[12px] uppercase tracking-[0.16em] text-white/55 pt-3.5 justify-self-end transition-colors group-hover:text-gold">
+    <span className="font-mono text-sm uppercase tracking-[0.16em] text-white/55 pt-3.5 justify-self-end transition-colors group-hover:text-gold">
       Visit &rarr;
     </span>
   );
@@ -98,7 +98,7 @@ export default function WorkPage() {
         <Link
           href="/"
           aria-label="Home"
-          className="group font-mono text-[15px] tracking-[0.18em] font-bold text-white leading-none"
+          className="group font-mono text-xl md:text-2xl tracking-[0.18em] font-bold text-white leading-none"
         >
           VAS<span className="text-gold">T</span>{" "}
           <span className="text-white/30 group-hover:text-white/55 transition-colors">//</span>

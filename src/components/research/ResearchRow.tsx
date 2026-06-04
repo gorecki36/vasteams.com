@@ -43,11 +43,11 @@ export function ResearchRow({ item }: { item: ResearchItem }) {
         <p className="font-mono text-[12.5px] font-medium text-white tracking-[0.06em] mb-2.5">
           {formatDate(item.date)}
         </p>
-        <p className="font-mono text-[10.8px] font-medium text-white/30 tracking-[0.22em] uppercase mb-1.5">
+        <p className="font-mono text-xs font-medium text-white/30 tracking-[0.22em] uppercase mb-1.5">
           {TYPE_LABELS[item.type]}
         </p>
         {item.partner && (
-          <p className="font-mono text-[10.8px] text-white/55 tracking-[0.16em] uppercase">
+          <p className="font-mono text-xs text-white/55 tracking-[0.16em] uppercase">
             <span className="text-white/30">with </span>
             {item.partner}
           </p>
@@ -87,7 +87,7 @@ export function ResearchRow({ item }: { item: ResearchItem }) {
             />
           )}
         </div>
-        <span className="font-mono text-[11.8px] uppercase tracking-[0.16em] text-white/55 transition-colors group-hover:text-gold">
+        <span className="font-mono text-sm uppercase tracking-[0.16em] text-white/55 transition-colors group-hover:text-gold">
           {ACTION_LABELS[item.type]} &rarr;
         </span>
       </div>
