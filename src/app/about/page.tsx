@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -56,6 +57,17 @@ export default function AboutPage() {
         <h1 className="text-xl font-bold text-zinc-100 tracking-wide mb-12">
           About
         </h1>
+
+        <div className="mb-12 max-w-2xl overflow-hidden rounded-lg">
+          <Image
+            src="/about/vas-hi.jpg"
+            alt="Vas on stage, waving to the audience"
+            width={2836}
+            height={1889}
+            priority
+            className="w-full h-auto"
+          />
+        </div>
 
         <div className="space-y-6 text-sm text-zinc-400 leading-relaxed max-w-2xl">
           <p>
