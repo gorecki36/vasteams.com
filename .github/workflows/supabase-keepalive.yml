@@ -1,0 +1,20 @@
+name: Supabase keep-alive
+
+# Vercel Hobby caps crons at once daily, which Supabase flagged as
+# insufficient activity (warning email 2026-06-10). This restores the
+# original 4-hits/day cadence from outside Vercel. Each hit lands a row
+# in public.heartbeat_log for auditing.
+on:
+  schedule:
+    - cron: "30 2,8,14,20 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping heartbeat endpoint
+        run: |
+          response=$(curl -sS --fail --max-time 30 https://vasteams.com/api/heartbeat)
+          echo "$response"
+          echo "$response" | grep -q '"ok":true'
