@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MKVDNBTXFW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MKVDNBTXFW');
+</script>
+<title>What You Get · The Economics of Enterprise AI II · Marketing Embeddings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #F2EDE3; }
+  body { font-family: "Geist", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script crossorigin src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  // Use the classic JSX runtime so JSX compiles to React.createElement (the UMD
+  // global loaded above) instead of importing the unresolvable "react/jsx-runtime".
+  Babel.registerPreset('react-classic', {
+    presets: [[Babel.availablePresets['react'], { runtime: 'classic' }]],
+  });
+</script>
+<script type="text/babel" data-presets="react-classic">
+const {
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea,
+  ScatterChart, Scatter, ZAxis, Cell, LabelList,
+} = Recharts;
+
+// Design tokens: shared with Chapter 1 (ai-economics.html)
+const C = {
+  paper: '#F2EDE3', paperSoft: '#EAE4D6', ink: '#15110D', inkSoft: '#3A332C',
+  muted: '#6B5F52', hair: 'rgba(21,17,13,0.12)', hairSoft: 'rgba(21,17,13,0.06)',
+  ox: '#7A1F2B', oxSoft: '#B8525D', sage: '#2D4A40', sageSoft: '#5B7A6E',
+  ochre: '#B8853A', ochreSoft: '#D9B17E',
+};
+const FONTS_LINK = 'https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap';
+const FF_DISPLAY = '"Geist", system-ui, sans-serif';
+const FF_MONO = '"Geist Mono", ui-monospace, SFMono-Regular, monospace';
+
+// Artificial Analysis Intelligence Index, June 2026.
+// x = cost to run the index (USD). y = index. bubble = output tokens (M).
+const MODELS = [
+  { name: 'Claude Opus 4.8', effort: 'Max',     index: 61, cost: 4686, tokens: 110, color: C.ox },
+  { name: 'GPT-5.5',         effort: 'xhigh',   index: 60, cost: 3357, tokens: 75,  color: C.sage },
+  { name: 'Claude Opus 4.7', effort: 'Max',     index: 57, cost: 5117, tokens: 110, color: C.oxSoft },
+  { name: 'Gemini 3.1 Pro',  effort: 'Preview', index: 57, cost: 892,  tokens: 57,  color: C.ochre },
+  { name: 'Grok 4.3',        effort: 'high',    index: 53, cost: 395,  tokens: 88,  color: C.muted },
+];
+
+const ROWS = [
+  { m: 'Claude Opus 4.8', idx: 61, cost: '$4.69k', delta: 'the lead', color: C.ox },
+  { m: 'GPT-5.5 (xhigh)', idx: 60, cost: '$3.36k', delta: '1 point back, 28% cheaper', color: C.sage },
+  { m: 'Gemini 3.1 Pro',  idx: 57, cost: '$0.89k', delta: '4 points back, 81% cheaper', color: C.ochre },
+  { m: 'Grok 4.3 (high)', idx: 53, cost: '$0.40k', delta: '8 points back, 92% cheaper', color: C.muted },
+];
+
+const SOURCES = [
+  { id: 1, label: 'Anthropic Institute: When AI builds itself (2026)', cite: 'The Anthropic Institute. "When AI builds itself." >80% of merged code AI-authored by May 2026; ~8x code per engineer vs 2024 (Anthropic notes this overstates the gain); the development loop includes a critique step and a sandboxed run with a human checkpoint per change. https://www.anthropic.com/institute/recursive-self-improvement' },
+  { id: 2, label: 'Artificial Analysis: Intelligence Index & cost to run (June 2026)', cite: 'Cost to run the full index (blended token pricing). Opus 4.8 (Max): 61, $4,685.85, 110M tokens. GPT-5.5 (xhigh): 60, $3,357.00, 75M. Opus 4.7 (Max): 57, $5,117.14, 110M. Gemini 3.1 Pro: 57, $892.28, 57M. Grok 4.3 (high): 53, $395.17, 88M. Average model ~35M tokens. https://artificialanalysis.ai' },
+  { id: 3, label: 'Tokenmaxxing era ends; Uber budget burnout (Fortune, May 2026)', cite: 'Meta dismantles its internal tokenmaxxing leaderboard; Amazon staff ran junk agents to inflate usage tied to reviews. Uber burned its 2026 token budget in four months. Fortune, May 2026.' },
+  { id: 4, label: 'Altman on AI budgeting (Business Insider, 2026)', cite: 'Sam Altman, via Business Insider: AI budgeting has recently become a "huge issue" for some companies, something that "never came up" earlier this year. Surfaced via @atmoio on X.' },
+  { id: 5, label: 'The Economics of Enterprise AI: Chapter 1 (Marketing Embeddings, 2026)', cite: 'Bakopoulos, V. (2026). Total enterprise AI spend rises ~26x from 2023 to 2026 even as blended per-token prices fall ~5x. /ai-economics.html' },
+];
+
+// Inline citation
+const Cite = ({ n }) => {
+  const arr = Array.isArray(n) ? n : [n];
+  return (
+    <sup style={{ fontFamily: FF_MONO, fontSize: 10, fontWeight: 600, color: C.ox, marginLeft: 2, verticalAlign: 'super', lineHeight: 0 }}>
+      {arr.map((x, i) => (
+        <span key={x}>
+          <a href={`#src-${x}`} style={{ color: C.ox, textDecoration: 'none', borderBottom: `1px solid ${C.oxSoft}` }}>{x}</a>
+          {i < arr.length - 1 && <span style={{ color: C.muted }}>,</span>}
+        </span>
+      ))}
+    </sup>
+  );
+};
+
+const Kicker = ({ children }) => (
+  <div style={{ fontFamily: FF_MONO, fontSize: 12, color: C.ox, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 28 }}>{children}</div>
+);
+
+// Big calm claim line, carries each beat
+const Claim = ({ children, style = {} }) => (
+  <h2 style={{
+    fontFamily: FF_DISPLAY, fontWeight: 500, color: C.ink,
+    fontSize: 'clamp(30px, 4.4vw, 54px)', lineHeight: 1.12, letterSpacing: '-0.025em',
+    margin: 0, fontVariationSettings: '"opsz" 96', maxWidth: 980, ...style,
+  }}>{children}</h2>
+);
+
+const Note = ({ children, style = {} }) => (
+  <p style={{ fontFamily: FF_DISPLAY, fontSize: 'clamp(18px, 1.9vw, 22px)', lineHeight: 1.55, color: C.inkSoft, fontVariationSettings: '"opsz" 36', maxWidth: 760, ...style }}>{children}</p>
+);
+
+// ── Hero (cold open) ──────────────────────────────────────────────
+function Hero() {
+  return (
+    <section style={{ padding: '96px 0 72px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 44 }}>
+        <span style={{ fontFamily: FF_MONO, fontSize: 11, color: C.ox, letterSpacing: '0.16em', textTransform: 'uppercase' }}>Marketing Embeddings · Chapter Two</span>
+        <div style={{ flex: 1, height: 1, background: C.hair }} />
+        <span style={{ fontFamily: FF_MONO, fontSize: 10, color: C.muted, letterSpacing: '0.15em' }}>v0.3</span>
+      </div>
+
+      <h1 style={{
+        fontFamily: FF_DISPLAY, fontWeight: 500, fontSize: 'clamp(56px, 9vw, 132px)',
+        lineHeight: 0.9, color: C.ink, letterSpacing: '-0.04em', margin: 0, fontVariationSettings: '"opsz" 144',
+      }}>
+        What You<br />
+        <em style={{ fontStyle: 'italic', color: C.ox, fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>Get</em>
+      </h1>
+
+      <Note style={{ marginTop: 40, fontSize: 'clamp(22px, 2.6vw, 30px)', color: C.ink }}>
+        There are two AI economies. You only pay for one of them, and it
+        already favors you.
+      </Note>
+    </section>
+  );
+}
+
+// ── Beat: two economies (slim band) ───────────────────────────────
+function Economies() {
+  const cols = [
+    { t: 'Innovation', c: C.ox, b: 'Building better models. The frontier race, recursive self-improvement, the headlines. Capital-intensive, lab-side, and not your bill.' },
+    { t: 'Production', c: C.sage, b: 'Using today\'s models to do work. Your bill, your decisions, your 2x2. This is the only economy you actually buy.' },
+  ];
+  return (
+    <section style={{ padding: '40px 0 72px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, border: `1px solid ${C.hair}`, borderRadius: 4, overflow: 'hidden' }} className="econ-grid">
+        {cols.map((k, i) => (
+          <div key={k.t} style={{ padding: '32px 32px', background: i ? C.paper : C.paperSoft, borderLeft: i ? `1px solid ${C.hair}` : 'none' }}>
+            <div style={{ fontFamily: FF_MONO, fontSize: 11, color: k.c, letterSpacing: '0.16em', textTransform: 'uppercase' }}>0{i + 1} / {k.t}</div>
+            <p style={{ fontFamily: FF_DISPLAY, fontSize: 'clamp(18px, 1.9vw, 22px)', lineHeight: 1.45, color: C.ink, marginTop: 14, marginBottom: 0, fontVariationSettings: '"opsz" 36' }}>{k.b}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Beat 1: the one chart ─────────────────────────────────────────
+function ScatterTip({ active, payload }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div style={{ background: C.paper, border: `1px solid ${C.ink}`, borderRadius: 2, padding: '10px 12px', fontFamily: FF_MONO, fontSize: 11, color: C.ink }}>
+      <div style={{ fontWeight: 600, marginBottom: 4 }}>{d.name} <span style={{ color: C.muted }}>· {d.effort}</span></div>
+      <div>Index <b>{d.index}</b></div>
+      <div>Cost to run <b>${(d.cost / 1000).toFixed(2)}k</b></div>
+      <div>Tokens <b>{d.tokens}M</b></div>
+    </div>
+  );
+}
+
+function TheChart() {
+  return (
+    <section style={{ padding: '40px 0 72px' }}>
+      <Kicker>01 / The chart</Kicker>
+      <Claim>
+        Output is up. The best model is<br />
+        still not worth its premium.
+      </Claim>
+      <Note style={{ marginTop: 24 }}>
+        One chart settles it. Intelligence against the cost to run the full
+        evaluation, so verbosity cannot hide: every token a model spends shows
+        up on the horizontal axis<Cite n={2} />. Bubble size is output volume.
+      </Note>
+
+      <div style={{ marginTop: 36, padding: '28px 20px 16px', background: C.paper, border: `1px solid ${C.hair}`, borderRadius: 4 }}>
+        <div style={{ height: 520 }}>
+          <ResponsiveContainer>
+            <ScatterChart margin={{ top: 28, right: 44, bottom: 52, left: 12 }}>
+              <CartesianGrid stroke={C.hairSoft} />
+              <ReferenceArea y1={57} y2={61} fill={C.ochre} fillOpacity={0.07} />
+              <XAxis type="number" dataKey="cost" name="Cost" domain={[0, 5600]}
+                ticks={[0, 1000, 2000, 3000, 4000, 5000]} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }} axisLine={{ stroke: C.hair }} tickLine={false}
+                label={{ value: 'COST TO RUN THE INDEX', position: 'bottom', offset: 26, style: { fontFamily: FF_MONO, fontSize: 10, fill: C.muted, letterSpacing: '0.14em' } }} />
+              <YAxis type="number" dataKey="index" name="Index" domain={[50, 63]} ticks={[50, 53, 56, 59, 62]}
+                tick={{ fontFamily: FF_MONO, fontSize: 11, fill: C.muted }} axisLine={false} tickLine={false} width={44}
+                label={{ value: 'INTELLIGENCE', angle: -90, position: 'insideLeft', offset: 20, style: { fontFamily: FF_MONO, fontSize: 10, fill: C.muted, letterSpacing: '0.14em' } }} />
+              <ZAxis type="number" dataKey="tokens" range={[180, 1100]} name="Tokens" />
+              <Tooltip content={<ScatterTip />} cursor={{ stroke: C.hair, strokeDasharray: '3 3' }} />
+              <Scatter data={MODELS}>
+                {MODELS.map((m) => <Cell key={m.name} fill={m.color} fillOpacity={0.85} stroke={m.color} />)}
+                <LabelList dataKey="name" position="top" offset={14} style={{ fontFamily: FF_MONO, fontSize: 11, fill: C.ink, fontWeight: 600 }} />
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, marginTop: 4, paddingLeft: 8 }}>
+          <span style={{ fontFamily: FF_MONO, fontSize: 10, color: C.muted, letterSpacing: '0.1em' }}>BUBBLE = OUTPUT TOKENS (M)</span>
+          <span style={{ fontFamily: FF_MONO, fontSize: 10, color: C.ochre, letterSpacing: '0.1em' }}>SHADED = THE 57 TO 61 SHELF</span>
+        </div>
+      </div>
+
+      {/* read-out */}
+      <div style={{ marginTop: 28, border: `1px solid ${C.hair}`, borderRadius: 4, overflow: 'hidden' }}>
+        {ROWS.map((r, i) => (
+          <div key={r.m} style={{ display: 'grid', gridTemplateColumns: '1.5fr 0.5fr 0.7fr 1.5fr', alignItems: 'center', padding: '15px 22px', background: i % 2 ? C.paperSoft : C.paper, borderTop: i ? `1px solid ${C.hairSoft}` : 'none' }}>
+            <span style={{ fontFamily: FF_DISPLAY, fontSize: 17, fontWeight: 500, color: C.ink }}><span style={{ color: r.color }}>●</span> {r.m}</span>
+            <span style={{ fontFamily: FF_MONO, fontSize: 14, color: C.ink }}>{r.idx}</span>
+            <span style={{ fontFamily: FF_MONO, fontSize: 14, color: C.ink }}>{r.cost}</span>
+            <span style={{ fontFamily: FF_MONO, fontSize: 12.5, color: C.muted }}>{r.delta}</span>
+          </div>
+        ))}
+      </div>
+
+      <Note style={{ marginTop: 28 }}>
+        The top is a flat shelf: five models inside four points. The biggest
+        bubbles, the most verbose models, are not the smartest. Output is volume,
+        and the market already paid to learn that volume is not value<Cite n={3} />.
+        What survives is quality per dollar, and it says: skip the frontier and
+        route the work.
+      </Note>
+    </section>
+  );
+}
+
+// ── Beat 2: the brake ─────────────────────────────────────────────
+function Brake() {
+  const items = [
+    { t: 'Verification', b: 'Each AI-proposed change still has to be re-checked, sandboxed, and signed off. Generating is cheap; checking is not, and it grows with output.' },
+    { t: 'Compute', b: 'The wall may be chips and power, not intelligence. Budgeting "recently became a huge issue," in Altman\'s words.' },
+    { t: 'The curve bends', b: 'It may be an S, not an exponential. Research taste may not come from scaling, and the benchmarks are saturating.' },
+  ];
+  return (
+    <section style={{ padding: '40px 0 72px' }}>
+      <Kicker>02 / The brake</Kicker>
+      <Claim>Recursion could reopen the gap.<br />Getting there is the expensive economy.</Claim>
+      <Note style={{ marginTop: 24 }}>
+        AI building better AI might make the leader worth its premium again<Cite n={1} />.
+        But that is innovation, not production, and its economics are prohibitive.
+        The verification cost bites hardest: a recursive loop makes proposing
+        nearly free while checking stays expensive, so more recursion can mean
+        more spend per real gain, not less<Cite n={[1, 4]} />.
+      </Note>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 0, marginTop: 32, border: `1px solid ${C.hair}`, borderRadius: 4, overflow: 'hidden' }} className="brake-grid">
+        {items.map((k, i) => (
+          <div key={k.t} style={{ padding: '24px 24px', borderLeft: i ? `1px solid ${C.hair}` : 'none', background: C.paper }}>
+            <div style={{ fontFamily: FF_MONO, fontSize: 10, color: C.ox, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{k.t}</div>
+            <p style={{ fontFamily: FF_DISPLAY, fontSize: 16, lineHeight: 1.5, color: C.inkSoft, marginTop: 12, marginBottom: 0 }}>{k.b}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ── Beat 3: the buyer's move (close) ──────────────────────────────
+function Move() {
+  return (
+    <section style={{ padding: '40px 0 72px' }}>
+      <Kicker>03 / The move</Kicker>
+      <Claim>Let the labs fund innovation.<br />You harvest production.</Claim>
+      <Note style={{ marginTop: 24 }}>
+        Route the bulk to the cheap cluster, reserve the leader for the hard
+        tail, and pay the premium only where it changes the outcome. Keep
+        judgment in-house, because when producing work is nearly free, deciding
+        what is worth producing is the line item that never gets cheaper.
+      </Note>
+      <div style={{ marginTop: 40, padding: '40px 44px', background: C.ink, borderRadius: 4 }}>
+        <p style={{ fontFamily: FF_DISPLAY, fontSize: 'clamp(22px, 2.6vw, 30px)', lineHeight: 1.4, color: C.paper, margin: 0, letterSpacing: '-0.02em', fontVariationSettings: '"opsz" 48' }}>
+          The flat shelf is the buyer's advantage. Innovation is expensive and
+          uncertain, so let the labs carry it. Production has already
+          commoditized, so do not overpay for the frontier.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ── Sources + footer ──────────────────────────────────────────────
+function Sources() {
+  return (
+    <section style={{ padding: '40px 0 56px' }}>
+      <div style={{ fontFamily: FF_MONO, fontSize: 11, color: C.muted, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 20 }}>Sources</div>
+      <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {SOURCES.map((s) => (
+          <li key={s.id} id={`src-${s.id}`} style={{ display: 'grid', gridTemplateColumns: '32px 1fr', gap: 14, padding: '16px 0', borderTop: `1px solid ${C.hairSoft}`, scrollMarginTop: 80 }}>
+            <span style={{ fontFamily: FF_MONO, fontSize: 12, color: C.ox, fontWeight: 600 }}>{s.id}</span>
+            <div>
+              <div style={{ fontFamily: FF_DISPLAY, fontSize: 16, fontWeight: 500, color: C.ink, marginBottom: 3 }}>{s.label}</div>
+              <div style={{ fontFamily: FF_DISPLAY, fontSize: 13, color: C.inkSoft, lineHeight: 1.55 }}>{s.cite}</div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div style={{ marginTop: 40, paddingTop: 24, borderTop: `1px solid ${C.ink}`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <span style={{ fontFamily: FF_MONO, fontSize: 11, color: C.inkSoft }}>
+          Continues <a href="/ai-economics.html" style={{ color: C.ox }}>Chapter 1: The Economics of Enterprise AI</a><Cite n={5} />
+        </span>
+        <span style={{ fontFamily: FF_MONO, fontSize: 11, color: C.muted }}>
+          Bakopoulos, V. (2026) · Working Paper v0.3
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  return (
+    <div style={{ background: C.paper, color: C.ink, minHeight: '100vh' }}>
+      <link rel="stylesheet" href={FONTS_LINK} />
+      <style>{`
+        body { margin: 0; }
+        a[id^="src-"] { scroll-margin-top: 80px; }
+        @media (max-width: 820px) {
+          .econ-grid, .brake-grid { grid-template-columns: 1fr !important; }
+          .econ-grid > div + div, .brake-grid > div + div { border-left: none !important; border-top: 1px solid ${C.hair} !important; }
+        }
+      `}</style>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 clamp(20px, 5vw, 64px)' }}>
+        <Hero />
+        <Economies />
+        <TheChart />
+        <Brake />
+        <Move />
+        <Sources />
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+</script>
+</body>
+</html>
