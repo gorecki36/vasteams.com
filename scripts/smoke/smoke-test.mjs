@@ -18,7 +18,7 @@ const BASE = process.env.SMOKE_BASE_URL || 'https://www.vasteams.com';
 // body text; a blank or crashed render falls far below it. Keep thresholds
 // comfortably under each page's real content so normal copy edits never trip it.
 const PAGES = [
-  { path: '/',                  minText: 300 },
+  { path: '/',                  minText: 150 }, // sparse landing page (~223 chars healthy)
   { path: '/ai-economics.html', minText: 800 },
   { path: '/ai-clock',          minText: 150 },
   { path: '/ai-investment',     minText: 300 },
