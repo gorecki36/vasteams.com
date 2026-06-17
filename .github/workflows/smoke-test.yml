@@ -22,7 +22,7 @@ jobs:
           node-version: 20
       - name: Install deps
         working-directory: scripts/smoke
-        run: npm install
+        run: npm ci
       - name: Install headless browser
         working-directory: scripts/smoke
         run: npx playwright install --with-deps chromium
