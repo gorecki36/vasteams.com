@@ -1,0 +1,31 @@
+name: Smoke test (tool pages render)
+
+# vasteams.com tool pages render in the browser and depend on external
+# CDNs/services that can change underneath us and silently blank a page while
+# the server still returns HTTP 200 (as @babel/standalone did to
+# /ai-economics.html, June 2026). This loads every public page in a real
+# headless browser once a day and on demand, and fails — emailing repo admins —
+# the moment a page stops rendering. Bump playwright in scripts/smoke/package.json
+# if the browser install ever breaks.
+on:
+  schedule:
+    - cron: "0 9 * * *" # daily at 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps
+        working-directory: scripts/smoke
+        run: npm install
+      - name: Install headless browser
+        working-directory: scripts/smoke
+        run: npx playwright install --with-deps chromium
+      - name: Run smoke test against production
+        working-directory: scripts/smoke
+        run: npm test
