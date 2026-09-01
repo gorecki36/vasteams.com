@@ -15,7 +15,7 @@ const ACTION_LABELS: Record<ResearchItem["type"], string> = {
   report: "Read",
   talk: "Watch",
   podcast: "Listen",
-  stage: "Watch",
+  stage: "View agenda",
 };
 
 function formatDate(dateStr: string) {

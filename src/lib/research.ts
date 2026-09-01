@@ -12,6 +12,27 @@ export interface ResearchItem {
 
 export const RESEARCH: ResearchItem[] = [
   {
+    id: "state-agentic-deployment",
+    title: "State of Agentic Deployment in Marketing",
+    description:
+      "Survey of 100 senior marketers, roughly nine in ten at Director level or above and 95% headquartered in North America. Almost everyone is piloting or deploying agentic AI, but only one in eight has scaled it. Four constraints block scale: data readiness, workflow connectivity, governance, and funding.",
+    date: "2026-09-30",
+    type: "webinar",
+    partner: "Monks / iOPEX",
+    href: "https://mmaglobal.com/webinars/state-agentic-deployment-marketing",
+    external: true,
+  },
+  {
+    id: "cmo-summit-2026",
+    title: "CMO + CEO Summit 2026: 8 Research Sessions",
+    description:
+      "Eight sessions covering advertising spend and messaging benchmarks, empirical generalizations in marketing, the 2026 MMA and BCG CMO inquiry on AI, generative creative effectiveness, creative intelligence at scale, agentic deployment, AI and the customer journey, and getting found in AI answers.",
+    date: "2026-07-21",
+    type: "stage",
+    href: "https://www.mmaglobal.com/cmosummit2026/agenda",
+    external: true,
+  },
+  {
     id: "built-to-report-not-drive",
     title: "Built to Report, Not to Drive: What Separates the Top 30% of Marketers",
     description:
