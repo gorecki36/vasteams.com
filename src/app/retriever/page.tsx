@@ -53,19 +53,20 @@ export default function RetrieverPage() {
         </nav>
       </header>
 
-      {/* Hero: photo left, copy right */}
-      <section className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] border-b border-white/[0.07]">
-        <div className="relative min-h-[300px] md:min-h-[460px] bg-black overflow-hidden">
+      {/* Hero: photo left, copy right. Sized and aligned to match the walk card below. */}
+      <section className="px-6 md:px-16 pt-10 md:pt-14 pb-10 md:pb-14 border-b border-white/[0.07]">
+        <div className="max-w-[1160px] mx-auto grid grid-cols-1 md:grid-cols-2">
+        <div className="relative min-h-[220px] md:min-h-[340px] bg-black overflow-hidden">
           <Image
             src="/retriever-dogs.jpg"
             alt="A golden retriever and a black staffie waiting by the door"
             fill
             priority
-            sizes="(max-width: 768px) 100vw, 52vw"
-            className="object-cover opacity-95"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover grayscale"
           />
         </div>
-        <div className="px-6 py-12 md:px-14 md:py-14 flex flex-col justify-center">
+        <div className="py-8 md:py-0 md:pl-10 flex flex-col justify-center">
           <h1
             className="text-white font-light leading-[0.98] tracking-[-0.035em]"
             style={{ fontSize: "clamp(2.5rem, 4.5vw, 4rem)" }}
@@ -84,6 +85,7 @@ export default function RetrieverPage() {
             changed my mind, I&apos;ll share what came out of the conversation
             here.
           </p>
+        </div>
         </div>
       </section>
 
