@@ -114,6 +114,7 @@ export default function WorkPage() {
             Marketing Embeddings
           </a>
           <Link href="/projects" className={navLinkClass}>Quick Builds</Link>
+          <Link href="/retriever" className={navLinkClass}>Retriever</Link>
           <Link href="/about" className={navLinkClass}>About</Link>
         </nav>
       </header>

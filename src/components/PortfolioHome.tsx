@@ -174,6 +174,9 @@ export default function PortfolioHome() {
           >
             Marketing Embeddings
           </a>
+          <Link href="/retriever" className={navLinkClass}>
+            Retriever
+          </Link>
           <Link href="/about" className={navLinkClass}>
             About
           </Link>

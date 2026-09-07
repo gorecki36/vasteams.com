@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/work", label: "Work" },
   { href: "https://marketingembeddings.com", label: "Newsletter", external: true },
   { href: "/projects", label: "Builds" },
+  { href: "/retriever", label: "Retriever" },
   { href: "/about", label: "About" },
 ];
 

@@ -45,6 +45,7 @@ export default function AboutPage() {
             Marketing Embeddings
           </a>
           <Link href="/projects" className={navLinkClass}>Quick Builds</Link>
+          <Link href="/retriever" className={navLinkClass}>Retriever</Link>
         </nav>
       </header>
 
