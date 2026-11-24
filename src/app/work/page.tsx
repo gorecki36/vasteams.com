@@ -5,7 +5,7 @@ import { WORK, type WorkItem } from "@/lib/work";
 export const metadata: Metadata = {
   title: "Brand Strategy & Positioning Work",
   description:
-    "Positioning, marketing, and brand strategy by Vas Bakopoulos. Including POSSIBLE event, the MMA Global rebrand, and Mbriyo Ventures.",
+    "Positioning, marketing, and brand strategy by Vas Bakopoulos. Including the Moveo.ai repositioning, POSSIBLE event, the MMA Global rebrand, and Mbriyo Ventures.",
   alternates: {
     canonical: "https://vasteams.com/work",
   },
@@ -38,6 +38,12 @@ function WorkRow({ item }: { item: WorkItem }) {
     </div>
   );
 
+  const arrow = item.href ? (
+    <span className="inline-block mt-6 font-mono text-sm uppercase tracking-[0.16em] text-white/55 transition-colors group-hover:text-gold">
+      Visit &rarr;
+    </span>
+  ) : null;
+
   const body = (
     <div>
       <p
@@ -52,17 +58,35 @@ function WorkRow({ item }: { item: WorkItem }) {
       >
         {item.description}
       </p>
+      {arrow}
     </div>
   );
 
-  const arrow = (
-    <span className="font-mono text-sm uppercase tracking-[0.16em] text-white/55 pt-3.5 justify-self-end transition-colors group-hover:text-gold">
-      Visit &rarr;
-    </span>
+  const thumb = (
+    <div
+      className="relative overflow-hidden border border-white/[0.1] aspect-[16/9] w-full"
+      style={{ background: "linear-gradient(135deg, #1d1a12 0%, #0f0f0f 70%)" }}
+    >
+      {item.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.image}
+          alt=""
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-end p-5">
+          <span className="text-gold font-light text-2xl leading-tight">
+            {item.title.split(" → ")[0]}
+          </span>
+        </div>
+      )}
+    </div>
   );
 
   const rowClass =
-    "group grid grid-cols-1 lg:grid-cols-[220px_1fr_100px] gap-y-4 lg:gap-x-16 items-start py-14 border-b border-white/[0.07] transition-colors";
+    "group grid grid-cols-1 lg:grid-cols-[200px_1fr_340px] gap-y-4 lg:gap-x-16 items-start py-14 border-b border-white/[0.07] transition-colors";
 
   if (item.href) {
     return (
@@ -74,7 +98,7 @@ function WorkRow({ item }: { item: WorkItem }) {
       >
         {meta}
         {body}
-        {arrow}
+        {thumb}
       </a>
     );
   }
@@ -83,6 +107,7 @@ function WorkRow({ item }: { item: WorkItem }) {
     <div className={rowClass}>
       {meta}
       {body}
+      {thumb}
     </div>
   );
 }

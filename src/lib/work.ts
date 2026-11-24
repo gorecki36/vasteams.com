@@ -5,9 +5,20 @@ export interface WorkItem {
   role: string;
   year?: string;
   href?: string;
+  image?: string;
 }
 
 export const WORK: WorkItem[] = [
+  {
+    id: "moveo",
+    title: "Moveo.ai Repositioning & Website Redesign",
+    description:
+      "Repositioned Moveo, an AI agent platform for customer-to-cash operations, around one idea: every customer interaction drives revenue. Led the brand archetype work and directed the website redesign.",
+    role: "Repositioning & Brand",
+    year: "2026",
+    href: "https://moveo.ai/",
+    image: "/work/moveo.jpg",
+  },
   {
     id: "possible",
     title: "POSSIBLE Marketing Event",
@@ -16,6 +27,7 @@ export const WORK: WorkItem[] = [
     role: "Positioning & Brand Strategy",
     year: "2022–2024",
     href: "https://possibleevent.com/",
+    image: "/work/possible.png",
   },
   {
     id: "mma-rebrand",
@@ -25,6 +37,7 @@ export const WORK: WorkItem[] = [
     role: "Repositioning & Identity",
     year: "2025",
     href: "https://mmaglobal.com/",
+    image: "/work/mma.svg",
   },
   {
     id: "mbriyo",
@@ -33,5 +46,6 @@ export const WORK: WorkItem[] = [
       "Co-founded Mbriyo, a vertical AI investor and incubator, and developed its brand and positioning.",
     role: "Co-founder & Venture Partner",
     href: "https://mbriyo.ventures",
+    image: "/work/mbriyo.jpg",
   },
 ];
