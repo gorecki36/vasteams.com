@@ -1,14 +1,5 @@
-"use client";
-
 import { type ResearchItem } from "@/lib/research";
-
-const TYPE_LABELS: Record<ResearchItem["type"], string> = {
-  webinar: "Webinar",
-  report: "Report",
-  talk: "Talk",
-  podcast: "Podcast",
-  stage: "Stage",
-};
+import { ResearchThumb, TYPE_LABELS } from "./ResearchThumb";
 
 const ACTION_LABELS: Record<ResearchItem["type"], string> = {
   webinar: "Read",
@@ -18,7 +9,7 @@ const ACTION_LABELS: Record<ResearchItem["type"], string> = {
   stage: "View agenda",
 };
 
-function formatDate(dateStr: string) {
+export function formatDate(dateStr: string) {
   const d = new Date(dateStr + "T00:00:00");
   // Items with -01-01 are year-only placeholders, not real Jan 1 events.
   if (dateStr.endsWith("-01-01")) {
@@ -27,8 +18,25 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
 }
 
-const thumbBg =
-  "repeating-linear-gradient(45deg, transparent 0, transparent 6px, rgba(255,255,255,0.025) 6px, rgba(255,255,255,0.025) 7px), #141414";
+export function ResearchCard({ item }: { item: ResearchItem }) {
+  return (
+    <a
+      href={item.href}
+      target={item.external ? "_blank" : undefined}
+      rel={item.external ? "noopener noreferrer" : undefined}
+      className="group block"
+    >
+      <ResearchThumb item={item} className="mb-4" />
+      <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/45 mb-2">
+        {formatDate(item.date)} · {TYPE_LABELS[item.type]}
+        {item.partner && <> · {item.partner}</>}
+      </p>
+      <p className="text-white font-light text-xl leading-[1.3] tracking-[-0.01em] transition-colors group-hover:text-gold">
+        {item.title}
+      </p>
+    </a>
+  );
+}
 
 export function ResearchRow({ item }: { item: ResearchItem }) {
   return (
@@ -36,7 +44,7 @@ export function ResearchRow({ item }: { item: ResearchItem }) {
       href={item.href}
       target={item.external ? "_blank" : undefined}
       rel={item.external ? "noopener noreferrer" : undefined}
-      className="group grid grid-cols-1 lg:grid-cols-[180px_1fr_200px] gap-y-4 lg:gap-x-14 items-start py-12 border-b border-white/[0.07] transition-colors hover:bg-white/[0.015]"
+      className="group grid grid-cols-1 lg:grid-cols-[170px_1fr_300px] gap-y-4 lg:gap-x-12 items-start py-10 border-b border-white/[0.07] transition-colors hover:bg-white/[0.015]"
     >
       {/* Meta */}
       <div className="pt-1.5">
@@ -65,32 +73,13 @@ export function ResearchRow({ item }: { item: ResearchItem }) {
         <p className="text-base font-light leading-[1.65] text-white/55 max-w-[60ch]">
           {item.description}
         </p>
-      </div>
-
-      {/* Right: thumb + arrow */}
-      <div className="flex flex-col items-end gap-5">
-        <div
-          className="w-[200px] aspect-[5/3] overflow-hidden border border-white/[0.07] relative"
-          style={{ background: thumbBg }}
-        >
-          {item.image && (
-            // External image hosts (mmaglobal.com) can return non-200; onError
-            // hides the broken <img> so the striped placeholder shows through.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.image}
-              alt=""
-              className="w-full h-full object-cover grayscale opacity-70 brightness-[0.85] transition-[filter,opacity,transform] duration-300 group-hover:grayscale-0 group-hover:opacity-100 group-hover:brightness-100"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-          )}
-        </div>
-        <span className="font-mono text-sm uppercase tracking-[0.16em] text-white/55 transition-colors group-hover:text-gold">
+        <span className="inline-block mt-5 font-mono text-sm uppercase tracking-[0.16em] text-white/55 transition-colors group-hover:text-gold">
           {ACTION_LABELS[item.type]} &rarr;
         </span>
       </div>
+
+      {/* Thumb */}
+      <ResearchThumb item={item} />
     </a>
   );
 }

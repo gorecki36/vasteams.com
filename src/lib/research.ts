@@ -12,6 +12,54 @@ export interface ResearchItem {
 
 export const RESEARCH: ResearchItem[] = [
   {
+    id: "ai-consumer-journey",
+    title: "AI and the Changing Consumer Journey",
+    description:
+      "Customers now research, compare, and decide inside AI tools before they reach a brand's site. Across the brands Knotch tracks, 21.9% of visitors said AI shaped their visit, while referrer tracking tagged 0.4% of them. MMA and Knotch measured that gap from both sides: on-site visitor data and a survey of senior marketers.",
+    date: "2026-11-11",
+    type: "webinar",
+    partner: "Knotch",
+    href: "https://mmaglobal.com/webinars/ai-and-changing-consumer-journey",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/ai-consumer-journey-report-thumbnail_0.jpg?itok=LhMEhkvE",
+  },
+  {
+    id: "state-advertising-spend",
+    title: "How We Spend & What We Say: The State of Advertising Spend",
+    description:
+      "MMA and MediaRadar analyzed five years of advertising, Q1 2021 to Q4 2025, across 10 industries and 6 channels, with attention data from Adelaide. The biggest differences are between categories, not channels or years.",
+    date: "2026-10-20",
+    type: "webinar",
+    partner: "MediaRadar",
+    href: "https://mmaglobal.com/webinars/how-we-spend-what-we-say-state-advertising-spend",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/how-we-spend-what-we-say-report-thumbnail.png?itok=fPdhjdjj",
+  },
+  {
+    id: "bcg-cmo-inquiry-2026",
+    title: "MMA and BCG's 2026 CMO Inquiry on AI's Real Disruption",
+    description:
+      "Roughly 60 CMOs rated their AI vision near 6 out of 10, while technology, governance, talent, agency partnerships, and workflows trailed at about 5. Agentic AI is expected to grow from 7% of marketing work today to 27% within two to three years.",
+    date: "2026-10-13",
+    type: "webinar",
+    partner: "BCG",
+    href: "https://mmaglobal.com/webinars/mma-and-bcgs-2026-cmo-inquiry-ais-real-disruption",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/AI%20Disruption%20of%20Marketing%20Operating%20Models%202026%20-%20Cover.png?itok=TQHsR_Mg",
+  },
+  {
+    id: "scale-creative-intelligence",
+    title: "How to Scale Creative Intelligence",
+    description:
+      "Kroger, Vidmob, and MMA tested whether creative performance can be predicted before launch. A year of live campaign data, 1,934 assets across Meta and DV360, fed a model that predicted conversion performance 81% of the time.",
+    date: "2026-10-07",
+    type: "webinar",
+    partner: "Kroger / Vidmob",
+    href: "https://mmaglobal.com/webinars/how-scale-creative-intelligence",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/kroger-webinar-banner.jpg?itok=cvJ0_hg-",
+  },
+  {
     id: "state-agentic-deployment",
     title: "State of Agentic Deployment in Marketing",
     description:
@@ -21,6 +69,18 @@ export const RESEARCH: ResearchItem[] = [
     partner: "Monks / iOPEX",
     href: "https://mmaglobal.com/webinars/state-agentic-deployment-marketing",
     external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/state-agentic-ai-marketing-cover.jpg?itok=DAXRSJDu",
+  },
+  {
+    id: "shape-how-ai-talks",
+    title: "Can You Actively Shape How AI Talks About You, and What's the Evidence?",
+    description:
+      "A Great Debates session on AI search. The practical question is not whether brands can control AI answers, but whether they can influence the sources, structures, and signals AI systems use, and where credible optimization ends and overclaiming begins.",
+    date: "2026-08-27",
+    type: "webinar",
+    href: "https://mmaglobal.com/webinars/can-you-actively-shape-how-ai-talks-about-you-and-whats-evidence",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webinar_series_thumbs/webinar-series-great-debates-altt.png?iffv=jcK5s2TEZi6g&itok=3PWqa3l5",
   },
   {
     id: "cmo-summit-2026",
@@ -31,6 +91,18 @@ export const RESEARCH: ResearchItem[] = [
     type: "stage",
     href: "https://www.mmaglobal.com/cmosummit2026/agenda",
     external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/logo_lockups/ccs-lockup-a-logo-left-date-solo-dark_1.png?itok=YvvS0bzQ",
+  },
+  {
+    id: "ai-rewriting-search",
+    title: "How AI Is Rewriting Search",
+    description:
+      "A Great Debates session with Jim Lecinski, who named the Zero Moment of Truth fifteen years ago. ChatGPT, Perplexity, Google's AI Overviews, and Gemini increasingly answer the question outright. Panel with marketers from Coca-Cola, AT&T, and Mastercard.",
+    date: "2026-07-16",
+    type: "webinar",
+    href: "https://mmaglobal.com/webinars/how-ai-rewriting-search",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webinar_series_thumbs/webinar-series-great-debates-altt.png?iffv=jcK5s2TEZi6g&itok=3PWqa3l5",
   },
   {
     id: "built-to-report-not-drive",
@@ -69,6 +141,18 @@ export const RESEARCH: ResearchItem[] = [
     image: "https://mmaglobal.com/files/styles/large/public/webinarsd-20230512_12.png?itok=4i1m5I4K",
   },
   {
+    id: "campaigns-to-business-value",
+    title: "From Campaigns to Business Value: How AI Will Transform Marketing",
+    description:
+      "Research with BCG on how AI will change marketing workflows, talent models, agency partnerships, and C-suite alignment over the next 24 to 36 months, with Adobe CMO Lara Balazs and Catalyst Brands CMO Marisa Thalberg.",
+    date: "2026-01-21",
+    type: "webinar",
+    partner: "BCG",
+    href: "https://mmaglobal.com/webinars/campaigns-business-value-how-ai-will-transform-marketing",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/transforming-marketing.jpg?itok=XdoHfPfc",
+  },
+  {
     id: "state-of-personalization",
     title: "The State of Personalization",
     description:
@@ -93,6 +177,18 @@ export const RESEARCH: ResearchItem[] = [
     image: "https://mmaglobal.com/files/styles/large/public/webinarsd-20230512_6.png?itok=-6TbE-Np",
   },
   {
+    id: "ai-creative-effectiveness",
+    title: "How AI Is Shaping the Future of Creative Effectiveness",
+    description:
+      "MMA, Kellanova, and Vidmob released research and predictive models, built on 443+ creative assets, showing how AI can forecast campaign performance and guide creative decisions.",
+    date: "2025-10-01",
+    type: "webinar",
+    partner: "Kellanova / Vidmob",
+    href: "https://mmaglobal.com/webinars/how-ai-shaping-future-creative-effectiveness",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webinar_series_thumbs/webinar-series-intelligence-trends.png?iffv=6XCF3_0dLoCZ&itok=d63tgK4E",
+  },
+  {
     id: "state-of-video-ctv-2025",
     title: "2025 State of Video & CTV",
     description:
@@ -113,6 +209,18 @@ export const RESEARCH: ResearchItem[] = [
     type: "stage",
     href: "https://www.mmaglobal.com/cmosummit2025/agenda",
     external: true,
+    image: "https://mmaglobal.com/files/styles/extra_large/public/logo_lockups/component_130_-_9_0.png?itok=c9-f1_-C",
+  },
+  {
+    id: "hidden-treasures-measuring-brand",
+    title: "Hidden Treasures of Measuring Brand: How Advertising Affects Long-Term Growth",
+    description:
+      "The brand-building versus performance debate, and the metrics, tools, and data integration that can quantify the impact of brand on long-term growth. A roadmap for analytics, media, and brand teams.",
+    date: "2025-02-12",
+    type: "webinar",
+    href: "https://mmaglobal.com/webinars/hidden-treasures-measuring-brand-illuminating-how-advertising-affects-long-term-growth",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webinar_series_thumbs/webinar-series-labs-breakthroughs.png?iffv=JaM5NVg6rn7E&itok=xcx5ezX9",
   },
   {
     id: "consortium-ai-personalization",
@@ -148,6 +256,18 @@ export const RESEARCH: ResearchItem[] = [
     href: "https://www.mmaglobal.com/webinars/breakthroughs-audience-strategy-debunking-short-and-long-term-myth-marketing",
     external: true,
     image: "https://mmaglobal.com/files/styles/large/public/mmawebinarseriesrevsolution-20230510_0_0.png?itok=9u6bUMQu",
+  },
+  {
+    id: "state-creative-process",
+    title: "The State of Creative Process in Marketing",
+    description:
+      "MMA and Canva surveyed nearly 100 senior creative decision-makers. 77% consider creativity more vital than ever and 80% see data and analytics as a game-changer for creative strategy, yet fewer than 40% believe they are making the right investments in creative talent and tools.",
+    date: "2024-07-10",
+    type: "webinar",
+    partner: "Canva",
+    href: "https://mmaglobal.com/webinars/exclusive-mma-global-webinar-state-creative-process-marketing",
+    external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/screenshot_2024-06-14_at_9.04.03_am.jpg?itok=CF42iBQC",
   },
   {
     id: "brandnomics",
@@ -192,6 +312,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "talk",
     href: "https://www.youtube.com/watch?v=L6idxPVABdY",
     external: true,
+    image: "/research/actual-possibility-ai-alc.jpg",
   },
   {
     id: "movable-middles-podcast",
@@ -224,6 +345,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/decision-series-state-gen-ai",
     external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/s20230831a101756am-20230831.jpg?itok=JJrekxuk",
   },
   {
     id: "state-of-cx-maturity",
@@ -234,6 +356,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/decision-series-state-cx-maturity",
     external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webinar_series_thumbs/webinar-series-intelligence-trends.png?iffv=6XCF3_0dLoCZ&itok=d63tgK4E",
   },
   {
     id: "state-of-data-maturity",
@@ -244,6 +367,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/decision-series-state-data-maturity",
     external: true,
+    image: "https://mmaglobal.com/files/styles/social_media/public/webform_images/datamaturity.jpeg?iffv=wqqxePvKKaoz&itok=t3w7It-4",
   },
   {
     id: "state-of-mta-2023",
@@ -254,6 +378,7 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/decision-series-state-mta",
     external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/s20230613a80103am-20230613_0.jpg?itok=PgZASrBT",
   },
   {
     id: "state-of-ai-marketing-2023",
@@ -264,5 +389,6 @@ export const RESEARCH: ResearchItem[] = [
     type: "webinar",
     href: "https://mmaglobal.com/webinars/decision-series-state-ai-marketing",
     external: true,
+    image: "https://mmaglobal.com/files/styles/document_thumbnail_large/public/mmaglobal.com/image/s20230525a104905am-20230525.jpg?itok=BONq5kcq",
   },
 ];

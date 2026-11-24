@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { RESEARCH } from "@/lib/research";
-import { ResearchRow } from "@/components/research/ResearchRow";
+import { ResearchCard, ResearchRow } from "@/components/research/ResearchRow";
 
 export const metadata: Metadata = {
   title: "Marketing Research & Webinars",
@@ -76,7 +76,14 @@ export default function ResearchPage() {
       {/* List */}
       <section className="px-6 md:px-16 py-8 md:py-12 flex-1">
         <div className="max-w-[1160px] mx-auto">
-          {RESEARCH.map((item) => (
+          <p className="font-mono uppercase tracking-[0.22em] text-xs text-white/40 mb-6">Latest</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-white/[0.07]">
+            {RESEARCH.slice(0, 3).map((item) => (
+              <ResearchCard key={item.id} item={item} />
+            ))}
+          </div>
+          <p className="font-mono uppercase tracking-[0.22em] text-xs text-white/40 mt-12">All research</p>
+          {RESEARCH.slice(3).map((item) => (
             <ResearchRow key={item.id} item={item} />
           ))}
         </div>
